@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Co-Trainer KI — Prototyp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Backgrounds */
+    --bg: #080e14;
+    --card: #060c12;
+    --sidebar: #04080f;
+    --border: #0a1820;
+    /* Accents */
+    --blue: #0e5aad;
+    --blue-light: #4a9fd4;
+    --green: #2dce7a;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --purple: #9b7fe8;
+    /* Text */
+    --text: #e8f4ff;
+    --text-2: #a0c4d8;
+    --text-3: #5080a0;
+    /* Fonts */
+    --ui: 'Space Grotesk', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--ui);
+    -webkit-font-smoothing: antialiased;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  ::selection { background: var(--blue); color: #fff; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #102230; border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: #1a3548; }
+
+  .mono { font-family: var(--mono); }
+
+  /* ===================== LAYOUT ===================== */
+  .app {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ----- Sidebar (Desktop) ----- */
+  .sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 0;
+    gap: 6px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .logo {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-light));
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 18px; color: #fff;
+    margin-bottom: 16px;
+    box-shadow: 0 0 0 1px rgba(74,159,212,0.2), 0 8px 24px rgba(14,90,173,0.35);
+  }
+  .nav-item {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all .18s ease;
+    position: relative;
+  }
+  .nav-item svg { width: 22px; height: 22px; }
+  .nav-item:hover { color: var(--text-2); background: #08131d; }
+  .nav-item.active { color: var(--blue-light); background: #08182a; }
+  .nav-item.active::before {
+    content: ''; position: absolute; left: -18px; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 22px; border-radius: 2px;
+    background: var(--blue-light);
+  }
+  .nav-item .tip {
+    position: absolute; left: 56px; top: 50%; transform: translateY(-50%);
+    background: #0c1a26; color: var(--text); font-size: 12px;
+    padding: 5px 10px; border-radius: 7px; white-space: nowrap;
+    border: 1px solid var(--border);
+    opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 50;
+  }
+  .nav-item:hover .tip { opacity: 1; }
+  .nav-spacer { flex: 1; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    display: grid; place-items: center; font-weight: 600; font-size: 14px;
+    color: #fff; cursor: pointer;
+  }
+
+  /* ----- Main ----- */
+  .main { padding: 28px 34px 80px; max-width: 1280px; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 26px; gap: 16px;
+  }
+  .topbar h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  .topbar .sub { color: var(--text-3); font-size: 13px; margin-top: 2px; }
+
+  .credit-pill {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 8px 14px; border-radius: 12px;
+  }
+  .credit-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .credit-pill .label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+  .credit-pill .val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+  .credit-pill .val b { color: var(--green); }
+
+  /* ----- Cards ----- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--text-3); margin-bottom: 16px; font-weight: 600;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .grid { display: grid; gap: 18px; }
+  .stat-grid { grid-template-columns: repeat(4, 1fr); margin-bottom: 18px; }
+  .dash-grid { grid-template-columns: 2fr 1fr; align-items: start; }
+  .dash-grid-2 { grid-template-columns: 1fr 1fr; margin-top: 18px; }
+
+  /* Stat card */
+  .stat { position: relative; overflow: hidden; }
+  .stat .icon {
+    width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; margin-bottom: 14px;
+  }
+  .stat .num { font-family: var(--mono); font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+  .stat .cap { color: var(--text-3); font-size: 13px; margin-top: 2px; }
+  .stat .trend { font-size: 12px; font-family: var(--mono); margin-top: 8px; }
+  .trend.up { color: var(--green); }
+  .trend.down { color: var(--red); }
+
+  .ic-blue { background: rgba(14,90,173,.16); color: var(--blue-light); }
+  .ic-green { background: rgba(45,206,122,.14); color: var(--green); }
+  .ic-amber { background: rgba(251,191,36,.14); color: var(--amber); }
+  .ic-red { background: rgba(248,113,113,.14); color: var(--red); }
+  .ic-purple { background: rgba(155,127,232,.16); color: var(--purple); }
+
+  /* Player rows / form ranking */
+  .prow {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 8px; border-radius: 10px; transition: background .15s; cursor: pointer;
+  }
+  .prow:hover { background: #08131d; }
+  .prow + .prow { border-top: 1px solid var(--border); }
+  .pavatar { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-family: var(--mono); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .pname { font-weight: 500; font-size: 14px; }
+  .pmeta { font-size: 12px; color: var(--text-3); }
+  .pos-badge {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    padding: 2px 7px; border-radius: 6px; letter-spacing: .03em;
+  }
+  .pos-tw { background: rgba(251,191,36,.14); color: var(--amber); }
+  .pos-def { background: rgba(74,159,212,.14); color: var(--blue-light); }
+  .pos-mid { background: rgba(45,206,122,.14); color: var(--green); }
+  .pos-att { background: rgba(248,113,113,.14); color: var(--red); }
+  .score { font-family: var(--mono); font-weight: 700; font-size: 15px; margin-left: auto; }
+  .form-dots { display: flex; gap: 4px; }
+  .fd { width: 7px; height: 7px; border-radius: 50%; }
+  .fd.g { background: var(--green); }
+  .fd.a { background: var(--amber); }
+  .fd.r { background: var(--red); }
+  .fd.n { background: #102230; }
+
+  /* AI hint card */
+  .hint {
+    display: flex; gap: 12px; padding: 13px; border-radius: 11px;
+    background: linear-gradient(135deg, rgba(14,90,173,.08), rgba(155,127,232,.05));
+    border: 1px solid #0c2236;
+  }
+  .hint + .hint { margin-top: 10px; }
+  .hint .hi { width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0; display: grid; place-items: center; }
+  .hint .ht { font-size: 13px; line-height: 1.45; }
+  .hint .ht b { color: var(--text); }
+  .hint .ht .when { color: var(--text-3); font-size: 11px; font-family: var(--mono); }
+
+  /* Task list */
+  .task { display: flex; align-items: center; gap: 12px; padding: 10px 6px; }
+  .task + .task { border-top: 1px solid var(--border); }
+  .check { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid #1a3548; flex-shrink: 0; cursor: pointer; transition: all .15s; }
+  .check:hover { border-color: var(--blue-light); }
+  .check.done { background: var(--green); border-color: var(--green); }
+  .task .tt { font-size: 14px; flex: 1; }
+  .task.done .tt { color: var(--text-3); text-decoration: line-through; }
+  .prio { font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 5px; text-transform: uppercase; letter-spacing: .05em; }
+  .prio-dringend { background: rgba(248,113,113,.16); color: var(--red); }
+  .prio-woche { background: rgba(251,191,36,.16); color: var(--amber); }
+  .prio-offen { background: rgba(80,128,160,.14); color: var(--text-3); }
+
+  /* Mini week calendar */
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+  .day { background: #05101a; border: 1px solid var(--border); border-radius: 9px; padding: 9px 7px; min-height: 74px; }
+  .day .dn { font-size: 10px; color: var(--text-3); font-family: var(--mono); text-transform: uppercase; }
+  .day .dd { font-size: 16px; font-weight: 600; font-family: var(--mono); margin-bottom: 6px; }
+  .day.today { border-color: var(--blue); background: rgba(14,90,173,.07); }
+  .ev { font-size: 10px; padding: 2px 5px; border-radius: 5px; margin-bottom: 3px; line-height: 1.3; }
+  .ev-training { background: rgba(45,206,122,.16); color: var(--green); }
+  .ev-spiel { background: rgba(248,113,113,.16); color: var(--red); }
+  .ev-physio { background: rgba(155,127,232,.16); color: var(--purple); }
+
+  /* ===================== INPUT SCREEN ===================== */
+  .input-layout { display: grid; grid-template-columns: 1fr 380px; gap: 18px; align-items: start; }
+  .mic-zone {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 40px; text-align: center;
+  }
+  .mic-btn {
+    width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-light));
+    display: grid; place-items: center; cursor: pointer;
+    box-shadow: 0 0 0 0 rgba(74,159,212,.5); transition: transform .15s;
+    animation: pulse 2.4s infinite;
+  }
+  .mic-btn:hover { transform: scale(1.04); }
+  .mic-btn svg { width: 44px; height: 44px; color: #fff; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(74,159,212,.45); }
+    70% { box-shadow: 0 0 0 24px rgba(74,159,212,0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,159,212,0); }
+  }
+  .mode-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 26px; flex-wrap: wrap; }
+  .mode-tab {
+    font-size: 12px; padding: 7px 14px; border-radius: 9px; cursor: pointer;
+    background: #07121c; border: 1px solid var(--border); color: var(--text-2); transition: all .15s;
+  }
+  .mode-tab:hover { border-color: #1a3548; }
+  .mode-tab.active { background: rgba(14,90,173,.16); border-color: var(--blue); color: var(--blue-light); }
+  textarea.entry {
+    width: 100%; min-height: 130px; resize: vertical; margin-top: 24px;
+    background: #05101a; border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px; color: var(--text); font-family: var(--ui); font-size: 14px; line-height: 1.6;
+  }
+  textarea.entry:focus { outline: none; border-color: var(--blue); }
+
+  .preview-head { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .preview-head .live { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: .3; } }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 11px 13px; border-radius: 11px; margin-bottom: 10px; width: 100%;
+    background: #07121c; border: 1px solid var(--border);
+  }
+  .cat-tag { font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 5px; text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; }
+  .cat-spielerbewertung { background: rgba(74,159,212,.16); color: var(--blue-light); }
+  .cat-training { background: rgba(45,206,122,.16); color: var(--green); }
+  .cat-verletzung { background: rgba(248,113,113,.16); color: var(--red); }
+  .cat-aufgabe { background: rgba(251,191,36,.16); color: var(--amber); }
+  .cat-kalender { background: rgba(155,127,232,.16); color: var(--purple); }
+  .chip .ctext { font-size: 13px; }
+  .chip .ctext b { color: var(--blue-light); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 18px; border-radius: 11px; border: none; cursor: pointer;
+    font-family: var(--ui); font-weight: 600; font-size: 14px; transition: all .15s;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; width: 100%; }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-ghost { background: #07121c; border: 1px solid var(--border); color: var(--text-2); }
+  .btn-ghost:hover { border-color: #1a3548; color: var(--text); }
+
+  /* ===================== 4D ANALYSE ===================== */
+  .dim-grid { grid-template-columns: 1fr 1fr; }
+  .dim-card { padding: 18px; }
+  .dim-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .dim-head .di { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; }
+  .dim-head .dt { font-weight: 600; font-size: 15px; }
+  .dim-head .dscore { margin-left: auto; font-family: var(--mono); font-weight: 700; font-size: 18px; }
+  .bar-row { margin-bottom: 11px; }
+  .bar-row .bl { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+  .bar-row .bl .bv { font-family: var(--mono); color: var(--text-2); }
+  .bar { height: 6px; border-radius: 4px; background: #0a1822; overflow: hidden; }
+  .bar > i { display: block; height: 100%; border-radius: 4px; }
+
+  /* radar substitute - big number circle */
+  .player-hero { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+  .player-hero .pa { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; font-family: var(--mono); font-weight: 700; font-size: 24px; }
+  .player-hero h2 { font-size: 22px; font-weight: 600; }
+  .player-hero .pm { color: var(--text-3); font-size: 13px; margin-top: 3px; display: flex; gap: 10px; align-items: center; }
+  .overall { margin-left: auto; text-align: center; }
+  .overall .ov-num { font-family: var(--mono); font-size: 40px; font-weight: 700; color: var(--green); line-height: 1; }
+  .overall .ov-cap { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+
+  .sub-tabs { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .sub-tab { padding: 10px 4px; margin-right: 14px; font-size: 14px; color: var(--text-3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .sub-tab:hover { color: var(--text-2); }
+  .sub-tab.active { color: var(--blue-light); border-color: var(--blue-light); }
+
+  /* ===================== CO-TRAINER CHAT ===================== */
+  .chat-wrap { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 820px; }
+  .msg { display: flex; gap: 12px; max-width: 80%; }
+  .msg.user { margin-left: auto; flex-direction: row-reverse; }
+  .msg .mav { width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0; display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+  .msg .mb { padding: 12px 15px; border-radius: 13px; font-size: 14px; line-height: 1.55; }
+  .msg.ai .mb { background: var(--card); border: 1px solid var(--border); border-top-left-radius: 4px; }
+  .msg.user .mb { background: rgba(14,90,173,.18); border: 1px solid #0c2236; border-top-right-radius: 4px; }
+  .msg .mb b { color: var(--blue-light); }
+  .chat-input { display: flex; gap: 10px; margin-top: 20px; max-width: 820px; }
+  .chat-input input {
+    flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 13px 16px; color: var(--text); font-family: var(--ui); font-size: 14px;
+  }
+  .chat-input input:focus { outline: none; border-color: var(--blue); }
+
+  /* ===================== CALENDAR FULL ===================== */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .cal-cell { background: #05101a; border: 1px solid var(--border); border-radius: 10px; min-height: 100px; padding: 8px; }
+  .cal-cell .cd { font-family: var(--mono); font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+  .cal-cell.muted { opacity: .35; }
+  .cal-cell.today { border-color: var(--blue); }
+
+  /* ===================== TABLE / SPIELER LISTE ===================== */
+  .sort-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .sort-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
+
+  /* ===================== SCREENS ===================== */
+  .screen { display: none; animation: fade .25s ease; }
+  .screen.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ----- Mobile tab bar ----- */
+  .tabbar { display: none; }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 18px 16px 96px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .dash-grid, .dash-grid-2, .dim-grid, .input-layout { grid-template-columns: 1fr; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+    .tabbar {
+      display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--sidebar); border-top: 1px solid var(--border);
+      padding: 8px 6px env(safe-area-inset-bottom); justify-content: space-around; z-index: 100;
+    }
+    .tabbar .ti { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-3); font-size: 10px; padding: 6px 8px; cursor: pointer; }
+    .tabbar .ti svg { width: 22px; height: 22px; }
+    .tabbar .ti.active { color: var(--blue-light); }
+    .msg { max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="logo">CK</div>
+    <div class="nav-item active" data-screen="dashboard">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      <span class="tip">Dashboard</span>
+    </div>
+    <div class="nav-item" data-screen="eingabe">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+      <span class="tip">Eingabe</span>
+    </div>
+    <div class="nav-item" data-screen="spieler">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="tip">Spieler</span>
+    </div>
+    <div class="nav-item" data-screen="cotrainer">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="tip">KI Co-Trainer</span>
+    </div>
+    <div class="nav-item" data-screen="kalender">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span class="tip">Kalender</span>
+    </div>
+    <div class="nav-item" data-screen="aufgaben">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="tip">Aufgaben</span>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="avatar">MS</div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <!-- ===== DASHBOARD ===== -->
+    <section class="screen active" id="dashboard">
+      <div class="topbar">
+        <div>
+          <h1>Dashboard</h1>
+          <div class="sub">FC Beispiel · U17 · Saison 2025/26</div>
+        </div>
+        <div class="credit-pill">
+          <span class="dot"></span>
+          <div>
+            <div class="label">KI-Energie</div>
+            <div class="val"><b>1.820</b> / 2.000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="grid stat-grid">
+        <div class="card stat">
+          <div class="icon ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg></div>
+          <div class="num">24</div>
+          <div class="cap">Spieler im Kader</div>
+          <div class="trend up">+2 diese Woche</div>
+        </div>
+        <div class="card stat">
+          <div class="icon ic-green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 9l-6 6-4-4-3 3"/></svg></div>
+          <div class="num">78,4</div>
+          <div class="cap">Ø Team-Bewertung</div>
+          <div class="trend up">+1,2 vs. Vormonat</div>
+        </div>
+        <div class="card stat">
+          <div class="icon ic-amber"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v6m0 0l3-3m-3 3L9 5"/><rect x="4" y="8" width="16" height="13" rx="2"/></svg></div>
+          <div class="num">7</div>
+          <div class="cap">Offene Aufgaben</div>
+          <div class="trend down">3 dringend</div>
+        </div>
+        <div class="card stat">
+          <div class="icon ic-red"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="num">2</div>
+          <div class="cap">Verletzte Spieler</div>
+          <div class="trend up">1 kehrt bald zurück</div>
+        </div>
+      </div>
+
+      <!-- Main dash grid -->
+      <div class="grid dash-grid">
+        <!-- Left -->
+        <div class="grid" style="gap:18px;">
+          <div class="card">
+            <div class="card-title">Formranking <span class="mono" style="color:var(--text-3)">letzte 5</span></div>
+            <div class="prow">
+              <div class="pavatar pos-att" style="background:rgba(248,113,113,.14);color:var(--red)">LM</div>
+              <div><div class="pname">Leon Müller</div><div class="pmeta">Sturm · 17 J.</div></div>
+              <div class="form-dots" style="margin-left:auto;margin-right:14px"><span class="fd g"></span><span class="fd g"></span><span class="fd a"></span><span class="fd g"></span><span class="fd g"></span></div>
+              <div class="score" style="color:var(--green)">86</div>
+            </div>
+            <div class="prow">
+              <div class="pavatar" style="background:rgba(45,206,122,.14);color:var(--green)">JK</div>
+              <div><div class="pname">Jonas Klein</div><div class="pmeta">Mittelfeld · 16 J.</div></div>
+              <div class="form-dots" style="margin-left:auto;margin-right:14px"><span class="fd g"></span><span class="fd g"></span><span class="fd g"></span><span class="fd a"></span><span class="fd g"></span></div>
+              <div class="score" style="color:var(--green)">83</div>
+            </div>
+            <div class="prow">
+              <div class="pavatar" style="background:rgba(74,159,212,.14);color:var(--blue-light)">TS</div>
+              <div><div class="pname">Tim Schäfer</div><div class="pmeta">Abwehr · 17 J.</div></div>
+              <div class="form-dots" style="margin-left:auto;margin-right:14px"><span class="fd g"></span><span class="fd a"></span><span class="fd a"></span><span class="fd g"></span><span class="fd g"></span></div>
+              <div class="score" style="color:var(--blue-light)">79</div>
+            </div>
+            <div class="prow">
+              <div class="pavatar" style="background:rgba(251,191,36,.14);color:var(--amber)">FW</div>
+              <div><div class="pname">Felix Weber</div><div class="pmeta">Torwart · 16 J.</div></div>
+              <div class="form-dots" style="margin-left:auto;margin-right:14px"><span class="fd a"></span><span class="fd g"></span><span class="fd r"></span><span class="fd a"></span><span class="fd g"></span></div>
+              <div class="score" style="color:var(--amber)">74</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Wochenkalender</div>
+            <div class="week">
+              <div class="day"><div class="dn">Mo</div><div class="dd">09</div></div>
+              <div class="day today"><div class="dn">Di</div><div class="dd">10</div><div class="ev ev-training">Training 18:00</div></div>
+              <div class="day"><div class="dn">Mi</div><div class="dd">11</div></div>
+              <div class="day"><div class="dn">Do</div><div class="dd">12</div><div class="ev ev-training">Training 18:00</div></div>
+              <div class="day"><div class="dn">Fr</div><div class="dd">13</div><div class="ev ev-physio">Physio</div></div>
+              <div class="day"><div class="dn">Sa</div><div class="dd">14</div><div class="ev ev-spiel">Spiel 15:00</div></div>
+              <div class="day"><div class="dn">So</div><div class="dd">15</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Letzte Einträge</div>
+            <div class="chip"><span class="cat-tag cat-spielerbewertung">Bewertung</span><span class="ctext"><b>Leon Müller</b> stark im 1v1, Torabschluss verbessert</span></div>
+            <div class="chip"><span class="cat-tag cat-verletzung">Verletzung</span><span class="ctext"><b>Max Bauer</b> Außenband, ~2 Wochen Pause</span></div>
+            <div class="chip" style="margin-bottom:0"><span class="cat-tag cat-training">Training</span><span class="ctext">Passspiel-Schwerpunkt, gute Intensität</span></div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="grid" style="gap:18px;">
+          <div class="card">
+            <div class="card-title">KI-Hinweise</div>
+            <div class="hint">
+              <div class="hi ic-green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M9 11l3 3L22 4"/></svg></div>
+              <div class="ht"><b>Leon Müller</b> hat 5× positive Bewertungen — Feedbackbogen vorbereitet. <span class="when">vor 2 Std.</span></div>
+            </div>
+            <div class="hint">
+              <div class="hi ic-red"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+              <div class="ht"><b>Max Bauer</b> verletzt — Ersatz <b>Tim Schäfer</b> für Samstag vorbereiten. <span class="when">vor 5 Std.</span></div>
+            </div>
+            <div class="hint">
+              <div class="hi ic-purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2v6m0 0 3-3m-3 3L9 5"/><path d="M21 12a9 9 0 1 1-9-9"/></svg></div>
+              <div class="ht">Muster erkannt: Mittelfeld defensiv schwächer bei Kontern — Trainingsfokus? <span class="when">gestern</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Offene Aufgaben <span class="mono" style="color:var(--red)">3 dringend</span></div>
+            <div class="task"><div class="check"></div><span class="tt">Aufstellung Samstag finalisieren</span><span class="prio prio-dringend">Dringend</span></div>
+            <div class="task"><div class="check"></div><span class="tt">Eltern-Info Auswärtsspiel</span><span class="prio prio-dringend">Dringend</span></div>
+            <div class="task"><div class="check"></div><span class="tt">Physio-Termin Max B. buchen</span><span class="prio prio-woche">Diese Wo.</span></div>
+            <div class="task done"><div class="check done"></div><span class="tt">Trainingsplan Donnerstag</span><span class="prio prio-offen">Erledigt</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EINGABE ===== -->
+    <section class="screen" id="eingabe">
+      <div class="topbar">
+        <div>
+          <h1>Eingabe</h1>
+          <div class="sub">Sprich oder tippe — die KI kategorisiert automatisch.</div>
+        </div>
+        <div class="credit-pill"><span class="dot"></span><div><div class="label">KI-Energie</div><div class="val"><b>1.820</b> / 2.000</div></div></div>
+      </div>
+
+      <div class="input-layout">
+        <div class="mic-zone">
+          <div class="mode-tabs">
+            <div class="mode-tab active">Frei</div>
+            <div class="mode-tab">Nach Training</div>
+            <div class="mode-tab">Nach Spiel</div>
+            <div class="mode-tab">Spieler-Check</div>
+          </div>
+          <div class="mic-btn">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          </div>
+          <div style="color:var(--text-2);font-size:14px;margin-bottom:4px;">Tippen zum Aufnehmen</div>
+          <div class="mono" style="color:var(--text-3);font-size:12px;">Sprachaufnahme = 2 Punkte</div>
+          <textarea class="entry" placeholder="…oder hier tippen: „Leon war heute überragend im Eins-gegen-Eins, sein Torabschluss hat sich klar verbessert. Max hat sich am Außenband verletzt, etwa zwei Wochen Pause. Bitte für Samstag die Aufstellung anpassen.“"></textarea>
+        </div>
+
+        <div class="card">
+          <div class="preview-head">
+            <span class="live"></span>
+            <span class="card-title" style="margin:0">KI-Vorschau (live)</span>
+          </div>
+          <div class="chip"><span class="cat-tag cat-spielerbewertung">Bewertung</span><span class="ctext"><b>Leon Müller</b> · 1v1 stark, Torabschluss ↑</span></div>
+          <div class="chip"><span class="cat-tag cat-verletzung">Verletzung</span><span class="ctext"><b>Max Bauer</b> · Außenband, ~2 Wochen</span></div>
+          <div class="chip"><span class="cat-tag cat-aufgabe">Aufgabe</span><span class="ctext">Aufstellung Samstag anpassen</span></div>
+          <div class="chip" style="margin-bottom:16px"><span class="cat-tag cat-kalender">Kalender</span><span class="ctext">Spiel · Sa 14.06. 15:00</span></div>
+          <button class="btn btn-primary">Alle bestätigen (4)</button>
+          <div class="mono" style="text-align:center;color:var(--text-3);font-size:11px;margin-top:12px">erkannt in 1,3 s · 2 Punkte</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SPIELER ===== -->
+    <section class="screen" id="spieler">
+      <div class="topbar">
+        <div>
+          <h1>Spielerverwaltung</h1>
+          <div class="sub">24 Spieler · 4-Dimensionen-Analyse</div>
+        </div>
+        <button class="btn btn-ghost" id="backToList" style="display:none">← Zurück zur Liste</button>
+      </div>
+
+      <!-- LIST VIEW -->
+      <div id="spielerList">
+        <div class="sort-bar">
+          <span class="sort-label">Sortieren:</span>
+          <div class="mode-tab active">Position</div>
+          <div class="mode-tab">Alphabet</div>
+          <div class="mode-tab">Geburtstag</div>
+          <div class="mode-tab">Bewertung</div>
+        </div>
+        <div class="card">
+          <div class="prow open-player">
+            <div class="pavatar" style="background:rgba(251,191,36,.14);color:var(--amber)">14</div>
+            <div style="flex:1"><div class="pname">Felix Weber</div><div class="pmeta">16 Jahre · 12.03.2009</div></div>
+            <span class="pos-badge pos-tw">TW</span>
+            <div class="score" style="color:var(--amber);min-width:42px;text-align:right">74</div>
+          </div>
+          <div class="prow open-player">
+            <div class="pavatar" style="background:rgba(74,159,212,.14);color:var(--blue-light)">4</div>
+            <div style="flex:1"><div class="pname">Tim Schäfer</div><div class="pmeta">17 Jahre · 22.07.2008</div></div>
+            <span class="pos-badge pos-def">IV</span>
+            <div class="score" style="color:var(--blue-light);min-width:42px;text-align:right">79</div>
+          </div>
+          <div class="prow open-player">
+            <div class="pavatar" style="background:rgba(74,159,212,.14);color:var(--blue-light)">3</div>
+            <div style="flex:1"><div class="pname">Max Bauer</div><div class="pmeta">16 Jahre · 05.01.2009 · <span style="color:var(--red)">verletzt</span></div></div>
+            <span class="pos-badge pos-def">LV</span>
+            <div class="score" style="color:var(--blue-light);min-width:42px;text-align:right">76</div>
+          </div>
+          <div class="prow open-player">
+            <div class="pavatar" style="background:rgba(45,206,122,.14);color:var(--green)">8</div>
+            <div style="flex:1"><div class="pname">Jonas Klein</div><div class="pmeta">16 Jahre · 18.09.2009</div></div>
+            <span class="pos-badge pos-mid">ZM</span>
+            <div class="score" style="color:var(--green);min-width:42px;text-align:right">83</div>
+          </div>
+          <div class="prow open-player">
+            <div class="pavatar" style="background:rgba(248,113,113,.14);color:var(--red)">9</div>
+            <div style="flex:1"><div class="pname">Leon Müller</div><div class="pmeta">17 Jahre · 30.04.2008</div></div>
+            <span class="pos-badge pos-att">ST</span>
+            <div class="score" style="color:var(--green);min-width:42px;text-align:right">86</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAIL VIEW (4D) -->
+      <div id="spielerDetail" style="display:none">
+        <div class="card" style="margin-bottom:18px">
+          <div class="player-hero">
+            <div class="pa" style="background:rgba(248,113,113,.14);color:var(--red)">9</div>
+            <div>
+              <h2>Leon Müller</h2>
+              <div class="pm"><span class="pos-badge pos-att">ST</span> · 17 Jahre · #9 · <span style="color:var(--green)">aktiv</span></div>
+            </div>
+            <div class="overall">
+              <div class="ov-num">86</div>
+              <div class="ov-cap">Gesamt</div>
+            </div>
+          </div>
+          <div class="sub-tabs">
+            <div class="sub-tab active">4D-Analyse</div>
+            <div class="sub-tab">Mensch &amp; Charakter</div>
+            <div class="sub-tab">Entwicklungsverlauf</div>
+          </div>
+
+          <div class="grid dim-grid">
+            <!-- TECHNIK -->
+            <div class="dim-card card" style="background:#05101a">
+              <div class="dim-head">
+                <div class="di ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
+                <div class="dt">Technik</div>
+                <div class="dscore" style="color:var(--blue-light)">84</div>
+              </div>
+              <div class="bar-row"><div class="bl"><span>Ballannahme + 1. Kontakt</span><span class="bv">88</span></div><div class="bar"><i style="width:88%;background:var(--blue-light)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Dribbling + Torschuss</span><span class="bv">91</span></div><div class="bar"><i style="width:91%;background:var(--blue-light)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Passspiel kurz + lang</span><span class="bv">79</span></div><div class="bar"><i style="width:79%;background:var(--blue-light)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Flanken/Standards + Kopfball</span><span class="bv">77</span></div><div class="bar"><i style="width:77%;background:var(--blue-light)"></i></div></div>
+            </div>
+
+            <!-- TAKTIK -->
+            <div class="dim-card card" style="background:#05101a">
+              <div class="dim-head">
+                <div class="di ic-green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 5-5"/></svg></div>
+                <div class="dt">Taktik</div>
+                <div class="dscore" style="color:var(--green)">82</div>
+              </div>
+              <div class="bar-row"><div class="bl"><span>1v1 Offensiv</span><span class="bv">90</span></div><div class="bar"><i style="width:90%;background:var(--green)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Spiel mit Ball</span><span class="bv">85</span></div><div class="bar"><i style="width:85%;background:var(--green)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Umschalten Offensiv</span><span class="bv">83</span></div><div class="bar"><i style="width:83%;background:var(--green)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Spiel gegen Ball</span><span class="bv">70</span></div><div class="bar"><i style="width:70%;background:var(--amber)"></i></div></div>
+            </div>
+
+            <!-- ATHLETIK -->
+            <div class="dim-card card" style="background:#05101a">
+              <div class="dim-head">
+                <div class="di ic-amber"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></div>
+                <div class="dt">Athletik</div>
+                <div class="dscore" style="color:var(--amber)">88</div>
+              </div>
+              <div class="bar-row"><div class="bl"><span>Sprintschnelligkeit</span><span class="bv">93</span></div><div class="bar"><i style="width:93%;background:var(--amber)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Explosivität</span><span class="bv">90</span></div><div class="bar"><i style="width:90%;background:var(--amber)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Ausdauer</span><span class="bv">84</span></div><div class="bar"><i style="width:84%;background:var(--amber)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Zweikampf physisch</span><span class="bv">85</span></div><div class="bar"><i style="width:85%;background:var(--amber)"></i></div></div>
+            </div>
+
+            <!-- MENTAL -->
+            <div class="dim-card card" style="background:#05101a">
+              <div class="dim-head">
+                <div class="di ic-purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 7h10c0-2 2-4 2-7a7 7 0 0 0-7-7z"/><path d="M9 21h6"/></svg></div>
+                <div class="dt">Mental</div>
+                <div class="dscore" style="color:var(--purple)">81</div>
+              </div>
+              <div class="bar-row"><div class="bl"><span>Druckresistenz</span><span class="bv">86</span></div><div class="bar"><i style="width:86%;background:var(--purple)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Motivation</span><span class="bv">92</span></div><div class="bar"><i style="width:92%;background:var(--purple)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Spielintelligenz</span><span class="bv">80</span></div><div class="bar"><i style="width:80%;background:var(--purple)"></i></div></div>
+              <div class="bar-row"><div class="bl"><span>Fehlerverarbeitung</span><span class="bv">68</span></div><div class="bar"><i style="width:68%;background:var(--red)"></i></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CO-TRAINER ===== -->
+    <section class="screen" id="cotrainer">
+      <div class="topbar">
+        <div>
+          <h1>KI Co-Trainer</h1>
+          <div class="sub">Proaktiv &amp; im Chat — gefüttert mit Trainingslehre &amp; Vereinsphilosophie.</div>
+        </div>
+      </div>
+      <div class="sub-tabs" style="max-width:820px">
+        <div class="sub-tab active">Empfehlungen</div>
+        <div class="sub-tab">Fortschritt</div>
+        <div class="sub-tab">Defizite</div>
+      </div>
+
+      <div class="chat-wrap">
+        <div class="msg ai">
+          <div class="mav ic-blue">KI</div>
+          <div class="mb">Guten Morgen! Mir sind <b>3 Dinge</b> aufgefallen: Leon ist reif für einen Feedbackbogen (5× positiv). Im Mittelfeld zeigt sich beim Umschalten defensiv ein Muster. Und Max' Ausfall braucht eine Lösung für Samstag.</div>
+        </div>
+        <div class="msg user">
+          <div class="mav" style="background:rgba(155,127,232,.2);color:var(--purple)">MS</div>
+          <div class="mb">Was schlägst du für die Abwehr am Samstag vor?</div>
+        </div>
+        <div class="msg ai">
+          <div class="mav ic-blue">KI</div>
+          <div class="mb">Da Max (LV) ausfällt, würde ich <b>Tim Schäfer</b> von der Innen- auf die Linksverteidigung ziehen — seine 1v1-Defensiv-Werte (79) tragen das. Für die Innenverteidigung rückt <b>Jonas Klein</b> nach. Soll ich die Aufstellung als Aufgabe anlegen?</div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Frag deinen Co-Trainer…" />
+        <button class="btn btn-primary" style="width:auto">Senden</button>
+      </div>
+    </section>
+
+    <!-- ===== KALENDER ===== -->
+    <section class="screen" id="kalender">
+      <div class="topbar">
+        <div>
+          <h1>Kalender &amp; Training</h1>
+          <div class="sub">Juni 2026 · auto-befüllt aus deinen Eingaben</div>
+        </div>
+        <button class="btn btn-ghost" style="width:auto"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg> PDF-Export</button>
+      </div>
+      <div class="card">
+        <div class="cal-grid" style="margin-bottom:8px">
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">MO</div>
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">DI</div>
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">MI</div>
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">DO</div>
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">FR</div>
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">SA</div>
+          <div style="text-align:center;font-size:11px;color:var(--text-3);font-family:var(--mono)">SO</div>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-cell muted"><div class="cd">2</div></div>
+          <div class="cal-cell"><div class="cd">3</div><div class="ev ev-training">Training</div></div>
+          <div class="cal-cell"><div class="cd">4</div></div>
+          <div class="cal-cell"><div class="cd">5</div><div class="ev ev-training">Training</div></div>
+          <div class="cal-cell"><div class="cd">6</div></div>
+          <div class="cal-cell"><div class="cd">7</div><div class="ev ev-spiel">Spiel</div></div>
+          <div class="cal-cell muted"><div class="cd">8</div></div>
+
+          <div class="cal-cell"><div class="cd">9</div></div>
+          <div class="cal-cell today"><div class="cd">10</div><div class="ev ev-training">Training 18:00</div></div>
+          <div class="cal-cell"><div class="cd">11</div></div>
+          <div class="cal-cell"><div class="cd">12</div><div class="ev ev-training">Training 18:00</div></div>
+          <div class="cal-cell"><div class="cd">13</div><div class="ev ev-physio">Physio</div></div>
+          <div class="cal-cell"><div class="cd">14</div><div class="ev ev-spiel">Spiel 15:00</div></div>
+          <div class="cal-cell muted"><div class="cd">15</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== AUFGABEN ===== -->
+    <section class="screen" id="aufgaben">
+      <div class="topbar">
+        <div>
+          <h1>Aufgaben &amp; Alerts</h1>
+          <div class="sub">Eigene To-Dos + von der KI erkannte Aufgaben</div>
+        </div>
+      </div>
+      <div class="grid dash-grid-2" style="margin-top:0">
+        <div class="card">
+          <div class="card-title">Dringend</div>
+          <div class="task"><div class="check"></div><span class="tt">Aufstellung Samstag finalisieren</span><span class="prio prio-dringend">KI</span></div>
+          <div class="task"><div class="check"></div><span class="tt">Eltern-Info Auswärtsspiel</span><span class="prio prio-dringend">Manuell</span></div>
+          <div class="task"><div class="check"></div><span class="tt">Ersatz für Max B. bestätigen</span><span class="prio prio-dringend">KI</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Diese Woche</div>
+          <div class="task"><div class="check"></div><span class="tt">Physio-Termin Max B. buchen</span><span class="prio prio-woche">KI</span></div>
+          <div class="task"><div class="check"></div><span class="tt">Feedbackbogen Leon besprechen</span><span class="prio prio-woche">KI</span></div>
+          <div class="task done"><div class="check done"></div><span class="tt">Trainingsplan Donnerstag</span><span class="prio prio-offen">Erledigt</span></div>
+          <div class="task done"><div class="check done"></div><span class="tt">Material für Training prüfen</span><span class="prio prio-offen">Erledigt</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== MOBILE TAB BAR ===================== -->
+<nav class="tabbar">
+  <div class="ti active" data-screen="dashboard"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Start</div>
+  <div class="ti" data-screen="spieler"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>Spieler</div>
+  <div class="ti" data-screen="eingabe"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Eingabe</div>
+  <div class="ti" data-screen="cotrainer"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Co-Trainer</div>
+  <div class="ti" data-screen="kalender"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Kalender</div>
+</nav>
+
+<script>
+  // ---- Screen navigation ----
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === name));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.screen === name));
+    document.querySelectorAll('.tabbar .ti').forEach(t => t.classList.toggle('active', t.dataset.screen === name));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.querySelectorAll('[data-screen]').forEach(el => {
+    el.addEventListener('click', () => showScreen(el.dataset.screen));
+  });
+
+  // ---- Player list <-> detail ----
+  const list = document.getElementById('spielerList');
+  const detail = document.getElementById('spielerDetail');
+  const backBtn = document.getElementById('backToList');
+  document.querySelectorAll('.open-player').forEach(row => {
+    row.addEventListener('click', () => {
+      list.style.display = 'none';
+      detail.style.display = 'block';
+      backBtn.style.display = 'inline-flex';
+    });
+  });
+  backBtn.addEventListener('click', () => {
+    detail.style.display = 'none';
+    list.style.display = 'block';
+    backBtn.style.display = 'none';
+  });
+
+  // ---- Toggle task checkboxes ----
+  document.querySelectorAll('.task .check').forEach(c => {
+    c.addEventListener('click', () => {
+      c.classList.toggle('done');
+      c.closest('.task').classList.toggle('done');
+    });
+  });
+
+  // ---- Mode tabs (visual) ----
+  document.querySelectorAll('.mode-tabs').forEach(group => {
+    group.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        group.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  });
+  document.querySelectorAll('.sort-bar').forEach(group => {
+    group.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        group.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  });
+  document.querySelectorAll('.sub-tabs').forEach(group => {
+    group.querySelectorAll('.sub-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        group.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  });
+</script>
+</body>
+</html>
