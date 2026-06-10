@@ -405,6 +405,39 @@
   .row-del svg { width: 15px; height: 15px; }
   .add-player-btn { width: auto; }
 
+  /* ===================== SCOUTING ===================== */
+  .scout-card { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; }
+  .scout-card + .scout-card { margin-top: 14px; }
+  .scout-av { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-family: var(--mono); font-weight: 700; font-size: 16px; flex-shrink: 0; }
+  .scout-main { flex: 1; min-width: 0; }
+  .scout-name { font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .scout-meta { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .scout-context { font-size: 13px; color: var(--text-2); margin-top: 9px; display: flex; align-items: center; gap: 7px; }
+  .scout-note { font-size: 13px; color: var(--text-2); margin-top: 8px; line-height: 1.5; background: #05101a; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+  .scout-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .rec-badge { font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 6px; font-weight: 600; }
+  .rec-beobachten { background: rgba(251,191,36,.16); color: var(--amber); }
+  .rec-probetraining { background: rgba(74,159,212,.16); color: var(--blue-light); }
+  .rec-toptalent { background: rgba(45,206,122,.16); color: var(--green); }
+  .voice-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--mono); color: var(--purple); }
+
+  /* Scouting-Fragebogen (Checkliste) */
+  .ql-group { margin-bottom: 16px; }
+  .ql-group .ql-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); font-weight: 600; margin-bottom: 8px; }
+  .check-item { display: flex; align-items: center; gap: 11px; padding: 7px 0; cursor: pointer; font-size: 14px; color: var(--text-2); user-select: none; }
+  .check-item:hover { color: var(--text); }
+  .check-item.checked { color: var(--text); }
+  .rec-choice { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rec-opt { padding: 9px 14px; border-radius: 10px; border: 1px solid var(--border); background: #05101a; cursor: pointer; font-size: 13px; color: var(--text-2); transition: all .15s; }
+  .rec-opt:hover { border-color: #1a3548; }
+  .rec-opt.sel { border-color: var(--blue); background: rgba(14,90,173,.14); color: var(--blue-light); }
+  .scout-mic { display: flex; align-items: center; gap: 14px; background: #05101a; border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .scout-mic .sm-btn { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; cursor: pointer;
+    background: linear-gradient(135deg, var(--blue), var(--blue-light)); }
+  .scout-mic .sm-btn svg { width: 24px; height: 24px; color: #fff; }
+  .scout-mic .sm-txt { font-size: 13px; color: var(--text-2); }
+  .scout-mic .sm-txt .mono { display: block; color: var(--text-3); font-size: 11px; margin-top: 2px; }
+
   /* ===================== FEEDBACKBOGEN (Modal) ===================== */
   .fb-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 10px; cursor: pointer;
     background: rgba(45,206,122,.12); border: 1px solid rgba(45,206,122,.3); color: var(--green); font-weight: 600; font-size: 13px; font-family: var(--ui); transition: all .15s; }
@@ -483,6 +516,10 @@
     <div class="nav-item" data-screen="spieler">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="tip">Spieler</span>
+    </div>
+    <div class="nav-item" data-screen="scouting">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="14" r="4"/><circle cx="18" cy="14" r="4"/><path d="M10 14h4"/><path d="M6 10V7a2 2 0 0 1 2-2"/><path d="M18 10V7a2 2 0 0 0-2-2"/></svg>
+      <span class="tip">Scouting</span>
     </div>
     <div class="nav-item" data-screen="cotrainer">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -907,6 +944,89 @@
       </div>
     </section>
 
+    <!-- ===== SCOUTING ===== -->
+    <section class="screen" id="scouting">
+      <div class="topbar">
+        <div>
+          <h1>Scouting</h1>
+          <div class="sub">Talente anderer Vereine beobachten — per Sprache oder Fragebogen.</div>
+        </div>
+        <button class="btn btn-primary" id="openScout" style="width:auto">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
+          Spieler beobachten
+        </button>
+      </div>
+
+      <div class="grid stat-grid">
+        <div class="card stat">
+          <div class="icon ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="14" r="4"/><circle cx="18" cy="14" r="4"/><path d="M10 14h4"/></svg></div>
+          <div class="num" id="scoutCount">3</div>
+          <div class="cap">Beobachtete Spieler</div>
+        </div>
+        <div class="card stat">
+          <div class="icon ic-green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11.5 2 14 8l6 .5-4.5 4 1.5 6-5.5-3.3L6 18.5 7.5 12.5 3 8.5 9 8z"/></svg></div>
+          <div class="num">1</div>
+          <div class="cap">Top-Talente</div>
+        </div>
+        <div class="card stat">
+          <div class="icon ic-amber"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="num">1</div>
+          <div class="cap">Weiter beobachten</div>
+        </div>
+        <div class="card stat">
+          <div class="icon ic-purple"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8z"/></svg></div>
+          <div class="num">1</div>
+          <div class="cap">Zum Probetraining</div>
+        </div>
+      </div>
+
+      <div id="scoutList">
+        <!-- Beispiel 1 -->
+        <div class="card scout-card">
+          <div class="scout-av" style="background:rgba(45,206,122,.14);color:var(--green)">10</div>
+          <div class="scout-main">
+            <div class="scout-name">Nr. 10 (Name unbekannt) <span class="pos-badge pos-att">ST</span></div>
+            <div class="scout-meta">TSV Musterstadt · ca. 16 Jahre</div>
+            <div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/></svg> Turnier · 07.06.2026 · gegen JFV Beispiel</div>
+            <div class="scout-note">„Beidfüßig, brutal schnell auf den ersten Metern, eiskalt vor dem Tor. Zwei Tore und ein Assist im Halbfinale. Klares Talent — unbedingt dranbleiben."</div>
+            <div class="scout-tags">
+              <span class="rec-badge rec-toptalent">★ Top-Talent</span>
+              <span class="voice-chip"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg> Sprachnotiz · 0:48</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beispiel 2 -->
+        <div class="card scout-card">
+          <div class="scout-av" style="background:rgba(74,159,212,.14);color:var(--blue-light)">8</div>
+          <div class="scout-main">
+            <div class="scout-name">David König <span class="pos-badge pos-mid">ZM</span></div>
+            <div class="scout-meta">SC Beispielheim · 17 Jahre</div>
+            <div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Ligaspiel · 31.05.2026 · TSV vs. SC Beispielheim</div>
+            <div class="scout-note">„Ruhiger Sechser mit überragender Spielübersicht, verteilt die Bälle stark. Athletisch noch Luft nach oben. Erst mal weiter beobachten."</div>
+            <div class="scout-tags">
+              <span class="rec-badge rec-beobachten">Weiter beobachten</span>
+              <span class="voice-chip"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg> Sprachnotiz · 0:32</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beispiel 3 -->
+        <div class="card scout-card">
+          <div class="scout-av" style="background:rgba(251,191,36,.14);color:var(--amber)">1</div>
+          <div class="scout-main">
+            <div class="scout-name">Elias Hofer <span class="pos-badge pos-tw">TW</span></div>
+            <div class="scout-meta">FC Nachbarort · 16 Jahre</div>
+            <div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><path d="M12 2 2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Training (öffentlich) · 28.05.2026</div>
+            <div class="scout-note">„Sehr gutes Stellungsspiel und mutig im 1-gegen-1. Aufbau mit dem Fuß stark. Würde ich gerne zum Probetraining einladen."</div>
+            <div class="scout-tags">
+              <span class="rec-badge rec-probetraining">Zum Probetraining</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== CO-TRAINER ===== -->
     <section class="screen" id="cotrainer">
       <div class="topbar">
@@ -1127,11 +1247,125 @@
   </div>
 </div>
 
+<!-- ===================== SCOUTING MODAL ===================== -->
+<div class="overlay" id="scoutOverlay">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head">
+      <div class="mh-ic ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="22" height="22"><circle cx="6" cy="14" r="4"/><circle cx="18" cy="14" r="4"/><path d="M10 14h4"/><path d="M6 10V7a2 2 0 0 1 2-2"/><path d="M18 10V7a2 2 0 0 0-2-2"/></svg></div>
+      <div>
+        <h2>Spieler beobachten</h2>
+        <div class="mh-sub">Per Sprache beschreiben oder Fragebogen ankreuzen</div>
+      </div>
+      <button class="modal-close" id="closeScout"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Stammdaten -->
+      <div class="fs-label" style="margin-bottom:10px">1 · Wer &amp; wo</div>
+      <div class="form-grid" style="margin-bottom:22px">
+        <div class="field">
+          <label>Name (oder „unbekannt")</label>
+          <input type="text" id="sc_name" placeholder="z. B. Nr. 9 / Lukas Berg" />
+        </div>
+        <div class="field">
+          <label>Verein</label>
+          <input type="text" id="sc_club" placeholder="z. B. TSV Musterstadt" />
+        </div>
+        <div class="field">
+          <label>Position</label>
+          <select id="sc_pos">
+            <option value="TW">TW · Torwart</option>
+            <option value="IV">IV · Innenverteidiger</option>
+            <option value="LV">LV · Linksverteidiger</option>
+            <option value="RV">RV · Rechtsverteidiger</option>
+            <option value="LM">LM · Linkes Mittelfeld</option>
+            <option value="ZM" selected>ZM · Zentrales Mittelfeld</option>
+            <option value="RM">RM · Rechtes Mittelfeld</option>
+            <option value="LA">LA · Linksaußen</option>
+            <option value="RA">RA · Rechtsaußen</option>
+            <option value="ST">ST · Stürmer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Geschätztes Alter</label>
+          <input type="text" id="sc_age" placeholder="z. B. ca. 16 Jahre" />
+        </div>
+        <div class="field">
+          <label>Anlass</label>
+          <select id="sc_occ">
+            <option value="Spiel">Spiel</option>
+            <option value="Turnier" selected>Turnier</option>
+            <option value="Training">Training</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Datum / Gegner</label>
+          <input type="text" id="sc_ctx" placeholder="z. B. 07.06. vs. JFV Beispiel" />
+        </div>
+      </div>
+
+      <!-- Sprachaufnahme -->
+      <div class="fs-label" style="margin-bottom:10px">2 · Sprachnotiz (optional)</div>
+      <div class="scout-mic" style="margin-bottom:14px">
+        <div class="sm-btn"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+        <div class="sm-txt">Tippen &amp; den Spieler frei beschreiben — die KI sortiert es ein.<span class="mono">Sprachaufnahme = 2 Punkte</span></div>
+      </div>
+      <textarea class="entry" id="sc_note" style="margin-top:0;min-height:80px" placeholder="…oder hier tippen: „Beidfüßig, sehr schnell, eiskalt vor dem Tor …"></textarea>
+
+      <!-- Fragebogen -->
+      <div class="fs-label" style="margin:22px 0 4px">3 · Scouting-Fragebogen (ankreuzen)</div>
+
+      <div class="ql-group">
+        <div class="ql-head">Technik</div>
+        <div class="check-item"><div class="check"></div> Beidfüßig</div>
+        <div class="check-item"><div class="check"></div> Sichere erste Ballberührung</div>
+        <div class="check-item"><div class="check"></div> Stark im Dribbling / 1-gegen-1</div>
+        <div class="check-item"><div class="check"></div> Gute Passqualität (kurz &amp; lang)</div>
+      </div>
+
+      <div class="ql-group">
+        <div class="ql-head">Athletik</div>
+        <div class="check-item"><div class="check"></div> Überdurchschnittlich schnell</div>
+        <div class="check-item"><div class="check"></div> Zweikampf- &amp; körperlich stark</div>
+        <div class="check-item"><div class="check"></div> Gute Ausdauer / läuft viel</div>
+      </div>
+
+      <div class="ql-group">
+        <div class="ql-head">Taktik &amp; Spielverständnis</div>
+        <div class="check-item"><div class="check"></div> Gute Spielübersicht</div>
+        <div class="check-item"><div class="check"></div> Stimmiges Positionsspiel</div>
+        <div class="check-item"><div class="check"></div> Arbeitet defensiv mit</div>
+      </div>
+
+      <div class="ql-group">
+        <div class="ql-head">Mentalität</div>
+        <div class="check-item"><div class="check"></div> Positive Körpersprache</div>
+        <div class="check-item"><div class="check"></div> Übernimmt Verantwortung / Führung</div>
+        <div class="check-item"><div class="check"></div> Reagiert gut auf Fehler &amp; Rückschläge</div>
+      </div>
+
+      <div class="ql-group" style="margin-bottom:0">
+        <div class="ql-head">Empfehlung</div>
+        <div class="rec-choice" id="sc_rec">
+          <div class="rec-opt" data-rec="beobachten">Weiter beobachten</div>
+          <div class="rec-opt" data-rec="probetraining">Zum Probetraining</div>
+          <div class="rec-opt sel" data-rec="toptalent">★ Top-Talent</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" id="saveScout" style="width:auto">Beobachtung speichern</button>
+      <button class="btn btn-ghost" id="cancelScout" style="width:auto">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== MOBILE TAB BAR ===================== -->
 <nav class="tabbar">
   <div class="ti active" data-screen="dashboard"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Start</div>
   <div class="ti" data-screen="spieler"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/></svg>Spieler</div>
   <div class="ti" data-screen="eingabe"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Eingabe</div>
+  <div class="ti" data-screen="scouting"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="14" r="4"/><circle cx="18" cy="14" r="4"/><path d="M10 14h4"/></svg>Scouting</div>
   <div class="ti" data-screen="cotrainer"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Co-Trainer</div>
   <div class="ti" data-screen="kalender"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Kalender</div>
 </nav>
@@ -1172,7 +1406,7 @@
   document.getElementById('closeFeedback').addEventListener('click', closeFb);
   document.getElementById('closeFeedback2').addEventListener('click', closeFb);
   fbOverlay.addEventListener('click', e => { if (e.target === fbOverlay) closeFb(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFb(); closeAdd(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFb(); closeAdd(); closeScout(); } });
 
   // ---- Spieler hinzufügen / entfernen ----
   const listCard = document.getElementById('playerListCard');
@@ -1272,6 +1506,82 @@
     document.getElementById('np_pos').value = 'ZM';
     document.getElementById('np_status').value = 'aktiv';
     closeAdd();
+  });
+
+  // ---- Scouting ----
+  const scoutOverlay = document.getElementById('scoutOverlay');
+  const scoutList = document.getElementById('scoutList');
+  const scoutCount = document.getElementById('scoutCount');
+  function openScout() { scoutOverlay.classList.add('open'); }
+  function closeScout() { scoutOverlay.classList.remove('open'); }
+  document.getElementById('openScout').addEventListener('click', openScout);
+  document.getElementById('closeScout').addEventListener('click', closeScout);
+  document.getElementById('cancelScout').addEventListener('click', closeScout);
+  scoutOverlay.addEventListener('click', e => { if (e.target === scoutOverlay) closeScout(); });
+
+  // Fragebogen: Häkchen setzen
+  scoutOverlay.querySelectorAll('.check-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+      item.querySelector('.check').classList.toggle('done');
+    });
+  });
+  // Empfehlung auswählen
+  const recBox = document.getElementById('sc_rec');
+  recBox.querySelectorAll('.rec-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      recBox.querySelectorAll('.rec-opt').forEach(o => o.classList.remove('sel'));
+      opt.classList.add('sel');
+    });
+  });
+
+  function updateScoutCount() { scoutCount.textContent = scoutList.querySelectorAll('.scout-card').length; }
+
+  document.getElementById('saveScout').addEventListener('click', () => {
+    const name = document.getElementById('sc_name').value.trim() || 'Unbekannt';
+    const club = document.getElementById('sc_club').value.trim() || 'Verein unbekannt';
+    const pos = document.getElementById('sc_pos').value;
+    const age = document.getElementById('sc_age').value.trim();
+    const occ = document.getElementById('sc_occ').value;
+    const ctx = document.getElementById('sc_ctx').value.trim();
+    const note = document.getElementById('sc_note').value.trim();
+    const recSel = recBox.querySelector('.rec-opt.sel')?.dataset.rec || 'beobachten';
+    const recMap = {
+      beobachten: ['rec-beobachten', 'Weiter beobachten'],
+      probetraining: ['rec-probetraining', 'Zum Probetraining'],
+      toptalent: ['rec-toptalent', '★ Top-Talent']
+    };
+    const [recCls, recLabel] = recMap[recSel];
+    const [bg, col] = posColor(pos).split('|');
+
+    // Angekreuzte Stärken einsammeln
+    const checks = [...scoutOverlay.querySelectorAll('.check-item.checked')].map(c => c.textContent.trim());
+    const checkLine = checks.length ? '✓ ' + checks.slice(0, 4).join(' · ') + (checks.length > 4 ? ' …' : '') : '';
+    const noteText = note || checkLine || 'Beobachtung gespeichert.';
+
+    const metaParts = [club, age].filter(Boolean).join(' · ');
+    const ctxLine = [occ, ctx].filter(Boolean).join(' · ');
+
+    const card = document.createElement('div');
+    card.className = 'card scout-card';
+    card.innerHTML =
+      '<div class="scout-av" style="background:' + bg + ';color:' + col + '">?</div>' +
+      '<div class="scout-main">' +
+        '<div class="scout-name">' + name + ' <span class="pos-badge ' + posClass(pos) + '">' + pos + '</span></div>' +
+        '<div class="scout-meta">' + metaParts + '</div>' +
+        (ctxLine ? '<div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/></svg> ' + ctxLine + '</div>' : '') +
+        '<div class="scout-note">' + noteText + '</div>' +
+        '<div class="scout-tags"><span class="rec-badge ' + recCls + '">' + recLabel + '</span>' +
+          (note ? '<span class="voice-chip"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg> Sprachnotiz</span>' : '') +
+        '</div>' +
+      '</div>';
+    scoutList.prepend(card);
+    updateScoutCount();
+
+    // Reset
+    ['sc_name','sc_club','sc_age','sc_ctx','sc_note'].forEach(id => document.getElementById(id).value = '');
+    scoutOverlay.querySelectorAll('.check-item.checked').forEach(c => { c.classList.remove('checked'); c.querySelector('.check').classList.remove('done'); });
+    closeScout();
   });
 
   // ---- Toggle task checkboxes ----
