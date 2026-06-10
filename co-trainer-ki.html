@@ -951,10 +951,16 @@
           <h1>Scouting</h1>
           <div class="sub">Talente anderer Vereine beobachten — per Sprache oder Fragebogen.</div>
         </div>
-        <button class="btn btn-primary" id="openScout" style="width:auto">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
-          Spieler beobachten
-        </button>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" id="openScoutVoice" style="width:auto">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            Mit Sprache
+          </button>
+          <button class="btn btn-ghost" id="openScout" style="width:auto">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+            Manuell
+          </button>
+        </div>
       </div>
 
       <div class="grid stat-grid">
@@ -1247,6 +1253,38 @@
   </div>
 </div>
 
+<!-- ===================== SCOUTING — MIT SPRACHE MODAL ===================== -->
+<div class="overlay" id="scoutVoiceOverlay">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head">
+      <div class="mh-ic ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="22" height="22"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+      <div>
+        <h2>Scouting per Sprache</h2>
+        <div class="mh-sub">Einfach beschreiben — die KI füllt alles aus</div>
+      </div>
+      <button class="modal-close" id="closeScoutVoice"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="scout-mic" style="margin-bottom:14px">
+        <div class="sm-btn" style="animation:pulse 2.4s infinite"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+        <div class="sm-txt">Tippen zum Aufnehmen — sag z. B. Verein, Nummer, Position und was dir auffällt.<span class="mono">Sprachaufnahme = 2 Punkte</span></div>
+      </div>
+      <textarea class="entry" id="sv_transcript" style="margin-top:0;min-height:90px" placeholder="z. B. „TSV Musterstadt, Nummer 10, Stürmer, ungefähr 16 Jahre. Beidfüßig, brutal schnell, eiskalt vor dem Tor. Klares Top-Talent.“"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <button class="btn btn-ghost" id="sv_demo" style="width:auto;font-size:12px;padding:7px 12px">Beispiel einfügen</button>
+        <span class="mono" style="color:var(--text-3);font-size:11px">Erkennt: Verein · Nummer · Position · Alter · Stärken</span>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" id="sv_analyze" style="width:auto">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2v4m0 0 2-2m-2 2L10 4"/><path d="M21 12a9 9 0 1 1-9-9"/></svg>
+        KI analysieren &amp; ausfüllen
+      </button>
+      <button class="btn btn-ghost" id="cancelScoutVoice" style="width:auto">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== SCOUTING MODAL ===================== -->
 <div class="overlay" id="scoutOverlay">
   <div class="modal" style="max-width:680px">
@@ -1254,7 +1292,7 @@
       <div class="mh-ic ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="22" height="22"><circle cx="6" cy="14" r="4"/><circle cx="18" cy="14" r="4"/><path d="M10 14h4"/><path d="M6 10V7a2 2 0 0 1 2-2"/><path d="M18 10V7a2 2 0 0 0-2-2"/></svg></div>
       <div>
         <h2>Spieler beobachten</h2>
-        <div class="mh-sub">Per Sprache beschreiben oder Fragebogen ankreuzen</div>
+        <div class="mh-sub">Felder prüfen, ergänzen &amp; speichern</div>
       </div>
       <button class="modal-close" id="closeScout"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
@@ -1406,7 +1444,7 @@
   document.getElementById('closeFeedback').addEventListener('click', closeFb);
   document.getElementById('closeFeedback2').addEventListener('click', closeFb);
   fbOverlay.addEventListener('click', e => { if (e.target === fbOverlay) closeFb(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFb(); closeAdd(); closeScout(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFb(); closeAdd(); closeScout(); closeScoutVoice(); } });
 
   // ---- Spieler hinzufügen / entfernen ----
   const listCard = document.getElementById('playerListCard');
@@ -1512,12 +1550,93 @@
   const scoutOverlay = document.getElementById('scoutOverlay');
   const scoutList = document.getElementById('scoutList');
   const scoutCount = document.getElementById('scoutCount');
-  function openScout() { scoutOverlay.classList.add('open'); }
+  const scoutVoiceOverlay = document.getElementById('scoutVoiceOverlay');
   function closeScout() { scoutOverlay.classList.remove('open'); }
-  document.getElementById('openScout').addEventListener('click', openScout);
+  function closeScoutVoice() { scoutVoiceOverlay.classList.remove('open'); }
+
+  // Formular leeren
+  function clearScoutForm() {
+    ['sc_name','sc_club','sc_age','sc_ctx','sc_note'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('sc_pos').value = 'ZM';
+    document.getElementById('sc_occ').value = 'Turnier';
+    scoutOverlay.querySelectorAll('.check-item.checked').forEach(c => { c.classList.remove('checked'); c.querySelector('.check').classList.remove('done'); });
+    recBox.querySelectorAll('.rec-opt').forEach(o => o.classList.toggle('sel', o.dataset.rec === 'beobachten'));
+  }
+
+  // Manuell -> leeres Formular
+  document.getElementById('openScout').addEventListener('click', () => { clearScoutForm(); scoutOverlay.classList.add('open'); });
   document.getElementById('closeScout').addEventListener('click', closeScout);
   document.getElementById('cancelScout').addEventListener('click', closeScout);
   scoutOverlay.addEventListener('click', e => { if (e.target === scoutOverlay) closeScout(); });
+
+  // ----- Mit Sprache: KI-Erkennung -----
+  document.getElementById('openScoutVoice').addEventListener('click', () => scoutVoiceOverlay.classList.add('open'));
+  document.getElementById('closeScoutVoice').addEventListener('click', closeScoutVoice);
+  document.getElementById('cancelScoutVoice').addEventListener('click', closeScoutVoice);
+  scoutVoiceOverlay.addEventListener('click', e => { if (e.target === scoutVoiceOverlay) closeScoutVoice(); });
+  document.getElementById('sv_demo').addEventListener('click', () => {
+    document.getElementById('sv_transcript').value = 'TSV Musterstadt, Nummer 10, Stürmer, ungefähr 16 Jahre. Beidfüßig, brutal schnell, super Spielübersicht und eiskalt vor dem Tor. Klares Top-Talent, unbedingt dranbleiben.';
+  });
+
+  // Häkchen anhand eines Textbausteins setzen
+  function setScoutCheck(substr) {
+    scoutOverlay.querySelectorAll('.check-item').forEach(item => {
+      if (item.textContent.trim().includes(substr) && !item.classList.contains('checked')) {
+        item.classList.add('checked');
+        item.querySelector('.check').classList.add('done');
+      }
+    });
+  }
+
+  // Einfache KI-Simulation: erkennt Verein, Nummer, Position, Alter, Stärken, Empfehlung
+  function parseScoutText(text) {
+    const t = text.toLowerCase();
+    const r = { name: '', club: '', pos: '', age: '', note: text.trim(), checks: [], rec: 'beobachten' };
+    const club = text.match(/\b(?:1\.\s?)?(?:TSV|FC|SC|SV|VfL|VfB|JFV|SpVgg|TuS|FV|DJK|Borussia|Eintracht)\b[\s.]*[A-ZÄÖÜ][\wäöüß-]*/i);
+    if (club) r.club = club[0].replace(/\s+/g, ' ').trim();
+    const num = t.match(/(?:nr\.?|nummer)\s*\.?\s*(\d{1,2})/);
+    if (num) r.name = 'Nr. ' + num[1];
+    const posMap = [['torwart','TW'],['torhüter','TW'],['keeper','TW'],['innenverteidig','IV'],['linksverteidig','LV'],['rechtsverteidig','RV'],['sechser','ZM'],['achter','ZM'],['zehner','ZM'],['mittelfeld','ZM'],['linksauß','LA'],['rechtsauß','RA'],['flügel','RA'],['mittelstürmer','ST'],['stürmer','ST'],['sturm','ST'],['neuner','ST']];
+    for (const [k, v] of posMap) { if (t.includes(k)) { r.pos = v; break; } }
+    const age = t.match(/(\d{2})\s*(?:jahre|jährig|j\.)/) || t.match(/(?:ungefähr|circa|ca\.?|etwa|um die|rund)\s*(\d{2})/);
+    if (age) r.age = 'ca. ' + age[1] + ' Jahre';
+    const ck = [
+      ['beidfüßig','Beidfüßig'],['beidfüssig','Beidfüßig'],
+      ['ballannahme','Sichere erste Ballberührung'],['erste ballberührung','Sichere erste Ballberührung'],
+      ['dribbel','Stark im Dribbling'],['eins gegen eins','Stark im Dribbling'],['1 gegen 1','Stark im Dribbling'],['eiskalt','Stark im Dribbling'],['torabschluss','Stark im Dribbling'],
+      ['pass','Gute Passqualität'],
+      ['schnell','Überdurchschnittlich schnell'],['antritt','Überdurchschnittlich schnell'],
+      ['zweikampf','Zweikampf'],['robust','Zweikampf'],['körperlich','Zweikampf'],
+      ['ausdauer','Gute Ausdauer'],['läuft viel','Gute Ausdauer'],
+      ['übersicht','Gute Spielübersicht'],['spielintelligenz','Gute Spielübersicht'],
+      ['positionsspiel','Stimmiges Positionsspiel'],['stellungsspiel','Stimmiges Positionsspiel'],
+      ['defensiv','Arbeitet defensiv mit'],
+      ['körpersprache','Positive Körpersprache'],['präsenz','Positive Körpersprache'],
+      ['führung','Übernimmt Verantwortung'],['verantwortung','Übernimmt Verantwortung'],['leader','Übernimmt Verantwortung'],
+      ['fehler','Reagiert gut auf Fehler']
+    ];
+    ck.forEach(([k, label]) => { if (t.includes(k) && !r.checks.includes(label)) r.checks.push(label); });
+    if (/top.?talent|unbedingt|priorität|dranbleiben/.test(t)) r.rec = 'toptalent';
+    else if (/probetraining|einladen|testen/.test(t)) r.rec = 'probetraining';
+    return r;
+  }
+
+  document.getElementById('sv_analyze').addEventListener('click', () => {
+    const text = document.getElementById('sv_transcript').value.trim();
+    if (!text) { document.getElementById('sv_transcript').focus(); return; }
+    const r = parseScoutText(text);
+    clearScoutForm();
+    document.getElementById('sc_name').value = r.name;
+    document.getElementById('sc_club').value = r.club;
+    if (r.pos) document.getElementById('sc_pos').value = r.pos;
+    document.getElementById('sc_age').value = r.age;
+    document.getElementById('sc_note').value = r.note;
+    r.checks.forEach(lbl => setScoutCheck(lbl));
+    recBox.querySelectorAll('.rec-opt').forEach(o => o.classList.toggle('sel', o.dataset.rec === r.rec));
+    document.getElementById('sv_transcript').value = '';
+    closeScoutVoice();
+    scoutOverlay.classList.add('open'); // vorausgefülltes Formular zum Prüfen öffnen
+  });
 
   // Fragebogen: Häkchen setzen
   scoutOverlay.querySelectorAll('.check-item').forEach(item => {
