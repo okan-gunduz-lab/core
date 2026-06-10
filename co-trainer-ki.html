@@ -135,6 +135,23 @@
   .credit-pill .val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
   .credit-pill .val b { color: var(--green); }
 
+  /* ----- Team / Jahrgang Dropdown ----- */
+  .team-select { position: relative; display: inline-flex; align-items: center; }
+  .team-select > svg.jersey { position: absolute; left: 12px; width: 16px; height: 16px; color: var(--blue-light); pointer-events: none; }
+  .team-select select {
+    appearance: none; -webkit-appearance: none;
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--ui); font-weight: 600; font-size: 14px;
+    padding: 9px 34px 9px 36px; border-radius: 12px; cursor: pointer;
+  }
+  .team-select select:hover { border-color: #1a3548; }
+  .team-select select:focus { outline: none; border-color: var(--blue); }
+  .team-select::after {
+    content: ''; position: absolute; right: 14px; pointer-events: none;
+    width: 7px; height: 7px; border-right: 2px solid var(--text-3); border-bottom: 2px solid var(--text-3);
+    transform: rotate(45deg) translateY(-2px);
+  }
+
   /* ----- Cards ----- */
   .card {
     background: var(--card);
@@ -545,13 +562,23 @@
       <div class="topbar">
         <div>
           <h1>Dashboard</h1>
-          <div class="sub">FC Beispiel · U17 · Saison 2025/26</div>
+          <div class="sub">FC Beispiel · <span class="age-label">U17</span> · Saison 2025/26</div>
         </div>
-        <div class="credit-pill">
-          <span class="dot"></span>
-          <div>
-            <div class="label">KI-Energie</div>
-            <div class="val"><b>1.820</b> / 2.000</div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div class="team-select">
+            <svg class="jersey" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7l4-3 2 2h4l2-2 4 3-3 4-2-1v9H9v-9l-2 1z"/></svg>
+            <select class="age-group" aria-label="Jahrgang wählen">
+              <option>U8</option><option>U9</option><option>U10</option><option>U11</option>
+              <option>U12</option><option>U13</option><option>U14</option><option>U15</option>
+              <option>U16</option><option selected>U17</option><option>U18</option><option>U19</option>
+            </select>
+          </div>
+          <div class="credit-pill">
+            <span class="dot"></span>
+            <div>
+              <div class="label">KI-Energie</div>
+              <div class="val"><b>1.820</b> / 2.000</div>
+            </div>
           </div>
         </div>
       </div>
@@ -712,9 +739,17 @@
       <div class="topbar">
         <div>
           <h1>Spielerverwaltung</h1>
-          <div class="sub"><span id="playerCount">5</span> Spieler · 4-Dimensionen-Analyse</div>
+          <div class="sub"><span class="age-label">U17</span> · <span id="playerCount">5</span> Spieler · 4-Dimensionen-Analyse</div>
         </div>
-        <div style="display:flex;gap:10px">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div class="team-select">
+            <svg class="jersey" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7l4-3 2 2h4l2-2 4 3-3 4-2-1v9H9v-9l-2 1z"/></svg>
+            <select class="age-group" aria-label="Jahrgang wählen">
+              <option>U8</option><option>U9</option><option>U10</option><option>U11</option>
+              <option>U12</option><option>U13</option><option>U14</option><option>U15</option>
+              <option>U16</option><option selected>U17</option><option>U18</option><option>U19</option>
+            </select>
+          </div>
           <button class="btn btn-ghost" id="backToList" style="display:none">← Zurück zur Liste</button>
           <button class="btn btn-primary add-player-btn" id="openAddPlayer">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
@@ -1419,6 +1454,15 @@
   document.querySelectorAll('[data-screen]').forEach(el => {
     el.addEventListener('click', () => showScreen(el.dataset.screen));
   });
+
+  // ---- Jahrgang / Team-Auswahl (U8–U19) ----
+  const ageSelects = document.querySelectorAll('.age-group');
+  const ageLabels = document.querySelectorAll('.age-label');
+  function setAgeGroup(val) {
+    ageSelects.forEach(s => { s.value = val; });
+    ageLabels.forEach(l => { l.textContent = val; });
+  }
+  ageSelects.forEach(s => s.addEventListener('change', () => setAgeGroup(s.value)));
 
   // ---- Player list <-> detail ----
   const list = document.getElementById('spielerList');
