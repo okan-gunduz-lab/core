@@ -348,6 +348,42 @@
   .sort-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
   .sort-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
 
+  /* ===================== TAB PANELS (Spieler-Detail) ===================== */
+  .tab-panel { display: none; animation: fade .22s ease; }
+  .tab-panel.active { display: block; }
+
+  /* Mensch & Charakter */
+  .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .char-card { background: #05101a; border: 1px solid var(--border); border-radius: 13px; padding: 16px; }
+  .char-card .ch-head { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+  .char-card .ch-ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; }
+  .char-card .ch-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); font-weight: 600; }
+  .char-card .ch-value { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .char-card .ch-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .pillrow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .pill { font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 6px; background: #07121c; border: 1px solid var(--border); color: var(--text-2); }
+  .quote { border-left: 3px solid var(--blue); padding: 10px 14px; background: rgba(14,90,173,.06); border-radius: 0 10px 10px 0; font-size: 14px; color: var(--text-2); font-style: italic; margin-top: 16px; }
+  .quote .q-by { display: block; font-style: normal; font-size: 11px; color: var(--text-3); margin-top: 6px; font-family: var(--mono); }
+
+  /* Entwicklungsverlauf (Timeline) */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+  .tl-item { position: relative; padding-bottom: 22px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot { position: absolute; left: -27px; top: 2px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--bg); }
+  .tl-date { font-family: var(--mono); font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+  .tl-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .tl-title .delta { font-family: var(--mono); font-size: 12px; margin-left: 8px; }
+  .tl-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .delta.up { color: var(--green); }
+  .delta.down { color: var(--red); }
+  .trend-summary { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+  .trend-box { flex: 1; min-width: 130px; background: #05101a; border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .trend-box .tb-cap { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); }
+  .trend-box .tb-num { font-family: var(--mono); font-size: 24px; font-weight: 700; margin-top: 4px; }
+
+  @media (max-width: 900px) { .char-grid { grid-template-columns: 1fr; } }
+
   /* ===================== SCREENS ===================== */
   .screen { display: none; animation: fade .25s ease; }
   .screen.active { display: block; }
@@ -646,12 +682,14 @@
               <div class="ov-cap">Gesamt</div>
             </div>
           </div>
-          <div class="sub-tabs">
-            <div class="sub-tab active">4D-Analyse</div>
-            <div class="sub-tab">Mensch &amp; Charakter</div>
-            <div class="sub-tab">Entwicklungsverlauf</div>
+          <div class="sub-tabs" id="playerTabs">
+            <div class="sub-tab active" data-panel="p4d">4D-Analyse</div>
+            <div class="sub-tab" data-panel="pchar">Mensch &amp; Charakter</div>
+            <div class="sub-tab" data-panel="pverlauf">Entwicklungsverlauf</div>
           </div>
 
+          <!-- PANEL: 4D-Analyse -->
+          <div class="tab-panel active" data-panel="p4d">
           <div class="grid dim-grid">
             <!-- TECHNIK -->
             <div class="dim-card card" style="background:#05101a">
@@ -705,6 +743,95 @@
               <div class="bar-row"><div class="bl"><span>Fehlerverarbeitung</span><span class="bv">68</span></div><div class="bar"><i style="width:68%;background:var(--red)"></i></div></div>
             </div>
           </div>
+          </div><!-- /panel p4d -->
+
+          <!-- PANEL: Mensch & Charakter -->
+          <div class="tab-panel" data-panel="pchar">
+            <div class="char-grid">
+              <div class="char-card">
+                <div class="ch-head">
+                  <div class="ch-ic ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                  <span class="ch-label">Spielertyp</span>
+                </div>
+                <div class="ch-value">Der Antreiber</div>
+                <div class="ch-desc">Vorangehender Führungsspieler, der das Team mit Energie mitzieht. Sucht Verantwortung und will den Unterschied machen.</div>
+                <div class="pillrow"><span class="pill">Leader</span><span class="pill">extrovertiert</span><span class="pill">wettkampforientiert</span></div>
+              </div>
+
+              <div class="char-card">
+                <div class="ch-head">
+                  <div class="ch-ic ic-amber"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg></div>
+                  <span class="ch-label">Reaktion auf Kritik</span>
+                </div>
+                <div class="ch-value">Direkt &amp; konstruktiv</div>
+                <div class="ch-desc">Nimmt klare Ansagen gut an, solange sie sachlich sind. Bei Kritik vor der Gruppe reagiert er empfindlich — besser im Einzelgespräch.</div>
+                <div class="pillrow"><span class="pill">1:1 bevorzugt</span><span class="pill">lösungsorientiert</span></div>
+              </div>
+
+              <div class="char-card">
+                <div class="ch-head">
+                  <div class="ch-ic ic-red"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></div>
+                  <span class="ch-label">Druckverhalten</span>
+                </div>
+                <div class="ch-value">Blüht unter Druck auf</div>
+                <div class="ch-desc">In engen Spielen und großen Momenten überdurchschnittlich. Lässt nach Eigenfehlern aber kurz den Kopf hängen (siehe Mental: Fehlerverarbeitung 68).</div>
+                <div class="pillrow"><span class="pill">clutch</span><span class="pill">Fehler nachtragend</span></div>
+              </div>
+
+              <div class="char-card">
+                <div class="ch-head">
+                  <div class="ch-ic ic-green"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+                  <span class="ch-label">Lerntyp</span>
+                </div>
+                <div class="ch-value">Visuell &amp; praktisch</div>
+                <div class="ch-desc">Lernt am besten über Videoanalyse und direktes Ausprobieren. Lange theoretische Erklärungen verlieren ihn — kurze Demos wirken.</div>
+                <div class="pillrow"><span class="pill">Video</span><span class="pill">Learning-by-doing</span><span class="pill">kurze Inputs</span></div>
+              </div>
+            </div>
+            <div class="quote">„Gebt mir den Ball, wenn's eng wird — ich mach das."<span class="q-by">— Notiz Trainer, nach Pokalspiel 03.05.</span></div>
+          </div><!-- /panel pchar -->
+
+          <!-- PANEL: Entwicklungsverlauf -->
+          <div class="tab-panel" data-panel="pverlauf">
+            <div class="trend-summary">
+              <div class="trend-box"><div class="tb-cap">Gesamt heute</div><div class="tb-num" style="color:var(--green)">86</div></div>
+              <div class="trend-box"><div class="tb-cap">vor 6 Monaten</div><div class="tb-num" style="color:var(--text-2)">78</div></div>
+              <div class="trend-box"><div class="tb-cap">Entwicklung</div><div class="tb-num" style="color:var(--green)">+8</div></div>
+              <div class="trend-box"><div class="tb-cap">Bewertungen</div><div class="tb-num">23</div></div>
+            </div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--green)"></div>
+                <div class="tl-date">08.06.2026</div>
+                <div class="tl-title">Feedbackbogen erstellt <span class="delta up">5× positiv</span></div>
+                <div class="tl-desc">KI hat nach 5 starken Bewertungen automatisch einen Feedbackbogen vorbereitet. Schwerpunkt: 1v1 und Torabschluss überragend.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--blue-light)"></div>
+                <div class="tl-date">03.05.2026 · Pokalspiel</div>
+                <div class="tl-title">Athletik &amp; Druckresistenz <span class="delta up">+4</span></div>
+                <div class="tl-desc">Matchwinner im Pokal — zwei Tore in der Schlussphase. Sprintschnelligkeit und Druckverhalten neu bewertet.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--amber)"></div>
+                <div class="tl-date">21.03.2026 · Training</div>
+                <div class="tl-title">Passspiel kurz/lang <span class="delta up">+6</span></div>
+                <div class="tl-desc">Gezieltes Passspiel-Training zeigt Wirkung. Spielaufbau deutlich sauberer geworden.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--red)"></div>
+                <div class="tl-date">14.02.2026 · Ligaspiel</div>
+                <div class="tl-title">Fehlerverarbeitung <span class="delta down">−3</span></div>
+                <div class="tl-desc">Nach Fehlpass und Gegentor sichtbar verunsichert, Leistung danach abgefallen. Mentaler Entwicklungspunkt notiert.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--text-3)"></div>
+                <div class="tl-date">10.12.2025 · Saisonstart-Check</div>
+                <div class="tl-title">Erstbewertung <span class="delta" style="color:var(--text-3)">Ø 78</span></div>
+                <div class="tl-desc">Erste vollständige 4D-Analyse angelegt. Basis für die weitere Entwicklung.</div>
+              </div>
+            </div>
+          </div><!-- /panel pverlauf -->
         </div>
       </div>
     </section>
@@ -878,6 +1005,15 @@
       tab.addEventListener('click', () => {
         group.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
+
+        // Panel-Umschaltung (nur wenn data-panel gesetzt ist, z.B. Spieler-Detail)
+        const panelId = tab.dataset.panel;
+        if (panelId) {
+          const scope = group.closest('.card') || document;
+          scope.querySelectorAll('.tab-panel').forEach(p => {
+            p.classList.toggle('active', p.dataset.panel === panelId);
+          });
+        }
       });
     });
   });
