@@ -1027,7 +1027,7 @@
           <div class="scout-av" style="background:rgba(45,206,122,.14);color:var(--green)">10</div>
           <div class="scout-main">
             <div class="scout-name">Nr. 10 (Name unbekannt) <span class="pos-badge pos-att">ST</span></div>
-            <div class="scout-meta">TSV Musterstadt · ca. 16 Jahre</div>
+            <div class="scout-meta">TSV Musterstadt · U16 · ca. 16 Jahre</div>
             <div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/></svg> Turnier · 07.06.2026 · gegen JFV Beispiel</div>
             <div class="scout-note">„Beidfüßig, brutal schnell auf den ersten Metern, eiskalt vor dem Tor. Zwei Tore und ein Assist im Halbfinale. Klares Talent — unbedingt dranbleiben."</div>
             <div class="scout-tags">
@@ -1042,7 +1042,7 @@
           <div class="scout-av" style="background:rgba(74,159,212,.14);color:var(--blue-light)">8</div>
           <div class="scout-main">
             <div class="scout-name">David König <span class="pos-badge pos-mid">ZM</span></div>
-            <div class="scout-meta">SC Beispielheim · 17 Jahre</div>
+            <div class="scout-meta">SC Beispielheim · U17 · 17 Jahre</div>
             <div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Ligaspiel · 31.05.2026 · TSV vs. SC Beispielheim</div>
             <div class="scout-note">„Ruhiger Sechser mit überragender Spielübersicht, verteilt die Bälle stark. Athletisch noch Luft nach oben. Erst mal weiter beobachten."</div>
             <div class="scout-tags">
@@ -1057,7 +1057,7 @@
           <div class="scout-av" style="background:rgba(251,191,36,.14);color:var(--amber)">1</div>
           <div class="scout-main">
             <div class="scout-name">Elias Hofer <span class="pos-badge pos-tw">TW</span></div>
-            <div class="scout-meta">FC Nachbarort · 16 Jahre</div>
+            <div class="scout-meta">FC Nachbarort · U16 · 16 Jahre</div>
             <div class="scout-context"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14" style="color:var(--text-3)"><path d="M12 2 2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Training (öffentlich) · 28.05.2026</div>
             <div class="scout-note">„Sehr gutes Stellungsspiel und mutig im 1-gegen-1. Aufbau mit dem Fuß stark. Würde ich gerne zum Probetraining einladen."</div>
             <div class="scout-tags">
@@ -1360,6 +1360,15 @@
           </select>
         </div>
         <div class="field">
+          <label>Jahrgang / Team</label>
+          <select id="sc_team">
+            <option value="">unbekannt</option>
+            <option>U8</option><option>U9</option><option>U10</option><option>U11</option>
+            <option>U12</option><option>U13</option><option>U14</option><option>U15</option>
+            <option>U16</option><option>U17</option><option>U18</option><option>U19</option>
+          </select>
+        </div>
+        <div class="field">
           <label>Geschätztes Alter</label>
           <input type="text" id="sc_age" placeholder="z. B. ca. 16 Jahre" />
         </div>
@@ -1602,6 +1611,7 @@
   function clearScoutForm() {
     ['sc_name','sc_club','sc_age','sc_ctx','sc_note'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('sc_pos').value = 'ZM';
+    document.getElementById('sc_team').value = '';
     document.getElementById('sc_occ').value = 'Turnier';
     scoutOverlay.querySelectorAll('.check-item.checked').forEach(c => { c.classList.remove('checked'); c.querySelector('.check').classList.remove('done'); });
     recBox.querySelectorAll('.rec-opt').forEach(o => o.classList.toggle('sel', o.dataset.rec === 'beobachten'));
@@ -1619,7 +1629,7 @@
   document.getElementById('cancelScoutVoice').addEventListener('click', closeScoutVoice);
   scoutVoiceOverlay.addEventListener('click', e => { if (e.target === scoutVoiceOverlay) closeScoutVoice(); });
   document.getElementById('sv_demo').addEventListener('click', () => {
-    document.getElementById('sv_transcript').value = 'TSV Musterstadt, Nummer 10, Stürmer, ungefähr 16 Jahre. Beidfüßig, brutal schnell, super Spielübersicht und eiskalt vor dem Tor. Klares Top-Talent, unbedingt dranbleiben.';
+    document.getElementById('sv_transcript').value = 'TSV Musterstadt, Nummer 10, spielt in der U13, Stürmer, ungefähr 13 Jahre. Beidfüßig, brutal schnell, super Spielübersicht und eiskalt vor dem Tor. Klares Top-Talent, unbedingt dranbleiben.';
   });
 
   // Häkchen anhand eines Textbausteins setzen
@@ -1635,11 +1645,14 @@
   // Einfache KI-Simulation: erkennt Verein, Nummer, Position, Alter, Stärken, Empfehlung
   function parseScoutText(text) {
     const t = text.toLowerCase();
-    const r = { name: '', club: '', pos: '', age: '', note: text.trim(), checks: [], rec: 'beobachten' };
+    const r = { name: '', club: '', pos: '', team: '', age: '', note: text.trim(), checks: [], rec: 'beobachten' };
     const club = text.match(/\b(?:1\.\s?)?(?:TSV|FC|SC|SV|VfL|VfB|JFV|SpVgg|TuS|FV|DJK|Borussia|Eintracht)\b[\s.]*[A-ZÄÖÜ][\wäöüß-]*/i);
     if (club) r.club = club[0].replace(/\s+/g, ' ').trim();
     const num = t.match(/(?:nr\.?|nummer)\s*\.?\s*(\d{1,2})/);
     if (num) r.name = 'Nr. ' + num[1];
+    // Jahrgang (U8–U19): „U13", „u 13", „unter 13"
+    const ag = t.match(/\bu\s?-?\s?(\d{1,2})\b/) || t.match(/unter\s*(\d{1,2})/);
+    if (ag) { const n = parseInt(ag[1], 10); if (n >= 8 && n <= 19) r.team = 'U' + n; }
     const posMap = [['torwart','TW'],['torhüter','TW'],['keeper','TW'],['innenverteidig','IV'],['linksverteidig','LV'],['rechtsverteidig','RV'],['sechser','ZM'],['achter','ZM'],['zehner','ZM'],['mittelfeld','ZM'],['linksauß','LA'],['rechtsauß','RA'],['flügel','RA'],['mittelstürmer','ST'],['stürmer','ST'],['sturm','ST'],['neuner','ST']];
     for (const [k, v] of posMap) { if (t.includes(k)) { r.pos = v; break; } }
     const age = t.match(/(\d{2})\s*(?:jahre|jährig|j\.)/) || t.match(/(?:ungefähr|circa|ca\.?|etwa|um die|rund)\s*(\d{2})/);
@@ -1673,6 +1686,7 @@
     document.getElementById('sc_name').value = r.name;
     document.getElementById('sc_club').value = r.club;
     if (r.pos) document.getElementById('sc_pos').value = r.pos;
+    if (r.team) document.getElementById('sc_team').value = r.team;
     document.getElementById('sc_age').value = r.age;
     document.getElementById('sc_note').value = r.note;
     r.checks.forEach(lbl => setScoutCheck(lbl));
@@ -1704,6 +1718,7 @@
     const name = document.getElementById('sc_name').value.trim() || 'Unbekannt';
     const club = document.getElementById('sc_club').value.trim() || 'Verein unbekannt';
     const pos = document.getElementById('sc_pos').value;
+    const team = document.getElementById('sc_team').value;
     const age = document.getElementById('sc_age').value.trim();
     const occ = document.getElementById('sc_occ').value;
     const ctx = document.getElementById('sc_ctx').value.trim();
@@ -1722,7 +1737,7 @@
     const checkLine = checks.length ? '✓ ' + checks.slice(0, 4).join(' · ') + (checks.length > 4 ? ' …' : '') : '';
     const noteText = note || checkLine || 'Beobachtung gespeichert.';
 
-    const metaParts = [club, age].filter(Boolean).join(' · ');
+    const metaParts = [club, team, age].filter(Boolean).join(' · ');
     const ctxLine = [occ, ctx].filter(Boolean).join(' · ');
 
     const card = document.createElement('div');
