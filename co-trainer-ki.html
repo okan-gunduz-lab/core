@@ -384,6 +384,27 @@
 
   @media (max-width: 900px) { .char-grid { grid-template-columns: 1fr; } }
 
+  /* ===================== FORMULAR (Spieler hinzufügen) ===================== */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); font-weight: 600; }
+  .field input, .field select {
+    background: #05101a; border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px;
+    color: var(--text); font-family: var(--ui); font-size: 14px;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--blue); }
+  .field select { cursor: pointer; }
+  .row-del {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: #07121c;
+    color: var(--text-3); cursor: pointer; display: grid; place-items: center; flex-shrink: 0; margin-left: 10px;
+    opacity: 0; transition: all .15s;
+  }
+  .prow:hover .row-del { opacity: 1; }
+  .row-del:hover { color: var(--red); border-color: rgba(248,113,113,.4); background: rgba(248,113,113,.1); }
+  .row-del svg { width: 15px; height: 15px; }
+  .add-player-btn { width: auto; }
+
   /* ===================== FEEDBACKBOGEN (Modal) ===================== */
   .fb-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 10px; cursor: pointer;
     background: rgba(45,206,122,.12); border: 1px solid rgba(45,206,122,.3); color: var(--green); font-weight: 600; font-size: 13px; font-family: var(--ui); transition: all .15s; }
@@ -654,9 +675,15 @@
       <div class="topbar">
         <div>
           <h1>Spielerverwaltung</h1>
-          <div class="sub">24 Spieler · 4-Dimensionen-Analyse</div>
+          <div class="sub"><span id="playerCount">5</span> Spieler · 4-Dimensionen-Analyse</div>
         </div>
-        <button class="btn btn-ghost" id="backToList" style="display:none">← Zurück zur Liste</button>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-ghost" id="backToList" style="display:none">← Zurück zur Liste</button>
+          <button class="btn btn-primary add-player-btn" id="openAddPlayer">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Spieler hinzufügen
+          </button>
+        </div>
       </div>
 
       <!-- LIST VIEW -->
@@ -668,7 +695,7 @@
           <div class="mode-tab">Geburtstag</div>
           <div class="mode-tab">Bewertung</div>
         </div>
-        <div class="card">
+        <div class="card" id="playerListCard">
           <div class="prow open-player">
             <div class="pavatar" style="background:rgba(251,191,36,.14);color:var(--amber)">14</div>
             <div style="flex:1"><div class="pname">Felix Weber</div><div class="pmeta">16 Jahre · 12.03.2009</div></div>
@@ -1042,6 +1069,64 @@
   </div>
 </div>
 
+<!-- ===================== SPIELER HINZUFÜGEN MODAL ===================== -->
+<div class="overlay" id="addPlayerOverlay">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-head">
+      <div class="mh-ic ic-blue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="22" height="22"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+      <div>
+        <h2>Neuen Spieler anlegen</h2>
+        <div class="mh-sub">Bewertungen entstehen danach automatisch beim Sprechen</div>
+      </div>
+      <button class="modal-close" id="closeAddPlayer"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Voller Name</label>
+          <input type="text" id="np_name" placeholder="z. B. Noah Schmidt" />
+        </div>
+        <div class="field">
+          <label>Position</label>
+          <select id="np_pos">
+            <option value="TW">TW · Torwart</option>
+            <option value="IV">IV · Innenverteidiger</option>
+            <option value="LV">LV · Linksverteidiger</option>
+            <option value="RV">RV · Rechtsverteidiger</option>
+            <option value="LM">LM · Linkes Mittelfeld</option>
+            <option value="ZM" selected>ZM · Zentrales Mittelfeld</option>
+            <option value="RM">RM · Rechtes Mittelfeld</option>
+            <option value="LA">LA · Linksaußen</option>
+            <option value="RA">RA · Rechtsaußen</option>
+            <option value="ST">ST · Stürmer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Trikotnummer</label>
+          <input type="number" id="np_num" placeholder="z. B. 11" min="1" max="99" />
+        </div>
+        <div class="field">
+          <label>Geburtsdatum</label>
+          <input type="date" id="np_bd" />
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="np_status">
+            <option value="aktiv">aktiv</option>
+            <option value="verletzt">verletzt</option>
+            <option value="gesperrt">gesperrt</option>
+            <option value="inaktiv">inaktiv</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary" id="savePlayer" style="width:auto">Spieler anlegen</button>
+      <button class="btn btn-ghost" id="cancelAddPlayer" style="width:auto">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== MOBILE TAB BAR ===================== -->
 <nav class="tabbar">
   <div class="ti active" data-screen="dashboard"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Start</div>
@@ -1087,7 +1172,107 @@
   document.getElementById('closeFeedback').addEventListener('click', closeFb);
   document.getElementById('closeFeedback2').addEventListener('click', closeFb);
   fbOverlay.addEventListener('click', e => { if (e.target === fbOverlay) closeFb(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFb(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeFb(); closeAdd(); } });
+
+  // ---- Spieler hinzufügen / entfernen ----
+  const listCard = document.getElementById('playerListCard');
+  const playerCount = document.getElementById('playerCount');
+  const addOverlay = document.getElementById('addPlayerOverlay');
+
+  // Position -> Kategorie/Farbe (TW=amber, Abwehr=blau, Mittelfeld=grün, Sturm=rot)
+  function posClass(pos) {
+    if (pos === 'TW') return 'pos-tw';
+    if (['IV','LV','RV'].includes(pos)) return 'pos-def';
+    if (['LM','ZM','RM'].includes(pos)) return 'pos-mid';
+    return 'pos-att';
+  }
+  function posColor(pos) {
+    if (pos === 'TW') return 'rgba(251,191,36,.14)|var(--amber)';
+    if (['IV','LV','RV'].includes(pos)) return 'rgba(74,159,212,.14)|var(--blue-light)';
+    if (['LM','ZM','RM'].includes(pos)) return 'rgba(45,206,122,.14)|var(--green)';
+    return 'rgba(248,113,113,.14)|var(--red)';
+  }
+  function ageFrom(bd) {
+    if (!bd) return '';
+    const d = new Date(bd), now = new Date('2026-06-10');
+    let a = now.getFullYear() - d.getFullYear();
+    if (now.getMonth() < d.getMonth() || (now.getMonth() === d.getMonth() && now.getDate() < d.getDate())) a--;
+    return a + ' Jahre';
+  }
+
+  function updateCount() {
+    playerCount.textContent = listCard.querySelectorAll('.prow').length;
+  }
+
+  // Entfernen-Button an eine Zeile hängen
+  function attachDelete(row, name) {
+    const del = document.createElement('button');
+    del.className = 'row-del';
+    del.title = 'Spieler entfernen';
+    del.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+    del.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm('„' + name + '" wirklich entfernen? Alle Bewertungen dieses Spielers gehen verloren.')) {
+        row.remove();
+        updateCount();
+      }
+    });
+    row.appendChild(del);
+  }
+
+  // Bestehende Zeilen mit Entfernen-Button ausstatten
+  listCard.querySelectorAll('.prow').forEach(row => {
+    const nm = row.querySelector('.pname')?.textContent || 'Spieler';
+    attachDelete(row, nm);
+  });
+
+  // Modal öffnen/schließen
+  function openAdd() { addOverlay.classList.add('open'); document.getElementById('np_name').focus(); }
+  function closeAdd() { addOverlay.classList.remove('open'); }
+  document.getElementById('openAddPlayer').addEventListener('click', openAdd);
+  document.getElementById('closeAddPlayer').addEventListener('click', closeAdd);
+  document.getElementById('cancelAddPlayer').addEventListener('click', closeAdd);
+  addOverlay.addEventListener('click', e => { if (e.target === addOverlay) closeAdd(); });
+
+  // Spieler speichern -> neue Zeile bauen
+  document.getElementById('savePlayer').addEventListener('click', () => {
+    const name = document.getElementById('np_name').value.trim();
+    if (!name) { document.getElementById('np_name').focus(); return; }
+    const pos = document.getElementById('np_pos').value;
+    const num = document.getElementById('np_num').value || '–';
+    const bd = document.getElementById('np_bd').value;
+    const status = document.getElementById('np_status').value;
+    const [bg, col] = posColor(pos).split('|');
+    const age = ageFrom(bd);
+    const meta = [age, bd ? bd.split('-').reverse().join('.') : null,
+      status !== 'aktiv' ? '<span style="color:var(--red)">' + status + '</span>' : null]
+      .filter(Boolean).join(' · ') || 'neu angelegt';
+
+    const row = document.createElement('div');
+    row.className = 'prow open-player';
+    row.innerHTML =
+      '<div class="pavatar" style="background:' + bg + ';color:' + col + '">' + num + '</div>' +
+      '<div style="flex:1"><div class="pname">' + name + '</div><div class="pmeta">' + meta + '</div></div>' +
+      '<span class="pos-badge ' + posClass(pos) + '">' + pos + '</span>' +
+      '<div class="score" style="color:var(--text-3);min-width:42px;text-align:right">–</div>';
+    // Klick öffnet Detailansicht (wie bei den anderen)
+    row.addEventListener('click', () => {
+      list.style.display = 'none';
+      detail.style.display = 'block';
+      backBtn.style.display = 'inline-flex';
+    });
+    attachDelete(row, name);
+    listCard.appendChild(row);
+    updateCount();
+
+    // Felder zurücksetzen + schließen
+    document.getElementById('np_name').value = '';
+    document.getElementById('np_num').value = '';
+    document.getElementById('np_bd').value = '';
+    document.getElementById('np_pos').value = 'ZM';
+    document.getElementById('np_status').value = 'aktiv';
+    closeAdd();
+  });
 
   // ---- Toggle task checkboxes ----
   document.querySelectorAll('.task .check').forEach(c => {
