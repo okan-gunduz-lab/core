@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CoTrainer — Coaching Platform</title>
+<meta name="description" content="Premium Coaching Platform für Trainer — Training, Spiel, Kader.">
+<style>
+/* ============================================================
+   COTRAINER — Design System
+   Premium SaaS · ruhig · klar · Desktop-first · druckoptimiert
+   ============================================================ */
+:root{
+  --bg:#f3f4f6;
+  --surface:#ffffff;
+  --surface-2:#f9fafb;
+  --inset:#f4f6f8;
+  --ink:#101828;
+  --ink-2:#475467;
+  --ink-3:#98a2b3;
+  --line:#e4e7ec;
+  --line-2:#eef1f4;
+  --navy:#101828;
+  --navy-2:#1d2939;
+  --green:#12805c;
+  --green-deep:#0c5a41;
+  --green-soft:#e7f4ef;
+  --pitch:#2e7d52;
+  --red:#d92d20;      --red-soft:#feeceb;
+  --amber:#b54708;    --amber-soft:#fdf1e2;
+  --blue:#175cd3;     --blue-soft:#eaf1fc;
+  --purple:#6941c6;   --purple-soft:#f1ecfb;
+  --teal:#0e7c86;     --teal-soft:#e6f5f6;
+  --gold:#a8853a;
+  --r-lg:16px; --r-md:12px; --r-sm:8px;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+  --shadow-md:0 1px 3px rgba(16,24,40,.08),0 4px 12px -2px rgba(16,24,40,.06);
+  --shadow-lg:0 12px 32px -8px rgba(16,24,40,.16);
+  --side-w:240px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  font-size:14.5px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+::selection{background:#d3e8df}
+
+/* ---------- App-Layout ---------- */
+#app{min-height:100vh}
+.sidebar{
+  position:fixed;inset-block:0;left:0;width:var(--side-w);
+  background:linear-gradient(180deg,#0c1524 0%,#101828 100%);
+  color:#e5e9f0;display:flex;flex-direction:column;z-index:40;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:22px 20px 18px}
+.brand-mark{
+  width:38px;height:38px;border-radius:11px;flex:none;
+  background:linear-gradient(135deg,#1a9e72,#0c5a41);
+  display:grid;place-items:center;color:#fff;
+  box-shadow:0 4px 12px rgba(18,128,92,.35);
+}
+.brand-name{font-weight:700;font-size:16px;letter-spacing:.2px;color:#fff}
+.brand-sub{font-size:11.5px;color:#94a3b8;margin-top:1px}
+.nav{padding:6px 12px;display:flex;flex-direction:column;gap:2px}
+.nav-label{font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#64748b;padding:14px 10px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:9.5px 11px;border-radius:10px;
+  color:#b6c0cf;font-size:13.8px;font-weight:500;width:100%;text-align:left;
+  transition:background .15s,color .15s;
+}
+.nav-item svg{flex:none;opacity:.85}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(26,158,114,.16);color:#fff}
+.nav-item.active svg{color:#3ecf9a;opacity:1}
+.side-foot{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.side-foot .avatar{width:34px;height:34px;border-radius:50%;background:#1d2939;display:grid;place-items:center;font-size:12.5px;font-weight:700;color:#9fb3c8;flex:none}
+.side-foot .who{font-size:13px;font-weight:600;color:#e5e9f0;line-height:1.25}
+.side-foot .who small{display:block;font-weight:400;font-size:11.5px;color:#7a8699}
+
+.main{margin-left:var(--side-w);min-height:100vh;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:18px 32px 16px;background:rgba(243,244,246,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-2);
+}
+.topbar h1{font-size:21px;font-weight:700;letter-spacing:-.015em}
+.topbar .sub{font-size:13px;color:var(--ink-2);margin-top:1px}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#view{padding:26px 32px 90px;max-width:1340px;width:100%;margin:0 auto;flex:1}
+
+/* ---------- Karten & Grids ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+.card-pad{padding:20px 22px}
+.card-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 22px;border-bottom:1px solid var(--line-2)}
+.card-head h3{font-size:15px;font-weight:650;letter-spacing:-.01em}
+.card-head .spacer{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card-body{padding:18px 22px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+.muted{color:var(--ink-2)}
+.tiny{font-size:12px;color:var(--ink-3)}
+.sep{height:1px;background:var(--line-2);margin:14px 0}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:9px 15px;border-radius:10px;font-size:13.5px;font-weight:600;
+  border:1px solid transparent;transition:filter .15s,background .15s,border-color .15s;
+  white-space:nowrap;
+}
+.btn svg{flex:none}
+.btn:active{transform:translateY(.5px)}
+.btn-primary{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:#1a2740}
+.btn-accent{background:var(--green);color:#fff;box-shadow:var(--shadow-sm)}
+.btn-accent:hover{background:var(--green-deep)}
+.btn-ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2);border-color:#d5dae2}
+.btn-soft{background:var(--inset);color:var(--ink)}
+.btn-soft:hover{background:#e9edf1}
+.btn-danger{background:var(--red-soft);color:var(--red)}
+.btn-danger:hover{background:#fcdcda}
+.btn-sm{padding:6px 11px;font-size:12.5px;border-radius:8px;gap:6px}
+.btn-xs{padding:4px 8px;font-size:11.5px;border-radius:7px;gap:5px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.icon-btn{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:9px;color:var(--ink-2);border:1px solid transparent}
+.icon-btn:hover{background:var(--inset);color:var(--ink)}
+
+/* ---------- Formulare ---------- */
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field>label{font-size:12px;font-weight:600;color:var(--ink-2);letter-spacing:.01em}
+.input,.select,.textarea{
+  width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;font-size:13.8px;outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(18,128,92,.12)}
+.textarea{resize:vertical;min-height:70px;line-height:1.5}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2.4'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:32px}
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.form-grid .full{grid-column:1/-1}
+.form-grid .half{grid-column:span 2}
+.search-wrap{position:relative;flex:1;min-width:170px}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none}
+.search-wrap .input{padding-left:34px}
+
+/* ---------- Chips / Badges ---------- */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;background:var(--inset);color:var(--ink-2)}
+.chip.green{background:var(--green-soft);color:var(--green-deep)}
+.chip.red{background:var(--red-soft);color:var(--red)}
+.chip.amber{background:var(--amber-soft);color:var(--amber)}
+.chip.blue{background:var(--blue-soft);color:var(--blue)}
+.chip.purple{background:var(--purple-soft);color:var(--purple)}
+.chip.navy{background:#e8ebf1;color:var(--navy)}
+.num-badge{display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:8px;background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:0 5px}
+
+/* ---------- Tabs (segmented) ---------- */
+.tabs{display:inline-flex;background:#e9ecf0;border-radius:12px;padding:3px;gap:2px}
+.tab{padding:7px 16px;border-radius:9px;font-size:13px;font-weight:600;color:var(--ink-2);transition:all .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm)}
+
+/* ---------- KPI ---------- */
+.kpi{display:flex;flex-direction:column;gap:2px;padding:18px 20px}
+.kpi .k-label{font-size:12px;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:7px}
+.kpi .k-label svg{color:var(--green)}
+.kpi .k-value{font-size:26px;font-weight:750;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .k-hint{font-size:12px;color:var(--ink-3)}
+
+/* ---------- Fortschrittsbalken ---------- */
+.bar{height:7px;background:var(--line-2);border-radius:99px;overflow:hidden;flex:1}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--green);transition:width .3s}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-row .bl{width:150px;font-size:12.5px;font-weight:600;color:var(--ink-2);flex:none}
+.bar-row .bv{width:30px;text-align:right;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+
+/* ---------- Tabellen ---------- */
+.table{width:100%;border-collapse:collapse;font-size:13.2px}
+.table th{text-align:left;font-size:11px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.table td{padding:8px 10px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.table tr:last-child td{border-bottom:0}
+.table .input,.table .select{padding:5px 8px;font-size:12.8px;border-radius:8px}
+.table-scroll{overflow-x:auto}
+
+/* ---------- Spieler-Elemente ---------- */
+.p-avatar{width:38px;height:38px;border-radius:50%;background:var(--inset);display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--ink-2);flex:none;border:1px solid var(--line)}
+.p-avatar.lg{width:64px;height:64px;font-size:20px}
+.player-row{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:11px;cursor:pointer;user-select:none;transition:background .12s;border:1px solid transparent}
+.player-row:hover{background:var(--surface-2)}
+.player-row .pr-name{font-weight:600;font-size:13.6px;line-height:1.2}
+.player-row .pr-sub{font-size:11.8px;color:var(--ink-3)}
+.player-row.absent{opacity:.45}
+.player-row.absent .pr-name{text-decoration:line-through}
+.att-check{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;color:#fff;flex:none;transition:all .12s}
+.player-row:not(.absent) .att-check{background:var(--green);border-color:var(--green)}
+.ovr{font-weight:750;font-size:15px;font-variant-numeric:tabular-nums;margin-left:auto}
+
+/* Kader-Karte */
+.squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px;cursor:pointer;transition:box-shadow .18s,transform .18s,border-color .18s;box-shadow:var(--shadow-sm)}
+.pcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:#d5dae2}
+.pcard-top{display:flex;align-items:center;gap:12px}
+.pcard .ovr-big{margin-left:auto;text-align:right}
+.pcard .ovr-big b{font-size:24px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pcard .ovr-big small{display:block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.pcard-dims{display:flex;gap:5px;margin-top:14px}
+.pcard-dims .pd{flex:1;text-align:center}
+.pcard-dims .pd i{display:block;height:4px;border-radius:99px;background:var(--line-2);overflow:hidden;position:relative}
+.pcard-dims .pd i>b{position:absolute;inset:0;right:auto;border-radius:99px}
+.pcard-dims .pd span{font-size:9.5px;font-weight:650;color:var(--ink-3);letter-spacing:.03em;display:block;margin-top:4px}
+
+/* ---------- Aufstellung / Spielfeld ---------- */
+.pitch-wrap{position:relative;border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow-md);user-select:none}
+.pitch{
+  position:relative;width:100%;aspect-ratio:68/96;
+  background:linear-gradient(180deg,#347a4f 0%,#2e7d52 50%,#2a744b 100%);
+}
+.pitch svg.lines{position:absolute;inset:0;width:100%;height:100%}
+.token{
+  position:absolute;width:52px;margin:-31px 0 0 -26px;text-align:center;cursor:grab;
+  touch-action:none;z-index:2;
+}
+.token.dragging{z-index:10;cursor:grabbing}
+.token .t-dot{
+  width:38px;height:38px;border-radius:50%;margin:0 auto;display:grid;place-items:center;
+  background:#101828;color:#fff;font-size:13px;font-weight:750;
+  border:2.5px solid rgba(255,255,255,.92);box-shadow:0 3px 8px rgba(0,0,0,.35);
+}
+.token.gk .t-dot{background:#b7791f}
+.token .t-name{
+  margin-top:3px;font-size:10px;font-weight:650;color:#fff;line-height:1.15;
+  text-shadow:0 1px 3px rgba(0,0,0,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bench-col{display:flex;flex-direction:column;gap:8px}
+.bench-zone{background:var(--surface);border:1.5px dashed var(--line);border-radius:var(--r-md);padding:12px;min-height:74px;transition:border-color .15s,background .15s}
+.bench-zone.drop-hot{border-color:var(--green);background:var(--green-soft)}
+.bench-zone h4{font-size:11.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.bench-zone h4 .cnt{margin-left:auto;font-size:11px;color:var(--ink-3)}
+.bench-list{display:flex;flex-wrap:wrap;gap:7px}
+.bchip{
+  display:inline-flex;align-items:center;gap:7px;background:var(--inset);border:1px solid var(--line);
+  padding:5px 11px 5px 6px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:grab;touch-action:none;user-select:none;
+}
+.bchip .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:10.5px;font-weight:700}
+.bchip.gk .n{background:#b7791f}
+.bchip.dragging{opacity:.4}
+.drag-ghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%)}
+.pitch.drop-hot::after{content:"";position:absolute;inset:0;border:3px solid rgba(255,255,255,.75);border-radius:inherit;pointer-events:none}
+
+/* ---------- Archiv ---------- */
+.arch-item{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);transition:box-shadow .15s,border-color .15s}
+.arch-item:hover{box-shadow:var(--shadow-md);border-color:#d5dae2}
+.arch-date{width:52px;flex:none;text-align:center;background:var(--inset);border-radius:10px;padding:7px 4px}
+.arch-date b{display:block;font-size:17px;font-weight:750;line-height:1.1}
+.arch-date span{font-size:10.5px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.arch-main{flex:1;min-width:0}
+.arch-main .a-title{font-weight:650;font-size:14px}
+.arch-main .a-sub{font-size:12.3px;color:var(--ink-2);margin-top:1px}
+.arch-actions{display:flex;gap:6px;flex:none}
+.result-pill{font-size:14px;font-weight:750;font-variant-numeric:tabular-nums;padding:5px 12px;border-radius:9px;background:var(--inset)}
+.result-pill.win{background:var(--green-soft);color:var(--green-deep)}
+.result-pill.loss{background:var(--red-soft);color:var(--red)}
+.result-pill.draw{background:var(--amber-soft);color:var(--amber)}
+
+/* ---------- Trainingsblöcke ---------- */
+.block-card{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);overflow:hidden}
+.block-head{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface-2);border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.block-head .b-idx{width:26px;height:26px;border-radius:8px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.block-head input.b-name{border:0;background:transparent;font-weight:650;font-size:14px;outline:none;flex:1;min-width:120px;padding:3px 6px;border-radius:7px}
+.block-head input.b-name:focus{background:var(--surface);box-shadow:0 0 0 2px rgba(18,128,92,.2)}
+.block-dur{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.block-dur input{width:52px;text-align:right;border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;font-weight:650;outline:none}
+.block-body{padding:13px 14px;display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.block-body .full{grid-column:1/-1}
+.block-body .field>label{font-size:11px}
+.block-body .textarea{min-height:52px;font-size:13px}
+
+/* ---------- Erfassung / Capture ---------- */
+.capture-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cap-mode{border:1.5px solid var(--line);border-radius:var(--r-md);padding:14px;text-align:center;background:var(--surface);cursor:pointer;transition:all .15s}
+.cap-mode:hover{border-color:var(--green);background:var(--green-soft)}
+.cap-mode svg{color:var(--green);margin-bottom:6px}
+.cap-mode b{display:block;font-size:13px}
+.cap-mode span{font-size:11.5px;color:var(--ink-3)}
+.cap-mode.rec{border-color:var(--red);background:var(--red-soft);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(217,45,32,.25)}50%{box-shadow:0 0 0 7px rgba(217,45,32,0)}}
+.finding{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface)}
+.finding.off{opacity:.45}
+.finding .f-tag{flex:none;margin-top:1px}
+.finding .f-main{flex:1;min-width:0;font-size:13px}
+.finding .f-main b{font-weight:650}
+.finding .f-main .f-sub{font-size:12px;color:var(--ink-2)}
+.finding input,.finding select{border:1px solid var(--line);border-radius:7px;padding:3px 7px;font-size:12.3px;outline:none;background:var(--surface)}
+.f-toggle{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);display:grid;place-items:center;color:#fff;flex:none;margin-top:2px}
+.finding:not(.off) .f-toggle{background:var(--green);border-color:var(--green)}
+
+/* ---------- Profil ---------- */
+.profile-head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.profile-head .ph-meta{flex:1;min-width:220px}
+.profile-head h2{font-size:22px;font-weight:750;letter-spacing:-.02em}
+.profile-facts{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.ovr-ring{width:86px;height:86px;flex:none;position:relative}
+.ovr-ring svg{transform:rotate(-90deg)}
+.ovr-ring .ov{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ovr-ring .ov b{font-size:25px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.ovr-ring .ov span{font-size:8.5px;font-weight:700;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;margin-top:2px}
+.dim-block{padding:14px 0;border-bottom:1px solid var(--line-2)}
+.dim-block:last-child{border-bottom:0}
+.dim-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.dim-head .d-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.dim-head b{font-size:13.8px;font-weight:650}
+.dim-head .d-val{margin-left:auto;font-size:15px;font-weight:750;font-variant-numeric:tabular-nums}
+.metric-row{display:flex;align-items:center;gap:9px;padding:3.5px 0 3.5px 19px}
+.metric-row .m-label{width:190px;flex:none;font-size:12.4px;color:var(--ink-2)}
+.metric-row .m-val{width:26px;text-align:right;font-size:12.4px;font-weight:650;font-variant-numeric:tabular-nums;flex:none}
+.metric-row .stepper{display:flex;gap:2px;flex:none}
+.stepper button{width:21px;height:21px;border-radius:6px;background:var(--inset);color:var(--ink-2);font-size:12px;font-weight:700;display:grid;place-items:center}
+.stepper button:hover{background:#e2e6ea;color:var(--ink)}
+.spec-item{display:flex;align-items:center;gap:9px;padding:8px 11px;background:var(--inset);border-radius:10px;font-size:13px}
+.spec-item .stars{color:var(--gold);font-size:12px;letter-spacing:1px;flex:none}
+.hist-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-2);font-size:12.6px}
+.hist-item:last-child{border-bottom:0}
+.hist-item .h-date{flex:none;width:64px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.hist-item .h-delta{font-weight:650}
+.hist-item .h-delta.up{color:var(--green-deep)}
+.hist-item .h-delta.down{color:var(--red)}
+
+/* ---------- Hinweis-Box (Einheit entwerfen) ---------- */
+.hint-box{background:linear-gradient(135deg,#f0f7f4,#e7f4ef);border:1px solid #cfe7dd;border-radius:var(--r-md);padding:14px 16px}
+.hint-box h4{font-size:12.5px;font-weight:700;color:var(--green-deep);display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.hint-box ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:4px}
+.hint-box li{font-size:12.8px;color:#1f4437}
+
+/* ---------- Radar ---------- */
+.radar-wrap{display:grid;place-items:center}
+
+/* ---------- Modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(12,18,32,.5);backdrop-filter:blur(3px);z-index:80;display:grid;place-items:center;padding:18px;animation:fadeIn .15s}
+@keyframes fadeIn{from{opacity:0}}
+.modal{background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg);width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;animation:popIn .18s}
+@keyframes popIn{from{opacity:0;transform:scale(.97) translateY(6px)}}
+.modal-head{display:flex;align-items:center;gap:12px;padding:18px 22px 14px}
+.modal-head h2{font-size:16.5px;font-weight:700;flex:1}
+.modal-body{padding:4px 22px 18px;overflow-y:auto}
+.modal-foot{display:flex;justify-content:flex-end;gap:9px;padding:14px 22px;border-top:1px solid var(--line-2)}
+
+/* ---------- Toast ---------- */
+#toasts{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;font-size:13.3px;font-weight:600;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;animation:toastIn .22s}
+.toast svg{color:#3ecf9a}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}}
+
+/* ---------- Bottom-Nav (mobil) ---------- */
+.bottomnav{display:none}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1100px){
+  .split{grid-template-columns:1fr}
+  .g4{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  :root{--side-w:0px}
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .topbar{padding:14px 16px 12px}
+  #view{padding:18px 16px 110px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .block-body{grid-template-columns:1fr}
+  .capture-modes{grid-template-columns:1fr}
+  .squad-grid{grid-template-columns:1fr 1fr}
+  .metric-row .m-label{width:auto;flex:1}
+  .bottomnav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+  }
+  .bottomnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--ink-3);padding:5px 2px;border-radius:10px}
+  .bottomnav button.active{color:var(--green-deep)}
+  .bottomnav button.active svg{color:var(--green)}
+}
+@media (max-width:480px){
+  .squad-grid{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   DRUCK — DIN A4, cleanes Dokument ohne App-Elemente
+   ============================================================ */
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:11mm 12mm}
+  body{background:#fff;font-size:12px}
+  #app,#toasts,.overlay{display:none!important}
+  #printArea{display:block!important;color:#000}
+}
+.pr-doc{font-family:var(--font);color:#000;line-height:1.42}
+.pr-head{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2.5px solid #000;padding-bottom:8px;margin-bottom:14px}
+.pr-head .pr-brand{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.pr-head h1{font-size:21px;font-weight:800;letter-spacing:-.01em;margin-top:2px}
+.pr-head .pr-meta{text-align:right;font-size:11px;line-height:1.55}
+.pr-sec{margin:13px 0}
+.pr-sec>h2{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid #000;padding-bottom:3px;margin-bottom:8px}
+.pr-info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 16px;font-size:11.5px}
+.pr-info-grid b{display:block;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#333}
+.pr-block{border:1px solid #000;border-radius:4px;margin-bottom:8px;page-break-inside:avoid}
+.pr-block-head{display:flex;justify-content:space-between;align-items:baseline;background:#efefef;padding:5px 10px;border-bottom:1px solid #000;font-weight:750;font-size:12px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.pr-block-body{padding:7px 10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;font-size:11px}
+.pr-block-body .full{grid-column:1/-1}
+.pr-block-body b{font-weight:700}
+.pr-names{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px}
+.pr-names span{white-space:nowrap}
+.pr-pitch{width:100%;margin-top:6px;page-break-inside:avoid}
+.pr-pitch svg{width:100%;height:auto;display:block}
+.pr-note{font-size:9.5px;color:#444;margin-top:3px}
+.pr-table{width:100%;border-collapse:collapse;font-size:10.5px}
+.pr-table th{border-bottom:1.5px solid #000;text-align:left;padding:3px 6px;font-size:9px;letter-spacing:.06em;text-transform:uppercase}
+.pr-table td{border-bottom:.5px solid #999;padding:3.5px 6px}
+.pr-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pr-lineup{position:relative;width:64%;margin:0 auto}
+.pr-lineup svg{width:100%;height:auto;display:block}
+.pr-lu-tok{position:absolute;transform:translate(-50%,-50%);text-align:center;width:70px}
+.pr-lu-tok .d{width:24px;height:24px;border-radius:50%;border:1.8px solid #000;background:#fff;display:grid;place-items:center;font-weight:800;font-size:10.5px;margin:0 auto}
+.pr-lu-tok .nm{font-size:8.5px;font-weight:700;margin-top:1px;line-height:1.1}
+.pr-lu-tok.gk .d{background:#000;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+
+/* --- Feedbackbogen (A4, eine Seite) --- */
+.fb-sheet{font-family:var(--font);color:#0f1728;line-height:1.35;font-size:10.5px}
+.fb-top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #101828;padding-bottom:7px;margin-bottom:10px}
+.fb-top .fb-club{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#12805c}
+.fb-top h1{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.fb-top .fb-date{font-size:10px;text-align:right;color:#475467;line-height:1.5}
+.fb-card{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#101828,#1d2939);color:#fff;border-radius:10px;padding:13px 16px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.fb-card .fbc-av{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.35);display:grid;place-items:center;font-size:17px;font-weight:800;flex:none}
+.fb-card h2{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.fb-card .fbc-meta{display:flex;flex-wrap:wrap;gap:3px 14px;font-size:9.5px;color:#cbd5e1;margin-top:4px}
+.fb-card .fbc-meta b{color:#fff;font-weight:650}
+.fb-card .fbc-ovr{margin-left:auto;text-align:center;flex:none;background:rgba(62,207,154,.15);border:1.5px solid #3ecf9a;border-radius:10px;padding:7px 14px}
+.fb-card .fbc-ovr b{display:block;font-size:24px;font-weight:800;line-height:1;color:#3ecf9a}
+.fb-card .fbc-ovr span{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#a7f3d0}
+.fb-card .fbc-band{font-size:9px;font-weight:700;margin-top:3px;color:#fff}
+.fb-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:10px;margin-top:10px}
+.fb-box{border:1px solid #d0d5dd;border-radius:9px;padding:9px 11px;page-break-inside:avoid}
+.fb-box h3{font-size:8.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#12805c;margin-bottom:6px}
+.fb-pillar{display:flex;align-items:center;gap:8px;margin:4.5px 0}
+.fb-pillar .pl{width:88px;flex:none;font-size:9.8px;font-weight:650}
+.fb-pillar .pb{flex:1;height:8px;background:#eef1f4;border-radius:99px;overflow:hidden;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.fb-pillar .pb i{display:block;height:100%;border-radius:99px}
+.fb-pillar .pv{width:22px;text-align:right;font-size:10px;font-weight:800;flex:none}
+.fb-dims{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px}
+.fb-dim{font-size:9.3px}
+.fb-dim .fd-h{display:flex;justify-content:space-between;font-weight:750;font-size:9.8px;border-bottom:1px solid #e4e7ec;padding-bottom:2px;margin-bottom:3px}
+.fb-dim .fd-m{display:flex;justify-content:space-between;color:#475467;padding:1px 0}
+.fb-dim .fd-m b{color:#101828}
+.fb-list{margin:0;padding-left:14px}
+.fb-list li{margin:2.5px 0;font-size:9.8px}
+.fb-txt{font-size:9.8px;color:#1d2939;white-space:pre-wrap}
+.fb-foot{display:flex;justify-content:space-between;gap:20px;margin-top:12px;padding-top:8px;border-top:1px solid #d0d5dd;font-size:9px;color:#667085}
+.fb-sign{flex:1;text-align:center}
+.fb-sign .sig-line{border-bottom:1px solid #98a2b3;height:26px;margin-bottom:3px}
+@media print{
+  .fb-sheet{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.2"/><path d="M12 7.2 16.4 10.4 14.7 15.6H9.3L7.6 10.4Z" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">CoTrainer</div>
+        <div class="brand-sub" id="brandSub">U17 · Saison 26/27</div>
+      </div>
+    </div>
+    <nav class="nav" id="sideNav"></nav>
+    <div class="side-foot">
+      <div class="avatar">OG</div>
+      <div class="who">Okan Gündüz<small>Cheftrainer</small></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="sub" id="pageSub"></div>
+      </div>
+      <div class="topbar-actions" id="pageActions"></div>
+    </header>
+    <div id="view"></div>
+  </div>
+
+  <nav class="bottomnav" id="bottomNav"></nav>
+</div>
+
+<div id="toasts"></div>
+<div id="modalRoot"></div>
+<div id="printArea"></div>
+
+<script>
+'use strict';
+/* ============================================================
+   COTRAINER MVP — Vanilla JS · localStorage · Single File
+   Bereiche: Dashboard · Training · Spiel · Kader
+   ============================================================ */
+
+/* ---------- Basis-Helpers ---------- */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const uid = () => 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const lc = s => String(s||'').toLowerCase();
+const todayISO = () => { const d=new Date(); return d.toISOString().slice(0,10); };
+const fmtD = iso => { if(!iso) return '–'; const d=new Date(iso+'T12:00:00'); return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'}); };
+const fmtDLong = iso => { if(!iso) return '–'; const d=new Date(iso+'T12:00:00'); return d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); };
+const fmtDShort = iso => { if(!iso) return {d:'–',m:''}; const dt=new Date(iso+'T12:00:00'); return {d:String(dt.getDate()).padStart(2,'0'), m:dt.toLocaleDateString('de-DE',{month:'short'}).replace('.','')}; };
+const ageOf = bd => { if(!bd) return '–'; const b=new Date(bd), n=new Date(); let a=n.getFullYear()-b.getFullYear(); const m=n.getMonth()-b.getMonth(); if(m<0||(m===0&&n.getDate()<b.getDate())) a--; return a; };
+const initials = n => String(n||'?').split(/\s+/).map(x=>x[0]).slice(0,2).join('').toUpperCase();
+
+/* ---------- Icons ---------- */
+const svgI = (p,w=18) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="${w}" height="${w}">${p}</svg>`;
+const I = {
+  home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/>',
+  training:'<path d="M12 3 4 20h16Z"/><path d="M8.4 12.5h7.2M6.6 16.4h10.8"/>',
+  match:'<circle cx="12" cy="12" r="9"/><path d="M12 7.4 16.3 10.5 14.7 15.6H9.3L7.7 10.5Z"/><path d="M12 3v4.4M7.7 10.5 3.4 9.2M9.3 15.6 6.7 19.3M14.7 15.6l2.6 3.7M16.3 10.5l4.3-1.3"/>',
+  squad:'<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M15.5 3.13a4 4 0 0 1 0 7.75"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  print:'<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  mic:'<rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/>',
+  text:'<path d="M4 6.5V4h16v2.5M12 4v16M9 20h6"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 9 5-5 5 5M12 4v11"/>',
+  edit:'<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>',
+  up:'<path d="m18 15-6-6-6 6"/>',
+  down:'<path d="m6 9 6 6 6-6"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  back:'<path d="m15 18-6-6 6-6"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>',
+  spark:'<path d="M12 2.5 14.2 9l6.5.2-5.2 4 1.9 6.3L12 15.6l-5.4 3.9 1.9-6.3-5.2-4L9.8 9Z"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+  bulb:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6.5 6.5 0 0 0-4 11.6c.8.7 1.3 1.5 1.5 2.4h5c.2-.9.7-1.7 1.5-2.4A6.5 6.5 0 0 0 12 3Z"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  swap:'<path d="M16 3h5v5M21 3l-7.5 7.5M8 21H3v-5M3 21l7.5-7.5"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  chart:'<path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/>',
+  shirt:'<path d="m8 4-5 3.5L5 11l2-1v10h10V10l2 1 2-3.5L16 4a4 4 0 0 1-8 0Z"/>'
+};
+
+/* ---------- Persistenz ---------- */
+const STORE_KEY = 'cotrainer.mvp.v1';
+let S = null;
+function saveAll(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){ console.warn('Speichern fehlgeschlagen', e); } }
+function loadAll(){ try{ const raw=localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+
+/* ---------- Fachliche Konstanten ---------- */
+const POS = ['TW','IV','LV','RV','DM','ZM','OM','LA','RA','ST'];
+const POS_LABEL = {TW:'Torwart',IV:'Innenverteidiger',LV:'Linksverteidiger',RV:'Rechtsverteidiger',DM:'Defensives Mittelfeld',ZM:'Zentrales Mittelfeld',OM:'Offensives Mittelfeld',LA:'Linksaußen',RA:'Rechtsaußen',ST:'Stürmer'};
+const posLabel = p => POS_LABEL[p] || p;
+
+const DIMS = [
+  { key:'technik',         label:'Technik',                     col:'#175cd3', metrics:['Ballannahme & 1. Kontakt','Dribbling & Finten','Passspiel kurz & lang','Abschluss & Standards'] },
+  { key:'taktik',          label:'Taktik',                      col:'#0e7c86', metrics:['Spiel mit Ball','Spiel gegen Ball','Umschaltverhalten','Positionsspiel'] },
+  { key:'athletik',        label:'Athletik',                    col:'#b54708', metrics:['Kraft & Robustheit','Ausdauer','Beweglichkeit','Sprungkraft'] },
+  { key:'mentalitaet',     label:'Mentalität',                  col:'#6941c6', metrics:['Druckresistenz','Konzentration','Wille & Einsatz','Fehlerverarbeitung'] },
+  { key:'verhalten',       label:'Verhalten / Defensivverhalten', col:'#475467', metrics:['Teamgeist & Disziplin','Kommunikation','Defensives 1-gegen-1','Absichern & Verschieben'] },
+  { key:'spielintelligenz',label:'Spielintelligenz',            col:'#0d6e9a', metrics:['Übersicht','Entscheidungsqualität','Antizipation','Kreativität'] },
+  { key:'tempo',           label:'Tempo',                       col:'#c11574', metrics:['Grundschnelligkeit','Antritt','Handlungsschnelligkeit','Tempo mit Ball'] }
+];
+const DIM_BY_KEY = Object.fromEntries(DIMS.map(d=>[d.key,d]));
+const dimAvg = arr => Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+const overallOf = p => Math.round(DIMS.reduce((s,d)=>s+dimAvg(p.dims[d.key]),0)/DIMS.length);
+
+/* Bewertungsgrundlage (Skala 0–100) */
+const RATING_BANDS = [
+  { min:0,  max:50,  label:'Nicht ausreichend', col:'var(--red)',    chip:'red' },
+  { min:51, max:70,  label:'Durchschnittlich',  col:'var(--amber)',  chip:'amber' },
+  { min:71, max:80,  label:'Gut',               col:'var(--blue)',   chip:'blue' },
+  { min:81, max:90,  label:'Leistungsträger',   col:'var(--green)',  chip:'green' },
+  { min:91, max:100, label:'Toptalent',         col:'var(--purple)', chip:'purple' }
+];
+const ratingBand = v => RATING_BANDS.find(b=> v>=b.min && v<=b.max) || RATING_BANDS[0];
+
+/* ---------- Erkennungs-Wortlisten (Parser) ---------- */
+const KW = {
+  technik:['ballannahme','erster kontakt','ersten kontakt','ballkontrolle','ballführung','dribbling','finte','übersteiger','passspiel','pass','pässe','flanke','steilpass','doppelpass','direktspiel','abschluss','torabschluss','schusstechnik','schuss','standard','freistoß','eckball','elfmeter','kopfball','technik','technisch','beidfüßig'],
+  taktik:['taktik','taktisch','positionsspiel','stellungsspiel','spielaufbau','aufbauspiel','pressing','gegenpressing','umschalten','umschaltspiel','verschieben','abkippen','freilaufen','laufwege','anspielstation','raumaufteilung','spielsystem','viererkette','abseits','ballbesitz','restverteidigung'],
+  athletik:['athletik','athletisch','kraft','robust','robustheit','zweikampfstärke','zweikampf','körperlich','physisch','ausdauer','kondition','laufbereitschaft','laufstärke','fitness','beweglichkeit','wendigkeit','sprungkraft','stabil'],
+  mentalitaet:['mentalität','mental','nervenstärke','druckresistenz','unter druck','konzentration','fokus','konzentriert','unkonzentriert','wille','einsatz','einstellung','mut','selbstvertrauen','frustrationstoleranz','fehlerverarbeitung','nervös','abgeklärt','coachbar','lernbereit'],
+  verhalten:['verhalten','teamgeist','teamfähig','teamplayer','disziplin','diszipliniert','undiszipliniert','pünktlich','zu spät','meckert','fairness','kabine','kommunikation','lautstark','dirigiert','coacht','defensivverhalten','verteidigt','defensiv stark','absichern','defensives'],
+  spielintelligenz:['spielintelligenz','spielverständnis','übersicht','spielwitz','clever','cleverness','liest das spiel','entscheidung','entscheidungen','antizipation','antizipiert','kreativ','kreativität','vorausschauend','lösung'],
+  tempo:['tempo','schnelligkeit','schnell','antritt','sprint','spritzig','spritzigkeit','grundschnelligkeit','handlungsschnell','dynamik','explosiv','explosivität','langsam','behäbig','träge']
+};
+const METRIC_KW = {
+  technik:[['ballannahme','erster kontakt','ersten kontakt','ballkontrolle','ballführung','ballmitnahme'],['dribbling','finte','übersteiger','eins gegen eins','1-gegen-1'],['passspiel','pass','pässe','flanke','steilpass','doppelpass','direktspiel','langer ball','lange bälle'],['abschluss','torabschluss','schuss','schusstechnik','standard','freistoß','eckball','elfmeter','kopfball']],
+  taktik:[['spiel mit ball','aufbauspiel','spielaufbau','ballbesitz','anspielstation','abkippen','freilaufen'],['spiel gegen ball','pressing','verschieben','stellungsspiel','manndeckung','raumdeckung','abseits'],['umschalten','umschaltspiel','gegenpressing','konter','restverteidigung'],['positionsspiel','raumaufteilung','laufwege','spielsystem','viererkette']],
+  athletik:[['kraft','robust','zweikampf','körperlich','physisch','wuchtig'],['ausdauer','kondition','laufbereitschaft','laufstärke','fitness'],['beweglich','wendig','agil'],['sprungkraft','kopfballspiel','luftzweikampf']],
+  mentalitaet:[['druck','nervenstärke','abgeklärt','ruhe','eiskalt'],['konzentration','fokus','aufmerksam','unkonzentriert','fahrig'],['wille','einsatz','einstellung','mut','kämpft'],['fehlerverarbeitung','frustration','resilienz','steckt fehler weg','kopf verloren']],
+  verhalten:[['teamgeist','teamfähig','teamplayer','kabine','fairness','disziplin','pünktlich','meckert'],['kommunikation','lautstark','dirigiert','coacht','führt'],['defensives 1-gegen-1','verteidigt im eins gegen eins','zweikampf defensiv'],['absichern','verschieben','defensivverhalten','restverteidigung']],
+  spielintelligenz:[['übersicht','liest das spiel','vorausschauend'],['entscheidung','entscheidungen','lösung','wahl'],['antizipation','antizipiert','erahnt'],['kreativ','kreativität','spielwitz','überraschend']],
+  tempo:[['grundschnelligkeit','schnell','tempo'],['antritt','explosiv','sprint','spritzig'],['handlungsschnell','reaktion','schaltet schnell'],['tempo mit ball','tempodribbling','geschwindigkeit am ball']]
+};
+const POSWORDS = ['überragend','stark','sehr stark','sicher','souverän','eiskalt','verbessert','besser geworden','besser','steigerung','gesteigert','top','klasse','überzeugend','konsequent','abgeklärt','zuverlässig','fokussiert','konzentriert','dominant','präzise','sauber','clever','engagiert','fleißig','robust','stabil','gereift','hellwach','glänzte','glänzt','gut','überzeugt','herausragend','mustergültig','vorbildlich'],
+      NEGWORDS = ['unkonzentriert','fehleranfällig','zögerlich','schwach','schwächer','schwächelt','nachgelassen','nachlässig','passiv','lustlos','planlos','überfordert','ungenau','fahrig','hektisch','gehemmt','verunsichert','ängstlich','langsam','behäbig','träge','undiszipliniert','unaufmerksam','leichtsinnig','formschwach','harmlos','kopflos','frustriert','probleme','schlecht','enttäuschend'];
+const EVENT_KW = [
+  { re:/\b(doppelpack)\b/, ev:'Tor', n:2 },
+  { re:/\b(dreierpack|hattrick)\b/, ev:'Tor', n:3 },
+  { re:/\bzwei tore\b/, ev:'Tor', n:2 },
+  { re:/\bdrei tore\b/, ev:'Tor', n:3 },
+  { re:/\b(tor|getroffen|trifft|treffer|eingenetzt|verwandelt)\b/, ev:'Tor', n:1 },
+  { re:/\b(assist|vorlage|vorbereitet|aufgelegt)\b/, ev:'Assist', n:1 },
+  { re:/\bgelb-?rot\b/, ev:'Gelb-Rot', n:1 },
+  { re:/\brote karte|platzverweis\b/, ev:'Rote Karte', n:1 },
+  { re:/\bgelbe karte|verwarnung|gelb gesehen\b/, ev:'Gelbe Karte', n:1 },
+  { re:/\b(verletzt|verletzung|angeschlagen|humpelt|musste raus|ausgewechselt wegen)\b/, ev:'Verletzung', n:1 }
+];
+const SPECIAL_KW = ['macht gerne','kann gut','spezialität','bekannt für','liebt es','stark bei','besonders gut','fallrückzieher','seitfallzieher','hackentrick','freistoß-spezialist','elfmeterschütze','kopfballstark','weitschuss','tempodribbling','no-look'];
+const FOOT_KW = {'beidfüßig':'beidfüßig','beidfüssig':'beidfüßig','linksfuß':'links','linker fuß':'links','linken fuß':'links','rechtsfuß':'rechts','rechter fuß':'rechts','rechten fuß':'rechts'};
+const hasAny = (t, arr) => arr.some(k => t.includes(k));
+
+/* ---------- Trainings-Hinweise je Schwerpunkt ---------- */
+const FOCUS_TOPICS = {
+  'Allgemein':      ['Klare Trainingsziele vorab formulieren und der Mannschaft nennen.','Übungszeiten realistisch planen — Umbauzeiten einrechnen.','Jede Übung mit 2–3 Coachingpunkten begleiten, nicht mehr.','Belastung und Pausen im Blick behalten.'],
+  'Ballbesitz':     ['Feldgrößen an Könnensstand anpassen — enger = anspruchsvoller.','Auf offene Körperstellung vor der Ballannahme achten.','Anspiellinien und Dreiecksbildung aktiv coachen.','Tempowechsel nach Ballgewinn einfordern.'],
+  'Pressing':       ['Pressingauslöser klar definieren (Rückpass, offener Ball, Flügel).','Abstände zwischen den Ketten kontrollieren (kompakt bleiben).','Anlaufwege bogenförmig — Passweg zustellen, nicht nur Ball jagen.','Nachschieben der Restverteidigung einfordern.'],
+  'Umschalten':     ['Erste Aktion nach Ballgewinn: Blick nach vorne.','Gegenpressing sofort in den ersten 5 Sekunden nach Ballverlust.','Umschaltmomente in Spielformen provozieren (Über-/Unterzahl).','Restverteidigung bewusst besetzen.'],
+  'Abschluss':      ['Hohe Wiederholungszahl vor Qualität der Einzelaktion.','Abschlüsse aus spielnahen Situationen — nicht nur ruhender Ball.','Beidfüßigkeit einfordern, schwachen Fuß bewusst einbauen.','Torhüter aktiv in die Übung einbinden.'],
+  'Standards':      ['Zuständigkeiten fest vergeben (Schützen, Blöcke, Absicherung).','Wenige Varianten, dafür sauber einstudieren.','Defensivstandards genauso ernst nehmen wie offensive.','Wettkampfcharakter erzeugen (Zählen, kleine Turniere).'],
+  'Athletik':       ['Sauberes Aufwärmen mit ansteigender Intensität.','Sprints nur im ausgeruhten Zustand — Qualität vor Menge.','Rumpfstabilität regelmäßig, kurz und konzentriert.','Auf individuelle Belastungssteuerung achten (Rückkehrer!).'],
+  'Torwarttraining':['Grundtechniken (Fangen, Fallen, Abkippen) vor Spektakel.','Torhüter in Spielformen als Mitspieler einbinden.','Kommunikation mit der Kette aktiv einfordern.','Fußtechnik und Aufbauspiel gezielt schulen.']
+};
+
+/* ---------- Seed-Daten (Demo) ---------- */
+const SEED_PLAYERS = [
+  {name:'Leon Müller', num:9, pos:'ST', bd:'2009-04-30', nick:['Leon','Leo'], height:181, weight:72, foot:'rechts', nationality:'Deutschland', d5:{technik:[88,91,79,77],taktik:[90,85,83,70],athletik:[93,90,84,85],mental:[86,84,80,68],verhalten:[82,80,88,84]}},
+  {name:'Jonas Klein', num:8, pos:'ZM', bd:'2009-09-18', nick:['Jonas','Joni'], height:176, weight:66, foot:'rechts', nationality:'Deutschland', d5:{technik:[85,80,88,82],taktik:[84,88,80,82],athletik:[80,78,86,80],mental:[84,86,88,80],verhalten:[86,84,86,88]}},
+  {name:'Tim Schäfer', num:4, pos:'IV', bd:'2009-07-22', nick:['Tim','Timo'], height:186, weight:76, foot:'rechts', nationality:'Deutschland', d5:{technik:[78,72,80,76],taktik:[82,80,76,86],athletik:[80,78,82,86],mental:[80,78,80,78],verhalten:[80,82,80,82]}},
+  {name:'Max Bauer', num:3, pos:'LV', bd:'2009-01-05', nick:['Max','Maxi'], height:175, weight:65, foot:'links', nationality:'Deutschland', status:'verletzt', d5:{technik:[76,74,78,72],taktik:[78,76,78,80],athletik:[80,82,76,78],mental:[74,76,74,76],verhalten:[78,74,80,80]}},
+  {name:'Felix Weber', num:1, pos:'TW', bd:'2009-03-12', nick:['Felix','Felle'], height:188, weight:78, foot:'rechts', nationality:'Deutschland', d5:{technik:[70,64,74,70],taktik:[72,70,74,80],athletik:[74,76,72,78],mental:[80,82,76,74],verhalten:[78,76,82,80]}},
+  {name:'Noah Schmidt', num:11, pos:'LA', bd:'2009-06-08', nick:['Noah'], height:174, weight:63, foot:'rechts', nationality:'Türkei', d5:{technik:[84,86,76,72],taktik:[78,80,82,72],athletik:[88,90,80,78],mental:[76,74,78,70],verhalten:[74,70,78,76]}},
+  {name:'Elias Wagner', num:6, pos:'DM', bd:'2009-02-14', nick:['Elias','Eli'], height:179, weight:70, foot:'rechts', nationality:'Deutschland', d5:{technik:[80,72,86,78],taktik:[86,84,82,88],athletik:[78,74,84,82],mental:[84,82,86,82],verhalten:[84,82,84,86]}},
+  {name:'Paul Hoffmann', num:5, pos:'IV', bd:'2009-11-02', nick:['Paul'], height:184, weight:75, foot:'links', nationality:'Deutschland', d5:{technik:[74,68,78,80],taktik:[80,78,74,84],athletik:[82,80,80,88],mental:[78,80,76,76],verhalten:[80,78,82,84]}},
+  {name:'Ben Fischer', num:7, pos:'RA', bd:'2009-08-25', nick:['Ben','Benny'], height:172, weight:62, foot:'links', nationality:'Italien', d5:{technik:[82,84,74,70],taktik:[76,78,80,70],athletik:[86,88,78,76],mental:[74,72,76,68],verhalten:[76,72,76,74]}},
+  {name:'Luca Richter', num:10, pos:'OM', bd:'2009-05-19', nick:['Luca'], height:177, weight:67, foot:'beidfüßig', nationality:'Kroatien', d5:{technik:[87,84,86,76],taktik:[82,84,78,76],athletik:[78,76,80,74],mental:[80,78,84,74],verhalten:[78,76,80,78]}},
+  {name:'Finn Koch', num:14, pos:'RV', bd:'2009-10-30', nick:['Finn'], height:176, weight:66, foot:'rechts', nationality:'Deutschland', d5:{technik:[74,70,76,72],taktik:[78,76,76,80],athletik:[84,86,80,82],mental:[76,78,74,76],verhalten:[80,78,82,82]}},
+  {name:'Jan Becker', num:16, pos:'ZM', bd:'2010-01-22', nick:['Jan'], height:174, weight:64, foot:'rechts', nationality:'Deutschland', d5:{technik:[78,74,80,74],taktik:[78,80,74,78],athletik:[76,74,80,76],mental:[78,76,80,76],verhalten:[82,80,84,84]}},
+  {name:'Tom Schulz', num:18, pos:'ST', bd:'2010-03-08', nick:['Tom','Tommy'], height:178, weight:68, foot:'rechts', nationality:'Deutschland', d5:{technik:[80,82,72,70],taktik:[74,76,76,68],athletik:[82,84,76,78],mental:[72,70,74,66],verhalten:[74,70,76,74]}},
+  {name:'David Neumann', num:13, pos:'TW', bd:'2010-02-17', nick:['David','Dave'], height:185, weight:74, foot:'rechts', nationality:'Spanien', d5:{technik:[66,60,70,66],taktik:[68,66,70,74],athletik:[72,74,70,74],mental:[74,76,72,70],verhalten:[76,74,78,78]}},
+  {name:'Nico Braun', num:15, pos:'IV', bd:'2010-04-11', nick:['Nico'], height:183, weight:73, foot:'rechts', nationality:'Deutschland', d5:{technik:[70,64,74,76],taktik:[74,72,70,78],athletik:[78,76,76,82],mental:[72,74,72,72],verhalten:[78,76,80,80]}},
+  {name:'Lukas Wolf', num:17, pos:'RA', bd:'2010-05-27', nick:['Lukas','Luki'], height:173, weight:62, foot:'rechts', nationality:'Portugal', d5:{technik:[78,80,72,68],taktik:[72,74,76,68],athletik:[84,86,78,74],mental:[70,68,72,64],verhalten:[72,68,74,72]}}
+];
+const SEED_SPECIALS = {
+  9:[{t:'Eiskalt im 1-gegen-1 vor dem Tor',s:5},{t:'Macht gerne den Fallrückzieher',s:4}],
+  8:[{t:'Bekannt für präzise Flugbälle aus der Tiefe',s:5},{t:'Ruhiger Elfmeterschütze',s:4}],
+  1:[{t:'Stark im Halten von Elfmetern',s:5}],
+  11:[{t:'Tempodribbling über die linke Außenbahn',s:4}],
+  10:[{t:'Freistoß-Spezialist aus dem Halbfeld',s:5}]
+};
+
+/* 5 Seed-Dimensionen → 7 Profil-Dimensionen (deterministisch) */
+function expandDims(d){
+  const c = v => clamp(Math.round(v), 40, 99);
+  return {
+    technik:          d.technik.map(c),
+    taktik:           [d.taktik[1], d.taktik[3], d.taktik[2], d.taktik[0]].map(c),
+    athletik:         [d.athletik[3], d.athletik[2], d.athletik[1]-2, d.athletik[3]-3].map(c),
+    mentalitaet:      d.mental.map(c),
+    verhalten:        [d.verhalten[0], d.verhalten[1], d.taktik[3]-2, d.taktik[3]].map(c),
+    spielintelligenz: [d.mental[2], d.taktik[1]-1, d.mental[2]-3, d.technik[1]-4].map(c),
+    tempo:            [d.athletik[0], d.athletik[1], d.mental[2]-5, d.technik[1]-3].map(c)
+  };
+}
+
+function daysOffsetISO(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+
+function freshState(){
+  const players = SEED_PLAYERS.map((sp,i)=>({
+    id:'p'+(i+1), name:sp.name, first:sp.name.split(' ')[0], nick:sp.nick, num:sp.num, pos:sp.pos,
+    bd:sp.bd, height:sp.height, weight:sp.weight, foot:sp.foot, nationality:sp.nationality,
+    status: sp.status || 'fit',
+    dims: expandDims(sp.d5),
+    specials: (SEED_SPECIALS[sp.num]||[]).map(x=>({...x})),
+    notes:'', fb:{ strengths:'', weaknesses:'', recommendation:'', summary:'' }
+  }));
+  const att = Object.fromEntries(players.map(p=>[p.id, p.status!=='verletzt']));
+  const trainings = [
+    { id:uid(), title:'Umschalten nach Ballgewinn', date:daysOffsetISO(-7), time:'17:30', duration:90, focus:'Umschalten',
+      blocks:[
+        { id:uid(), name:'Warm-up', title:'Rondo 5 gegen 2', duration:15, description:'Zwei Rondos à 7 Spieler, 5v2, max. 2 Kontakte. Bei Ballverlust Rollenwechsel.', coaching:'Offene Körperstellung · erster Kontakt weg vom Druck · Anspiellinien schaffen', organisation:'2 Felder à 8×8 m, je 7 Spieler', material:'8 Hütchen, 4 Bälle', notes:'' },
+        { id:uid(), name:'Hauptteil 1', title:'Umschaltspiel 4v4+2', duration:30, description:'4 gegen 4 mit 2 neutralen Spielern. Nach Ballgewinn innerhalb von 8 Sekunden auf Minitor abschließen.', coaching:'Blick nach vorn beim Ballgewinn · sofortiges Gegenpressing · Tiefe attackieren', organisation:'Feld 30×25 m, 4 Minitore', material:'Leibchen in 3 Farben, 10 Bälle, 4 Minitore', notes:'Intensität hoch halten, 4×4 Min mit 2 Min Pause' },
+        { id:uid(), name:'Hauptteil 2', title:'Konterspielform 6v5', duration:25, description:'Überzahlkonter aus der eigenen Hälfte, Abschluss auf Großtor mit TW.', coaching:'Erste Aktion in die Tiefe · Breite im Konter · Abschluss konsequent suchen', organisation:'Halbes Spielfeld, Großtor + 2 Kontertore', material:'Leibchen, Bälle am Startpunkt', notes:'' },
+        { id:uid(), name:'Abschluss', title:'Abschlussspiel 8v8', duration:20, description:'Freies Spiel mit Fokus Umschaltmomente, Coaching nur in natürlichen Pausen.', coaching:'Umschaltmomente laut benennen lassen', organisation:'2/3 Spielfeld, 2 Großtore', material:'Leibchen, 2 Tore', notes:'' }
+      ],
+      attendance:{...att}, savedAt:new Date(Date.now()-6.9*864e5).toISOString() },
+    { id:uid(), title:'Abschlussqualität & Standards', date:daysOffsetISO(-3), time:'17:30', duration:75, focus:'Abschluss',
+      blocks:[
+        { id:uid(), name:'Warm-up', title:'Passquadrat mit Ballmitnahme', duration:15, description:'Passfolgen im Quadrat, Mitnahme in die Bewegung, Tempo steigern.', coaching:'Erster Kontakt in den Lauf · beidfüßig arbeiten', organisation:'Quadrat 12×12 m, 2 Gruppen', material:'8 Hütchen, 6 Bälle', notes:'' },
+        { id:uid(), name:'Hauptteil', title:'Abschlussserie nach Wandspiel', duration:35, description:'Wandspiel am Strafraumrand, Abschluss aus der Bewegung. Zwei Stationen parallel, Seitenwechsel nach 15 Min.', coaching:'Abschluss flach & platziert vor Härte · Tempo bis zum Abschluss halten', organisation:'2 Stationen vor beiden Toren, je 1 TW', material:'2 Tore, 16 Bälle, Stangen', notes:'Wettbewerb: Team mit meisten Toren' },
+        { id:uid(), name:'Standards', title:'Eckballvarianten', duration:15, description:'Zwei einstudierte Varianten (kurz / Block am 2. Pfosten), danach frei gegen Abwehr.', coaching:'Timing der Läufe · klare Zuordnung im Block', organisation:'Beide Strafräume, volle Besetzung', material:'Bälle, Leibchen', notes:'' },
+        { id:uid(), name:'Cool-down', title:'Auslaufen & Dehnen', duration:10, description:'Lockeres Auslaufen, Mobility-Programm.', coaching:'', organisation:'Seitenlinie', material:'Matten optional', notes:'' }
+      ],
+      attendance:{...att}, savedAt:new Date(Date.now()-2.9*864e5).toISOString() }
+  ];
+  const matches = [
+    { id:uid(), opponent:'JFV Rheinhessen', date:daysOffsetISO(-5), time:'11:00', competition:'Landesliga', venue:'Heim',
+      goalsFor:3, goalsAgainst:1, totalMinutes:80, teamNotes:'Starke erste Halbzeit, nach der Pause zehn Minuten unsortiert im Pressing.', conclusion:'Verdienter Sieg. Umschaltverhalten nach Ballverlust bleibt Trainingsschwerpunkt.',
+      lineup:{ field:[], bench:[], out:[] },
+      playerData:{}, savedAt:new Date(Date.now()-4.8*864e5).toISOString() }
+  ];
+  return {
+    version:1, teamName:'U17', clubName:'SV Eintracht',
+    players, trainings, matches,
+    history:[
+      { ts:new Date(Date.now()-5*864e5).toISOString(), pid:'p1', text:'Spieldaten JFV Rheinhessen übernommen: 2 Tore, Note 8.5', delta:0 },
+      { ts:new Date(Date.now()-3*864e5).toISOString(), pid:'p10', text:'Technik: Abschluss & Standards leicht verbessert (Training)', delta:1 }
+    ],
+    trainingDraft:null, matchDraft:null
+  };
+}
+
+/* Seed für erstes Beispielspiel (Aufstellung + Spielerdaten) nachziehen */
+function seedFirstMatch(st){
+  const m = st.matches[0]; if(!m || m.lineup.field.length) return;
+  const fit = st.players.filter(p=>p.status!=='verletzt');
+  const gk = fit.find(p=>p.pos==='TW') || fit[0];
+  const outfield = fit.filter(p=>p.id!==gk.id);
+  const slots = [ {pos:'LV',x:18,y:74},{pos:'IV',x:38,y:78},{pos:'IV',x:62,y:78},{pos:'RV',x:82,y:74},{pos:'DM',x:50,y:62},{pos:'ZM',x:33,y:50},{pos:'ZM',x:67,y:50},{pos:'LA',x:16,y:32},{pos:'RA',x:84,y:32},{pos:'ST',x:50,y:20} ];
+  const used = new Set();
+  const field = [{ pid:gk.id, x:50, y:91 }];
+  slots.forEach(sl=>{
+    let cand = outfield.find(p=>!used.has(p.id) && p.pos===sl.pos);
+    if(!cand) cand = outfield.filter(p=>!used.has(p.id)).sort((a,b)=>overallOf(b)-overallOf(a))[0];
+    if(cand){ used.add(cand.id); field.push({ pid:cand.id, x:sl.x, y:sl.y }); }
+  });
+  const fieldIds = new Set(field.map(f=>f.pid));
+  m.lineup.field = field;
+  m.lineup.bench = st.players.filter(p=>!fieldIds.has(p.id) && p.status!=='verletzt').map(p=>p.id);
+  m.lineup.out = st.players.filter(p=>!fieldIds.has(p.id) && p.status==='verletzt').map(p=>p.id);
+  st.players.forEach(p=>{
+    const onField = fieldIds.has(p.id);
+    const bench = m.lineup.bench.includes(p.id);
+    m.playerData[p.id] = {
+      from: onField?0:(bench?55:null), to: onField?(p.id==='p6'?55:80):(bench?80:null),
+      position: p.pos, rating: onField? (7+((p.num%3))*0.5) : (bench?6.5:null),
+      note:'', events: p.id==='p1' ? ['Tor','Tor'] : (p.id==='p10' ? ['Tor','Assist'] : [])
+    };
+  });
+}
+</script>
+<script>
+'use strict';
+/* ============================================================
+   Infrastruktur: Routing · Toast · Modal · Shared Components
+   ============================================================ */
+const route = { screen:'dashboard', trainTab:'plan', spielTab:'lineup', kaderPlayer:null };
+
+const NAV = [
+  { key:'dashboard', label:'Dashboard', icon:I.home },
+  { key:'training',  label:'Training',  icon:I.training },
+  { key:'spiel',     label:'Spiel',     icon:I.match },
+  { key:'kader',     label:'Kader',     icon:I.squad }
+];
+
+function buildNav(){
+  $('#sideNav').innerHTML = `<div class="nav-label">Arbeitsbereich</div>` +
+    NAV.map(n=>`<button class="nav-item ${route.screen===n.key?'active':''}" data-nav="${n.key}">${svgI(n.icon,19)} ${n.label}</button>`).join('');
+  $('#bottomNav').innerHTML = NAV.map(n=>`<button class="${route.screen===n.key?'active':''}" data-nav="${n.key}">${svgI(n.icon,21)}<span>${n.label}</span></button>`).join('');
+  $$('[data-nav]').forEach(b=> b.onclick = () => go(b.dataset.nav));
+}
+
+function go(screen, opts={}){
+  route.screen = screen;
+  if(opts.trainTab) route.trainTab = opts.trainTab;
+  if(opts.spielTab) route.spielTab = opts.spielTab;
+  if(screen==='kader') route.kaderPlayer = opts.player || null;
+  render();
+  window.scrollTo({top:0});
+}
+
+function render(){
+  buildNav();
+  const map = { dashboard:renderDashboard, training:renderTraining, spiel:renderSpiel, kader:renderKader };
+  (map[route.screen] || renderDashboard)();
+}
+
+function setTopbar(title, sub, actionsHTML=''){
+  $('#pageTitle').textContent = title;
+  $('#pageSub').textContent = sub || '';
+  $('#pageActions').innerHTML = actionsHTML;
+}
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg, icon='check'){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = svgI(I[icon]||I.check,16) + esc(msg);
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.transition='opacity .3s,transform .3s'; el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(()=>el.remove(),320); }, 2600);
+}
+
+/* ---------- Modal ---------- */
+function openModal(html, maxWidth){
+  closeModal();
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = `<div class="modal" ${maxWidth?`style="max-width:${maxWidth}px"`:''}>${html}</div>`;
+  ov.addEventListener('click', e=>{ if(e.target===ov) closeModal(); });
+  $('#modalRoot').appendChild(ov);
+  $$('[data-close]', ov).forEach(b=> b.onclick = closeModal);
+  return ov;
+}
+function closeModal(){ $('#modalRoot').innerHTML=''; }
+function confirmDlg(title, text, okLabel, cb){
+  const ov = openModal(`
+    <div class="modal-head"><h2>${esc(title)}</h2></div>
+    <div class="modal-body"><p class="muted" style="font-size:13.5px">${esc(text)}</p></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Abbrechen</button>
+      <button class="btn btn-danger" id="cfOk">${esc(okLabel)}</button>
+    </div>`);
+  $('#cfOk', ov).onclick = ()=>{ closeModal(); cb(); };
+}
+
+/* ---------- Shared UI-Bausteine ---------- */
+const bandChip = v => { const b = ratingBand(v); return `<span class="chip ${b.chip}">${b.label}</span>`; };
+const barHTML = (v, col) => `<div class="bar"><i style="width:${clamp(v,0,100)}%;${col?`background:${col}`:''}"></i></div>`;
+
+function ringSVG(v, label='Gesamt'){
+  const r=37, c=2*Math.PI*r, off=c*(1 - clamp(v,0,100)/100);
+  const col = ratingBand(v).col;
+  return `<div class="ovr-ring">
+    <svg width="86" height="86" viewBox="0 0 86 86">
+      <circle cx="43" cy="43" r="${r}" fill="none" stroke="var(--line-2)" stroke-width="7"/>
+      <circle cx="43" cy="43" r="${r}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+    </svg>
+    <div class="ov"><b>${v}</b><span>${esc(label)}</span></div>
+  </div>`;
+}
+
+function radarSVG(p, size=290, opts={}){
+  const n = DIMS.length, cx=size/2, cy=size/2, R=size/2-46;
+  const pt = (i, frac) => { const a = -Math.PI/2 + i*2*Math.PI/n; return [cx+Math.cos(a)*R*frac, cy+Math.sin(a)*R*frac]; };
+  const ringPath = frac => Array.from({length:n},(_,i)=>pt(i,frac).map(v=>v.toFixed(1)).join(',')).join(' ');
+  const vals = DIMS.map(d=>dimAvg(p.dims[d.key]));
+  const poly = vals.map((v,i)=>pt(i, clamp(v,0,100)/100).map(x=>x.toFixed(1)).join(',')).join(' ');
+  const ink = opts.print ? '#101828' : 'var(--ink-2)';
+  const grid = opts.print ? '#c8cdd5' : 'var(--line)';
+  const labels = DIMS.map((d,i)=>{
+    const [x,y] = pt(i, 1.24);
+    const short = d.key==='verhalten' ? 'Verhalten' : (d.key==='spielintelligenz' ? 'Spielintell.' : d.label);
+    return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${opts.print?9:10.5}" font-weight="650" fill="${ink}">${esc(short)}</text>
+            <text x="${x.toFixed(1)}" y="${(y+12).toFixed(1)}" text-anchor="middle" font-size="${opts.print?8.5:10}" font-weight="800" fill="${opts.print?'#12805c':'var(--green-deep)'}">${vals[i]}</text>`;
+  }).join('');
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="max-width:100%">
+    ${[.25,.5,.75,1].map(f=>`<polygon points="${ringPath(f)}" fill="none" stroke="${grid}" stroke-width="1"/>`).join('')}
+    ${DIMS.map((_,i)=>{ const [x,y]=pt(i,1); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${grid}" stroke-width="1"/>`; }).join('')}
+    <polygon points="${poly}" fill="rgba(18,128,92,.16)" stroke="#12805c" stroke-width="2" stroke-linejoin="round"/>
+    ${vals.map((v,i)=>{ const [x,y]=pt(i,clamp(v,0,100)/100); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#12805c"/>`; }).join('')}
+    ${labels}
+  </svg>`;
+}
+
+/* ---------- Spielfeld-SVG ---------- */
+/* Vertikal (App-Aufstellung + Spiel-Druck): weiße Linien auf transparent bzw. s/w */
+function pitchLinesSVG(bw=false){
+  const s = bw ? '#000' : 'rgba(255,255,255,.85)';
+  const w = bw ? 1.2 : 1.5;
+  return `<svg class="lines" viewBox="0 0 680 960" preserveAspectRatio="none" ${bw?'xmlns="http://www.w3.org/2000/svg"':''}>
+    <g fill="none" stroke="${s}" stroke-width="${w*2}">
+      <rect x="14" y="14" width="652" height="932"/>
+      <line x1="14" y1="480" x2="666" y2="480"/>
+      <circle cx="340" cy="480" r="72"/>
+      <rect x="180" y="14" width="320" height="128"/>
+      <rect x="264" y="14" width="152" height="46"/>
+      <rect x="180" y="818" width="320" height="128"/>
+      <rect x="264" y="900" width="152" height="46"/>
+      <path d="M 276 142 A 72 72 0 0 0 404 142"/>
+      <path d="M 276 818 A 72 72 0 0 1 404 818"/>
+      <path d="M 14 34 A 20 20 0 0 0 34 14 M 646 14 A 20 20 0 0 0 666 34 M 666 926 A 20 20 0 0 0 646 946 M 34 946 A 20 20 0 0 0 14 926"/>
+    </g>
+    <circle cx="340" cy="480" r="4" fill="${s}"/>
+    <circle cx="340" cy="108" r="3" fill="${s}"/>
+    <circle cx="340" cy="852" r="3" fill="${s}"/>
+  </svg>`;
+}
+/* Horizontal, DIN-A4-breit, leer, schwarz-weiß — zum Skizzieren beim Trainingsdruck */
+function pitchSketchSVG(){
+  return `<svg viewBox="0 0 1050 680" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="1050" height="680" fill="#fff"/>
+    <g fill="none" stroke="#000" stroke-width="2.6">
+      <rect x="20" y="20" width="1010" height="640"/>
+      <line x1="525" y1="20" x2="525" y2="660"/>
+      <circle cx="525" cy="340" r="82"/>
+      <rect x="20" y="188" width="148" height="304"/>
+      <rect x="20" y="272" width="52" height="136"/>
+      <rect x="882" y="188" width="148" height="304"/>
+      <rect x="978" y="272" width="52" height="136"/>
+      <path d="M 168 288 A 82 82 0 0 1 168 392"/>
+      <path d="M 882 288 A 82 82 0 0 0 882 392"/>
+      <path d="M 20 42 A 22 22 0 0 0 42 20 M 1008 20 A 22 22 0 0 0 1030 42 M 1030 638 A 22 22 0 0 0 1008 660 M 42 660 A 22 22 0 0 0 20 638"/>
+      <line x1="14" y1="290" x2="20" y2="290"/><line x1="14" y1="390" x2="20" y2="390"/>
+      <line x1="1030" y1="290" x2="1036" y2="290"/><line x1="1030" y1="390" x2="1036" y2="390"/>
+    </g>
+    <g fill="#000">
+      <circle cx="525" cy="340" r="5"/>
+      <circle cx="128" cy="340" r="4"/>
+      <circle cx="922" cy="340" r="4"/>
+    </g>
+  </svg>`;
+}
+
+/* ---------- Drucken ---------- */
+function printSheet(html){
+  $('#printArea').innerHTML = html;
+  setTimeout(()=>{ window.print(); }, 60);
+}
+window.addEventListener('afterprint', ()=>{ $('#printArea').innerHTML=''; });
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  const fit = S.players.filter(p=>p.status!=='verletzt');
+  const avg = Math.round(S.players.reduce((s,p)=>s+overallOf(p),0)/Math.max(1,S.players.length));
+  const upcoming = S.trainings.filter(t=>t.date >= todayISO()).sort((a,b)=>a.date.localeCompare(b.date))[0];
+  const lastTraining = S.trainings.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lastMatch = S.matches.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const top3 = S.players.slice().sort((a,b)=>overallOf(b)-overallOf(a)).slice(0,3);
+  const recentHist = S.history.slice().sort((a,b)=>b.ts.localeCompare(a.ts)).slice(0,5);
+  const hour = new Date().getHours();
+  const greet = hour<11 ? 'Guten Morgen' : hour<18 ? 'Guten Tag' : 'Guten Abend';
+
+  setTopbar('Dashboard', fmtDLong(todayISO()), `
+    <button class="btn btn-accent" id="dashNewSession">${svgI(I.plus,15)} Einheit entwerfen</button>
+  `);
+
+  $('#view').innerHTML = `
+    <div class="grid g4" style="margin-bottom:20px">
+      <div class="card kpi"><div class="k-label">${svgI(I.squad,15)} Kader</div><div class="k-value">${S.players.length}</div><div class="k-hint">${fit.length} einsatzbereit</div></div>
+      <div class="card kpi"><div class="k-label">${svgI(I.chart,15)} Ø Team-Bewertung</div><div class="k-value">${avg}</div><div class="k-hint">${ratingBand(avg).label}</div></div>
+      <div class="card kpi"><div class="k-label">${svgI(I.training,15)} Trainings im Archiv</div><div class="k-value">${S.trainings.length}</div><div class="k-hint">${upcoming ? 'Nächste: '+fmtD(upcoming.date) : 'Keine Einheit geplant'}</div></div>
+      <div class="card kpi"><div class="k-label">${svgI(I.match,15)} Spiele im Archiv</div><div class="k-value">${S.matches.length}</div><div class="k-hint">${lastMatch ? 'Zuletzt '+(lastMatch.goalsFor??'–')+':'+(lastMatch.goalsAgainst??'–')+' vs. '+esc(lastMatch.opponent) : 'Noch kein Spiel erfasst'}</div></div>
+    </div>
+
+    <div class="split">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div class="card">
+          <div class="card-head"><h3>${greet}, Coach.</h3><div class="spacer"><span class="chip navy">${esc(S.clubName)} ${esc(S.teamName)}</span></div></div>
+          <div class="card-body">
+            <p class="muted" style="font-size:13.8px;max-width:60ch">Plane deine nächste Einheit, erfasse Spieldaten oder arbeite am Kader. Mit <b>„Einheit entwerfen“</b> öffnest du die Trainingsplanung — du planst selbst, die Plattform liefert dir Hinweise zum gewählten Schwerpunkt.</p>
+            <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:15px">
+              <button class="btn btn-primary" id="dashGoPlan">${svgI(I.training,15)} Trainingsplanung</button>
+              <button class="btn btn-ghost" id="dashGoLineup">${svgI(I.shirt,15)} Aufstellung</button>
+              <button class="btn btn-ghost" id="dashGoCapture">${svgI(I.mic,15)} Spieldaten erfassen</button>
+              <button class="btn btn-ghost" id="dashGoSquad">${svgI(I.squad,15)} Kader öffnen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g2">
+          <div class="card">
+            <div class="card-head"><h3>Letzte Einheit</h3>${lastTraining?`<div class="spacer"><button class="btn btn-sm btn-ghost" id="dashOpenTraining">Öffnen</button></div>`:''}</div>
+            <div class="card-body">
+              ${lastTraining ? `
+                <div style="font-weight:650;font-size:14.5px">${esc(lastTraining.title)}</div>
+                <div class="tiny" style="margin-top:2px">${fmtD(lastTraining.date)} · ${esc(lastTraining.time||'')} · ${lastTraining.duration} Min · ${lastTraining.blocks.length} Blöcke</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${lastTraining.blocks.slice(0,4).map(b=>`<span class="chip">${esc(b.name)}</span>`).join('')}</div>
+              ` : `<p class="tiny">Noch keine Einheit gespeichert.</p>`}
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Letztes Spiel</h3>${lastMatch?`<div class="spacer"><button class="btn btn-sm btn-ghost" id="dashOpenMatch">Öffnen</button></div>`:''}</div>
+            <div class="card-body">
+              ${lastMatch ? `
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span class="result-pill ${resultCls(lastMatch)}">${lastMatch.goalsFor??'–'} : ${lastMatch.goalsAgainst??'–'}</span>
+                  <div><div style="font-weight:650;font-size:14.5px">vs. ${esc(lastMatch.opponent)}</div>
+                  <div class="tiny">${fmtD(lastMatch.date)} · ${esc(lastMatch.competition||'')}</div></div>
+                </div>
+                ${lastMatch.conclusion?`<p class="tiny" style="margin-top:10px">${esc(lastMatch.conclusion)}</p>`:''}
+              ` : `<p class="tiny">Noch kein Spiel erfasst.</p>`}
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Zuletzt im Kader passiert</h3></div>
+          <div class="card-body" style="padding-top:8px">
+            ${recentHist.length ? recentHist.map(h=>{
+              const p = S.players.find(x=>x.id===h.pid);
+              return `<div class="hist-item"><span class="h-date">${new Date(h.ts).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})}</span><span>${p?`<b>${esc(p.name)}</b> — `:''}${esc(h.text)}</span></div>`;
+            }).join('') : '<p class="tiny">Noch keine Einträge.</p>'}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card">
+          <div class="card-head"><h3>Top-Spieler</h3><div class="spacer"><span class="tiny">nach Gesamtwert</span></div></div>
+          <div class="card-body" style="padding:10px 12px">
+            ${top3.map(p=>{ const o=overallOf(p); return `
+              <div class="player-row" data-open-player="${p.id}">
+                <div class="p-avatar">${initials(p.name)}</div>
+                <div><div class="pr-name">${esc(p.name)}</div><div class="pr-sub">${posLabel(p.pos)} · #${p.num}</div></div>
+                <span class="ovr" style="color:${ratingBand(o).col}">${o}</span>
+              </div>`; }).join('')}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Verfügbarkeit</h3></div>
+          <div class="card-body" style="padding:10px 12px">
+            ${S.players.filter(p=>p.status!=='fit').map(p=>`
+              <div class="player-row" data-open-player="${p.id}">
+                <div class="p-avatar">${initials(p.name)}</div>
+                <div><div class="pr-name">${esc(p.name)}</div><div class="pr-sub">${posLabel(p.pos)}</div></div>
+                <span class="chip red" style="margin-left:auto">${esc(p.status)}</span>
+              </div>`).join('') || '<p class="tiny" style="padding:4px 6px">Alle Spieler einsatzbereit.</p>'}
+          </div>
+        </div>
+        <div class="hint-box">
+          <h4>${svgI(I.bulb,15)} Hinweis</h4>
+          <ul>
+            <li>Doppelklick auf einen Spieler öffnet überall sein Profil.</li>
+            <li>Alle Daten werden lokal auf diesem Gerät gespeichert.</li>
+          </ul>
+        </div>
+      </div>
+    </div>`;
+
+  $('#dashNewSession').onclick = ()=> startNewTrainingDraft(true);
+  $('#dashGoPlan').onclick = ()=> go('training',{trainTab:'plan'});
+  $('#dashGoLineup').onclick = ()=> go('spiel',{spielTab:'lineup'});
+  $('#dashGoCapture').onclick = ()=> go('spiel',{spielTab:'capture'});
+  $('#dashGoSquad').onclick = ()=> go('kader');
+  if($('#dashOpenTraining')) $('#dashOpenTraining').onclick = ()=>{ const t=S.trainings.slice().sort((a,b)=>b.date.localeCompare(a.date))[0]; openTrainingForEdit(t.id); };
+  if($('#dashOpenMatch')) $('#dashOpenMatch').onclick = ()=>{ const m=S.matches.slice().sort((a,b)=>b.date.localeCompare(a.date))[0]; openMatchForEdit(m.id); };
+  bindPlayerOpen();
+}
+
+function resultCls(m){
+  if(m.goalsFor==null||m.goalsAgainst==null) return '';
+  return m.goalsFor>m.goalsAgainst?'win':m.goalsFor<m.goalsAgainst?'loss':'draw';
+}
+
+/* Doppelklick / Klick öffnet Spielerprofil */
+function bindPlayerOpen(){
+  $$('[data-open-player]').forEach(el=>{
+    el.addEventListener('dblclick', ()=> openPlayer(el.dataset.openPlayer));
+    if(el.classList.contains('player-row') && !el.dataset.att) el.addEventListener('click', ()=> openPlayer(el.dataset.openPlayer));
+  });
+}
+function openPlayer(id){ go('kader',{player:id}); }
+</script>
+<script>
+'use strict';
+/* ============================================================
+   KADER · SPIELERPROFIL · BEWERTUNGSLOGIK · FEEDBACKBOGEN
+   ============================================================ */
+
+function renderKader(){
+  if(route.kaderPlayer){ renderPlayerProfile(route.kaderPlayer); return; }
+  setTopbar('Kader', `${S.players.length} Spieler · ${esc(S.clubName)} ${esc(S.teamName)}`, `
+    <button class="btn btn-ghost" id="btnScale">${svgI(I.info,15)} Bewertungsgrundlage</button>
+    <button class="btn btn-primary" id="btnAddPlayer">${svgI(I.plus,15)} Spieler</button>
+  `);
+  const sorted = S.players.slice().sort((a,b)=>overallOf(b)-overallOf(a));
+  $('#view').innerHTML = `
+    <div class="squad-grid">
+      ${sorted.map(p=>{ const o=overallOf(p); const b=ratingBand(o); return `
+        <div class="pcard" data-open-player="${p.id}">
+          <div class="pcard-top">
+            <div class="p-avatar">${initials(p.name)}</div>
+            <div style="min-width:0">
+              <div style="font-weight:650;font-size:14.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.name)}</div>
+              <div class="tiny">#${p.num} · ${posLabel(p.pos)}</div>
+            </div>
+            <div class="ovr-big"><b style="color:${b.col}">${o}</b><small>Gesamt</small></div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;margin-top:11px;flex-wrap:wrap">
+            ${bandChip(o)}
+            ${p.status!=='fit'?`<span class="chip red">${esc(p.status)}</span>`:''}
+          </div>
+          <div class="pcard-dims">
+            ${['technik','taktik','athletik','mentalitaet','tempo'].map(k=>{ const d=DIM_BY_KEY[k]; const v=dimAvg(p.dims[k]); return `
+              <div class="pd"><i><b style="width:${v}%;background:${d.col}"></b></i><span>${k==='mentalitaet'?'MEN':d.label.slice(0,3).toUpperCase()}</span></div>`; }).join('')}
+          </div>
+        </div>`; }).join('')}
+    </div>`;
+  $$('.pcard').forEach(el=> el.onclick = ()=> openPlayer(el.dataset.openPlayer));
+  $('#btnScale').onclick = showScale;
+  $('#btnAddPlayer').onclick = showAddPlayer;
+}
+
+function showScale(){
+  openModal(`
+    <div class="modal-head"><h2>Bewertungsgrundlage</h2><button class="icon-btn" data-close>${svgI(I.x,16)}</button></div>
+    <div class="modal-body">
+      <p class="tiny" style="margin-bottom:12px">Bewertet wird immer die Abteilung <b>Allgemein</b> auf einer Skala von 0–100. Jede Kategorie ist der Durchschnitt ihrer vier Unterkategorien.</p>
+      ${RATING_BANDS.map(b=>`
+        <div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--line-2)">
+          <span style="width:64px;font-weight:700;font-variant-numeric:tabular-nums;color:${b.col}">${b.min}–${b.max}</span>
+          <span style="font-weight:600;font-size:13.5px">${b.label}</span>
+        </div>`).join('')}
+    </div>
+    <div class="modal-foot"><button class="btn btn-primary" data-close>Verstanden</button></div>`);
+}
+
+function showAddPlayer(){
+  const ov = openModal(`
+    <div class="modal-head"><h2>Neuen Spieler anlegen</h2><button class="icon-btn" data-close>${svgI(I.x,16)}</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field full"><label>Name</label><input class="input" id="npName" placeholder="Vor- und Nachname"></div>
+        <div class="field"><label>Rückennummer</label><input class="input" id="npNum" type="number" min="1" max="99"></div>
+        <div class="field"><label>Position</label><select class="select" id="npPos">${POS.map(p=>`<option value="${p}">${p} — ${posLabel(p)}</option>`).join('')}</select></div>
+        <div class="field"><label>Geburtsdatum</label><input class="input" id="npBd" type="date"></div>
+        <div class="field"><label>Starker Fuß</label><select class="select" id="npFoot"><option>rechts</option><option>links</option><option>beidfüßig</option></select></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Abbrechen</button>
+      <button class="btn btn-accent" id="npSave">${svgI(I.save,15)} Anlegen</button>
+    </div>`);
+  $('#npSave', ov).onclick = ()=>{
+    const name = $('#npName').value.trim();
+    if(!name){ toast('Bitte einen Namen eingeben','info'); return; }
+    const base = ()=>[65,65,65,65];
+    const p = {
+      id:uid(), name, first:name.split(' ')[0], nick:[name.split(' ')[0]],
+      num:parseInt($('#npNum').value)||0, pos:$('#npPos').value, bd:$('#npBd').value||'',
+      height:null, weight:null, foot:$('#npFoot').value, nationality:'', status:'fit',
+      dims:Object.fromEntries(DIMS.map(d=>[d.key, base()])),
+      specials:[], notes:'', fb:{strengths:'',weaknesses:'',recommendation:'',summary:''}
+    };
+    S.players.push(p);
+    logHist(p.id, 'Spieler angelegt');
+    saveAll(); closeModal(); openPlayer(p.id); toast('Spieler angelegt');
+  };
+}
+
+/* ---------- Bewertungslogik ----------
+   Positive Aussage: getroffene Unterkategorien +2, übrige +1 → Kategorie steigt ~1 Punkt.
+   Negative Aussage: umgekehrt. Manuelle Anpassung überschreibt jederzeit. */
+function applyDimDelta(p, dimKey, dir, metricHits){
+  const arr = p.dims[dimKey];
+  const before = dimAvg(arr);
+  arr.forEach((v,i)=>{
+    const hit = metricHits && metricHits.length ? metricHits.includes(i) : true;
+    const step = (hit ? 2 : 1) * dir;
+    arr[i] = clamp(v + step, 1, 99);
+  });
+  const after = dimAvg(arr);
+  return { before, after };
+}
+
+function logHist(pid, text, delta=0){
+  S.history.push({ ts:new Date().toISOString(), pid, text, delta });
+  if(S.history.length > 400) S.history = S.history.slice(-400);
+}
+
+/* ---------- Profil-Parser (Sprache / Text / Datei) ---------- */
+function splitSentences(text){
+  return String(text||'').split(/(?<=[.!?])\s+|\n+/).map(s=>s.trim()).filter(s=>s.length>2);
+}
+function parseProfileText(text, p){
+  const findings = [];
+  splitSentences(text).forEach(sent=>{
+    const t = lc(sent);
+    /* Stammdaten */
+    let m = t.match(/(\d{3})\s*(?:cm|zentimeter)/) || t.match(/(\d[,.]\d{2})\s*(?:m|meter)\b/);
+    if(m){ const h=/[,.]/.test(m[1])?Math.round(parseFloat(m[1].replace(',','.'))*100):parseInt(m[1]); if(h>=140&&h<=215) findings.push({kind:'attr',field:'height',label:'Größe',value:h,disp:h+' cm',sent}); }
+    m = t.match(/(\d{2,3})\s*(?:kg|kilo)/);
+    if(m){ const w=parseInt(m[1]); if(w>=35&&w<=130) findings.push({kind:'attr',field:'weight',label:'Gewicht',value:w,disp:w+' kg',sent}); }
+    for(const k of Object.keys(FOOT_KW)){ if(t.includes(k)){ findings.push({kind:'attr',field:'foot',label:'Starker Fuß',value:FOOT_KW[k],disp:FOOT_KW[k],sent}); break; } }
+    /* Besondere Fähigkeit */
+    if(hasAny(t, SPECIAL_KW)) findings.push({kind:'special', text:sent.replace(/[.!]$/,''), sent});
+    /* Bewertung je Dimension */
+    const pos = hasAny(t, POSWORDS.map(lc)), neg = hasAny(t, NEGWORDS.map(lc));
+    if(pos || neg){
+      const dir = neg && !pos ? -1 : 1;
+      let matched = false;
+      DIMS.forEach(d=>{
+        if(hasAny(t, KW[d.key])){
+          matched = true;
+          const metricHits = (METRIC_KW[d.key]||[]).map((kws,i)=>hasAny(t,kws)?i:-1).filter(i=>i>=0);
+          findings.push({kind:'dim', dim:d.key, dir, metrics:metricHits, sent});
+        }
+      });
+      if(!matched) findings.push({kind:'note', text:sent, sent});
+    } else if(t.length > 25 && !findings.some(f=>f.sent===sent)) {
+      findings.push({kind:'note', text:sent, sent});
+    }
+  });
+  return findings;
+}
+
+/* ---------- Sprache & Datei (gemeinsame Eingabewege) ---------- */
+let activeRecog = null;
+function startVoice(btn, onText){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    toast('Spracherkennung wird von diesem Browser nicht unterstützt — bitte Text eingeben.','info');
+    return;
+  }
+  if(activeRecog){ try{ activeRecog.stop(); }catch(e){} activeRecog=null; btn.classList.remove('rec'); return; }
+  const r = new SR();
+  r.lang='de-DE'; r.interimResults=false; r.continuous=true;
+  let buffer='';
+  r.onresult = e=>{ for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) buffer += e.results[i][0].transcript + ' '; } };
+  r.onend = ()=>{ activeRecog=null; btn.classList.remove('rec'); if(buffer.trim()) onText(buffer.trim()); };
+  r.onerror = ()=>{ activeRecog=null; btn.classList.remove('rec'); toast('Spracheingabe abgebrochen','info'); };
+  activeRecog = r; btn.classList.add('rec'); r.start();
+  toast('Aufnahme läuft — erneut tippen zum Beenden','mic');
+}
+
+function handleUpload(file, onText){
+  if(!file) return;
+  if(/^text\/|\.(txt|md|csv)$/i.test(file.type || file.name)){
+    const rd = new FileReader();
+    rd.onload = ()=> onText(String(rd.result||''));
+    rd.readAsText(file);
+    return;
+  }
+  /* Foto / PDF: lokale OCR ist hier nicht verlässlich möglich → vorbereiteter
+     Workflow: Vorschau + Abschrift-Feld, geparst wird die (korrigierbare) Abschrift. */
+  const url = URL.createObjectURL(file);
+  const isImg = /^image\//.test(file.type);
+  const ov = openModal(`
+    <div class="modal-head"><h2>Datei-Import</h2><button class="icon-btn" data-close>${svgI(I.x,16)}</button></div>
+    <div class="modal-body">
+      ${isImg?`<img src="${url}" alt="Upload" style="width:100%;border-radius:12px;border:1px solid var(--line);max-height:280px;object-fit:contain;background:var(--inset)">`:`<div class="chip">${esc(file.name)}</div>`}
+      <p class="tiny" style="margin:10px 0 8px">Die automatische Texterkennung ist vorbereitet. Prüfe bzw. tippe hier ab, was auf dem Zettel steht — die Informationen werden daraus erkannt und übernommen.</p>
+      <textarea class="textarea" id="ocrText" rows="6" placeholder="z. B. Leon von 0 bis 70 gespielt, zwei Tore. Jonas Note 8. Gegner 3:1 geschlagen …"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>Abbrechen</button>
+      <button class="btn btn-accent" id="ocrApply">${svgI(I.check,15)} Text verarbeiten</button>
+    </div>`, 560);
+  $('#ocrApply', ov).onclick = ()=>{ const v=$('#ocrText').value.trim(); closeModal(); URL.revokeObjectURL(url); if(v) onText(v); };
+}
+
+/* ---------- Spielerprofil ---------- */
+let profileFindings = [];
+function renderPlayerProfile(id){
+  const p = S.players.find(x=>x.id===id);
+  if(!p){ route.kaderPlayer=null; renderKader(); return; }
+  const o = overallOf(p);
+  const hist = S.history.filter(h=>h.pid===p.id).sort((a,b)=>b.ts.localeCompare(a.ts)).slice(0,10);
+  setTopbar(p.name, `${posLabel(p.pos)} · #${p.num} · ${esc(S.clubName)} ${esc(S.teamName)}`, `
+    <button class="btn btn-ghost" id="btnBackSquad">${svgI(I.back,15)} Kader</button>
+    <button class="btn btn-ghost" id="btnEditPlayer">${svgI(I.edit,15)} Daten</button>
+    <button class="btn btn-primary" id="btnFeedback">${svgI(I.file,15)} Feedbackbogen</button>
+  `);
+
+  $('#view').innerHTML = `
+    <div class="card card-pad" style="margin-bottom:18px">
+      <div class="profile-head">
+        <div class="p-avatar lg">${initials(p.name)}</div>
+        <div class="ph-meta">
+          <h2>${esc(p.name)}</h2>
+          <div class="profile-facts">
+            <span class="chip navy">#${p.num}</span>
+            <span class="chip">${posLabel(p.pos)}</span>
+            <span class="chip">${ageOf(p.bd)} Jahre</span>
+            <span class="chip">${p.height?p.height+' cm':'– cm'}</span>
+            <span class="chip">${p.weight?p.weight+' kg':'– kg'}</span>
+            <span class="chip">${esc(p.foot||'–')}</span>
+            ${p.nationality?`<span class="chip">${esc(p.nationality)}</span>`:''}
+            <span class="chip ${p.status==='fit'?'green':'red'}">${esc(p.status)}</span>
+          </div>
+          <div style="margin-top:10px">${bandChip(o)}</div>
+        </div>
+        ${ringSVG(o)}
+      </div>
+    </div>
+
+    <div class="split">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div class="card">
+          <div class="card-head"><h3>Bewertung — Abteilung Allgemein</h3><div class="spacer"><button class="btn btn-sm btn-ghost" id="btnScale2">${svgI(I.info,14)} Skala</button></div></div>
+          <div class="card-body" style="padding-top:6px">
+            ${DIMS.map(d=>{ const v=dimAvg(p.dims[d.key]); return `
+              <div class="dim-block">
+                <div class="dim-head">
+                  <span class="d-dot" style="background:${d.col}"></span><b>${d.label}</b>
+                  <span class="d-val" style="color:${ratingBand(v).col}">${v}</span>
+                </div>
+                ${d.metrics.map((m,i)=>`
+                  <div class="metric-row">
+                    <span class="m-label">${m}</span>
+                    ${barHTML(p.dims[d.key][i], d.col)}
+                    <span class="m-val">${p.dims[d.key][i]}</span>
+                    <span class="stepper">
+                      <button data-step="${d.key}|${i}|-1" title="senken">−</button>
+                      <button data-step="${d.key}|${i}|1" title="steigern">+</button>
+                    </span>
+                  </div>`).join('')}
+              </div>`; }).join('')}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Feedback-Texte</h3><div class="spacer"><button class="btn btn-sm btn-soft" id="fbSuggest">${svgI(I.spark,14)} Vorschlag einsetzen</button></div></div>
+          <div class="card-body">
+            <div class="grid g2">
+              <div class="field"><label>Stärken</label><textarea class="textarea" id="fbStrengths" rows="2">${esc(p.fb.strengths)}</textarea></div>
+              <div class="field"><label>Schwächen / Entwicklungsfelder</label><textarea class="textarea" id="fbWeaknesses" rows="2">${esc(p.fb.weaknesses)}</textarea></div>
+              <div class="field"><label>Empfehlung</label><textarea class="textarea" id="fbReco" rows="2">${esc(p.fb.recommendation)}</textarea></div>
+              <div class="field"><label>Zusammenfassung</label><textarea class="textarea" id="fbSummary" rows="2">${esc(p.fb.summary)}</textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card card-pad radar-wrap">${radarSVG(p, 300)}</div>
+
+        <div class="card">
+          <div class="card-head"><h3>Besondere Fähigkeiten</h3></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+            ${p.specials.map((s,i)=>`
+              <div class="spec-item">
+                <span class="stars">${'★'.repeat(s.s||3)}${'☆'.repeat(5-(s.s||3))}</span>
+                <span style="flex:1">${esc(s.t)}</span>
+                <button class="icon-btn" data-del-spec="${i}" style="width:26px;height:26px">${svgI(I.x,13)}</button>
+              </div>`).join('') || '<p class="tiny">Noch keine besonderen Fähigkeiten erfasst.</p>'}
+            <div style="display:flex;gap:7px;margin-top:4px">
+              <input class="input" id="newSpec" placeholder="z. B. Freistoß-Spezialist" style="flex:1">
+              <button class="btn btn-soft btn-sm" id="addSpec">${svgI(I.plus,14)}</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Eingabe: Sprache · Text · Datei</h3></div>
+          <div class="card-body">
+            <p class="tiny" style="margin-bottom:10px">Aussagen wie <i>„${esc(p.first)} ist taktisch besser geworden“</i> passen die Bewertung nachvollziehbar in kleinen Schritten an — nach deiner Bestätigung.</p>
+            <div class="capture-modes" style="grid-template-columns:1fr 1fr">
+              <button class="cap-mode" id="pcVoice">${svgI(I.mic,20)}<b>Sprache</b><span>Notiz diktieren</span></button>
+              <button class="cap-mode" id="pcFile">${svgI(I.upload,20)}<b>Datei / Foto</b><span>Zettel hochladen</span></button>
+            </div>
+            <input type="file" id="pcFileInput" accept="image/*,.txt,.md,.csv,.pdf" style="display:none">
+            <div class="field" style="margin-top:10px">
+              <textarea class="textarea" id="pcText" rows="3" placeholder="z. B. ${esc(p.first)} ist taktisch besser geworden, erster Kontakt deutlich sauberer …"></textarea>
+            </div>
+            <button class="btn btn-accent" id="pcParse" style="width:100%;margin-top:9px">${svgI(I.check,15)} Informationen erkennen</button>
+            <div id="pcFindings" style="display:flex;flex-direction:column;gap:8px;margin-top:12px"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Entwicklung</h3></div>
+          <div class="card-body" style="padding-top:8px">
+            ${hist.length ? hist.map(h=>`
+              <div class="hist-item">
+                <span class="h-date">${new Date(h.ts).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'})}</span>
+                <span class="${h.delta>0?'h-delta up':h.delta<0?'h-delta down':''}">${esc(h.text)}</span>
+              </div>`).join('') : '<p class="tiny">Noch keine Einträge.</p>'}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  /* --- Bindings --- */
+  $('#btnBackSquad').onclick = ()=> go('kader');
+  $('#btnScale2').onclick = showScale;
+  $('#btnEditPlayer').onclick = ()=> showEditPlayer(p);
+  $('#btnFeedback').onclick = ()=> printFeedback(p);
+
+  $$('[data-step]').forEach(b=> b.onclick = ()=>{
+    const [k,i,d] = b.dataset.step.split('|');
+    const before = dimAvg(p.dims[k]);
+    p.dims[k][+i] = clamp(p.dims[k][+i] + +d, 1, 99);
+    const after = dimAvg(p.dims[k]);
+    if(before!==after) logHist(p.id, `${DIM_BY_KEY[k].label} manuell angepasst: ${before} → ${after}`, after-before);
+    saveAll(); renderPlayerProfile(id);
+  });
+
+  ['fbStrengths','fbWeaknesses','fbReco','fbSummary'].forEach((fid,ix)=>{
+    const keys=['strengths','weaknesses','recommendation','summary'];
+    $('#'+fid).addEventListener('input', e=>{ p.fb[keys[ix]] = e.target.value; saveAll(); });
+  });
+  $('#fbSuggest').onclick = ()=>{ autoFeedbackTexts(p); saveAll(); renderPlayerProfile(id); toast('Vorschläge eingesetzt — jederzeit anpassbar'); };
+
+  $('#addSpec').onclick = ()=>{
+    const v = $('#newSpec').value.trim(); if(!v) return;
+    p.specials.push({t:v, s:4}); logHist(p.id,'Besondere Fähigkeit ergänzt: '+v);
+    saveAll(); renderPlayerProfile(id);
+  };
+  $$('[data-del-spec]').forEach(b=> b.onclick = ()=>{ p.specials.splice(+b.dataset.delSpec,1); saveAll(); renderPlayerProfile(id); });
+
+  $('#pcVoice').onclick = ()=> startVoice($('#pcVoice'), txt=>{ $('#pcText').value = ($('#pcText').value+' '+txt).trim(); runProfileParse(p); });
+  $('#pcFile').onclick = ()=> $('#pcFileInput').click();
+  $('#pcFileInput').onchange = e=>{ handleUpload(e.target.files[0], txt=>{ $('#pcText').value = txt; runProfileParse(p); }); e.target.value=''; };
+  $('#pcParse').onclick = ()=> runProfileParse(p);
+}
+
+function runProfileParse(p){
+  const text = $('#pcText').value.trim();
+  if(!text){ toast('Bitte zuerst Text eingeben oder diktieren','info'); return; }
+  profileFindings = parseProfileText(text, p).map(f=>({...f, on:true}));
+  renderProfileFindings(p);
+  if(!profileFindings.length) toast('Keine verwertbaren Informationen erkannt','info');
+}
+
+function renderProfileFindings(p){
+  const host = $('#pcFindings'); if(!host) return;
+  if(!profileFindings.length){ host.innerHTML=''; return; }
+  host.innerHTML = profileFindings.map((f,i)=>{
+    let tag='', main='';
+    if(f.kind==='dim'){
+      const d=DIM_BY_KEY[f.dim]; const cur=dimAvg(p.dims[f.dim]);
+      const sim = simulateDelta(p, f);
+      tag = `<span class="chip ${f.dir>0?'green':'red'}">${d.label} ${f.dir>0?'+':'−'}</span>`;
+      main = `<b>${d.label}: ${cur} → ${sim}</b><div class="f-sub">${f.metrics.length? 'Schwerpunkt: '+f.metrics.map(m=>d.metrics[m]).join(', ') : 'Alle Unterkategorien leicht angepasst'}</div><div class="f-sub" style="font-style:italic">„${esc(f.sent)}“</div>`;
+    } else if(f.kind==='special'){
+      tag = `<span class="chip purple">Fähigkeit</span>`;
+      main = `<b>Besondere Fähigkeit</b><div class="f-sub">„${esc(f.text)}“</div>`;
+    } else if(f.kind==='attr'){
+      tag = `<span class="chip blue">${esc(f.label)}</span>`;
+      main = `<b>${esc(f.label)}: ${esc(f.disp)}</b>`;
+    } else {
+      tag = `<span class="chip">Notiz</span>`;
+      main = `<div class="f-sub">„${esc(f.text)}“ — wird in die Entwicklung übernommen</div>`;
+    }
+    return `<div class="finding ${f.on?'':'off'}">
+      <button class="f-toggle" data-ftog="${i}">${svgI(I.check,12)}</button>
+      <div class="f-main">${main}</div>
+      <div class="f-tag">${tag}</div>
+    </div>`;
+  }).join('') + `
+    <button class="btn btn-primary" id="pcApply" style="width:100%">${svgI(I.check,15)} Informationen übernehmen (${profileFindings.filter(f=>f.on).length})</button>`;
+  $$('[data-ftog]', host).forEach(b=> b.onclick = ()=>{ const f=profileFindings[+b.dataset.ftog]; f.on=!f.on; renderProfileFindings(p); });
+  $('#pcApply').onclick = ()=> applyProfileFindings(p);
+}
+
+function simulateDelta(p, f){
+  const arr = p.dims[f.dim].slice();
+  arr.forEach((v,i)=>{ const hit = f.metrics.length? f.metrics.includes(i):true; arr[i]=clamp(v+(hit?2:1)*f.dir,1,99); });
+  return dimAvg(arr);
+}
+
+function applyProfileFindings(p){
+  let applied = 0;
+  profileFindings.filter(f=>f.on).forEach(f=>{
+    if(f.kind==='dim'){
+      const r = applyDimDelta(p, f.dim, f.dir, f.metrics);
+      logHist(p.id, `${DIM_BY_KEY[f.dim].label} ${f.dir>0?'verbessert':'gesenkt'}: ${r.before} → ${r.after} („${f.sent.slice(0,60)}${f.sent.length>60?'…':''}“)`, r.after-r.before);
+      applied++;
+    } else if(f.kind==='special'){
+      p.specials.push({t:f.text, s:4}); logHist(p.id,'Besondere Fähigkeit ergänzt: '+f.text); applied++;
+    } else if(f.kind==='attr'){
+      p[f.field]=f.value; logHist(p.id, `${f.label} aktualisiert: ${f.disp}`); applied++;
+    } else if(f.kind==='note'){
+      logHist(p.id, 'Notiz: '+f.text); applied++;
+    }
+  });
+  profileFindings = [];
+  saveAll(); renderPlayerProfile(p.id);
+  toast(applied? `${applied} Information${applied>1?'en':''} übernommen` : 'Nichts ausgewählt', applied?'check':'info');
+}
+
+function showEditPlayer(p){
+  const ov = openModal(`
+    <div class="modal-head"><h2>Spielerdaten bearbeiten</h2><button class="icon-btn" data-close>${svgI(I.x,16)}</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr">
+        <div class="field full"><label>Name</label><input class="input" id="epName" value="${esc(p.name)}"></div>
+        <div class="field"><label>Rückennummer</label><input class="input" id="epNum" type="number" value="${p.num}"></div>
+        <div class="field"><label>Position</label><select class="select" id="epPos">${POS.map(x=>`<option value="${x}" ${x===p.pos?'selected':''}>${x} — ${posLabel(x)}</option>`).join('')}</select></div>
+        <div class="field"><label>Geburtsdatum</label><input class="input" id="epBd" type="date" value="${esc(p.bd||'')}"></div>
+        <div class="field"><label>Status</label><select class="select" id="epStatus">${['fit','angeschlagen','verletzt','krank','Reha'].map(s=>`<option ${s===p.status?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="field"><label>Größe (cm)</label><input class="input" id="epH" type="number" value="${p.height||''}"></div>
+        <div class="field"><label>Gewicht (kg)</label><input class="input" id="epW" type="number" value="${p.weight||''}"></div>
+        <div class="field"><label>Starker Fuß</label><select class="select" id="epFoot">${['rechts','links','beidfüßig'].map(f=>`<option ${f===p.foot?'selected':''}>${f}</option>`).join('')}</select></div>
+        <div class="field"><label>Nationalität</label><input class="input" id="epNat" value="${esc(p.nationality||'')}"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="epDelete" style="margin-right:auto">${svgI(I.trash,14)} Löschen</button>
+      <button class="btn btn-ghost" data-close>Abbrechen</button>
+      <button class="btn btn-accent" id="epSave">${svgI(I.save,15)} Speichern</button>
+    </div>`);
+  $('#epSave', ov).onclick = ()=>{
+    p.name=$('#epName').value.trim()||p.name; p.first=p.name.split(' ')[0];
+    p.num=parseInt($('#epNum').value)||p.num; p.pos=$('#epPos').value; p.bd=$('#epBd').value;
+    p.status=$('#epStatus').value; p.height=parseInt($('#epH').value)||null; p.weight=parseInt($('#epW').value)||null;
+    p.foot=$('#epFoot').value; p.nationality=$('#epNat').value.trim();
+    saveAll(); closeModal(); renderPlayerProfile(p.id); toast('Spielerdaten gespeichert');
+  };
+  $('#epDelete', ov).onclick = ()=> confirmDlg('Spieler löschen', `${p.name} wird dauerhaft aus dem Kader entfernt.`, 'Löschen', ()=>{
+    S.players = S.players.filter(x=>x.id!==p.id);
+    saveAll(); go('kader'); toast('Spieler gelöscht');
+  });
+}
+
+/* ---------- Auto-Texte für den Feedbackbogen ---------- */
+function autoFeedbackTexts(p){
+  const sorted = DIMS.map(d=>({d, v:dimAvg(p.dims[d.key])})).sort((a,b)=>b.v-a.v);
+  const best = sorted.slice(0,2), worst = sorted.slice(-2).reverse();
+  const o = overallOf(p);
+  if(!p.fb.strengths) p.fb.strengths = best.map(x=>`${x.d.label} (${x.v})`).join(', ') + (p.specials.length? ` · ${p.specials[0].t}`:'');
+  if(!p.fb.weaknesses) p.fb.weaknesses = worst.map(x=>`${x.d.label} (${x.v})`).join(', ');
+  if(!p.fb.recommendation) p.fb.recommendation = o>=81
+    ? `Leistungsniveau halten und gezielt an ${worst[0].d.label} arbeiten. Verantwortung im Team weiter ausbauen.`
+    : `Gezielte Einzelarbeit an ${worst[0].d.label} und ${worst[1].d.label}. Stärken (${best[0].d.label}) bewusst im Spiel einsetzen.`;
+  if(!p.fb.summary) p.fb.summary = `${p.first} liegt aktuell bei ${o} („${ratingBand(o).label}“) in der Abteilung Allgemein. Auffälligste Stärke: ${best[0].d.label}. Größtes Entwicklungsfeld: ${worst[0].d.label}.`;
+}
+
+/* ---------- FEEDBACKBOGEN (DIN A4, eine Seite) ---------- */
+function printFeedback(p){
+  autoFeedbackTexts(p); saveAll();
+  const o = overallOf(p);
+  const b = ratingBand(o);
+  const pillars = [
+    {label:'Technik', v:dimAvg(p.dims.technik), col:'#175cd3'},
+    {label:'Taktik', v:dimAvg(p.dims.taktik), col:'#0e7c86'},
+    {label:'Athletik', v:dimAvg(p.dims.athletik), col:'#b54708'},
+    {label:'Mentalität', v:dimAvg(p.dims.mentalitaet), col:'#6941c6'},
+    {label:'Tempo', v:dimAvg(p.dims.tempo), col:'#c11574'}
+  ];
+  printSheet(`
+  <div class="fb-sheet">
+    <div class="fb-top">
+      <div>
+        <div class="fb-club">${esc(S.clubName)} · ${esc(S.teamName)}</div>
+        <h1>Spieler-Feedbackbogen</h1>
+      </div>
+      <div class="fb-date">Stand: ${fmtD(todayISO())}<br>Abteilung: Allgemein</div>
+    </div>
+
+    <div class="fb-card">
+      <div class="fbc-av">${initials(p.name)}</div>
+      <div>
+        <h2>${esc(p.name)}</h2>
+        <div class="fbc-meta">
+          <span>Position <b>${posLabel(p.pos)}</b></span>
+          <span>Nr. <b>#${p.num}</b></span>
+          <span>Alter <b>${ageOf(p.bd)}</b></span>
+          <span>Größe <b>${p.height?p.height+' cm':'–'}</b></span>
+          <span>Gewicht <b>${p.weight?p.weight+' kg':'–'}</b></span>
+          <span>Fuß <b>${esc(p.foot||'–')}</b></span>
+          <span>Status <b>${esc(p.status)}</b></span>
+          <span>Team <b>${esc(S.clubName)} ${esc(S.teamName)}</b></span>
+        </div>
+      </div>
+      <div class="fbc-ovr"><b>${o}</b><span>Gesamt</span><div class="fbc-band">${b.label}</div></div>
+    </div>
+
+    <div class="fb-grid">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="fb-box">
+          <h3>Leistungsprofil</h3>
+          ${pillars.map(x=>`
+            <div class="fb-pillar">
+              <span class="pl">${x.label}</span>
+              <span class="pb"><i style="width:${x.v}%;background:${x.col}"></i></span>
+              <span class="pv">${x.v}</span>
+            </div>`).join('')}
+        </div>
+        <div class="fb-box">
+          <h3>Alle Bewertungsdimensionen</h3>
+          <div class="fb-dims">
+            ${DIMS.map(d=>`
+              <div class="fb-dim">
+                <div class="fd-h"><span>${d.label}</span><span>${dimAvg(p.dims[d.key])}</span></div>
+                ${d.metrics.map((m,i)=>`<div class="fd-m"><span>${m}</span><b>${p.dims[d.key][i]}</b></div>`).join('')}
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="fb-box" style="display:grid;place-items:center;padding:4px">${radarSVG(p, 252, {print:true})}</div>
+        <div class="fb-box">
+          <h3>Besondere Fähigkeiten</h3>
+          ${p.specials.length? `<ul class="fb-list">${p.specials.map(s=>`<li>${esc(s.t)}</li>`).join('')}</ul>` : '<div class="fb-txt">—</div>'}
+        </div>
+        <div class="fb-box"><h3>Stärken</h3><div class="fb-txt">${esc(p.fb.strengths)}</div></div>
+        <div class="fb-box"><h3>Schwächen / Entwicklungsfelder</h3><div class="fb-txt">${esc(p.fb.weaknesses)}</div></div>
+      </div>
+    </div>
+
+    <div class="fb-grid" style="grid-template-columns:1fr 1fr">
+      <div class="fb-box"><h3>Empfehlung</h3><div class="fb-txt">${esc(p.fb.recommendation)}</div></div>
+      <div class="fb-box"><h3>Zusammenfassung</h3><div class="fb-txt">${esc(p.fb.summary)}</div></div>
+    </div>
+
+    <div class="fb-foot">
+      <div class="fb-sign"><div class="sig-line"></div>Trainer</div>
+      <div class="fb-sign"><div class="sig-line"></div>Spieler</div>
+      <div class="fb-sign"><div class="sig-line"></div>Erziehungsberechtigte/r</div>
+    </div>
+  </div>`);
+}
+</script>
+<script>
+'use strict';
+/* ============================================================
+   TRAINING — Planung · Anwesenheit · Archiv · Druck
+   ============================================================ */
+const BLOCK_NAME_SUGGESTIONS = ['Warm-up','Übung 1','Hauptteil 1','Hauptteil 2','Spielform','Abschluss'];
+
+function newTrainingDraft(){
+  return {
+    id:null, title:'', date:todayISO(), time:'17:30', duration:90, focus:'Allgemein',
+    blocks:[ newBlock('Warm-up') ],
+    attendance: Object.fromEntries(S.players.map(p=>[p.id, p.status==='fit'])),
+    showHints:true
+  };
+}
+function newBlock(name){
+  return { id:uid(), name:name||'Übung', title:'', duration:15, description:'', coaching:'', organisation:'', material:'', notes:'' };
+}
+function startNewTrainingDraft(withHints){
+  S.trainingDraft = newTrainingDraft();
+  S.trainingDraft.showHints = !!withHints;
+  saveAll();
+  go('training',{trainTab:'plan'});
+  if(withHints) toast('Trainingsplanung geöffnet — du planst selbst, unten findest du Hinweise zum Schwerpunkt','bulb');
+}
+function openTrainingForEdit(id){
+  const t = S.trainings.find(x=>x.id===id); if(!t) return;
+  S.trainingDraft = JSON.parse(JSON.stringify({ ...t, showHints:false }));
+  saveAll();
+  go('training',{trainTab:'plan'});
+}
+
+function renderTraining(){
+  const tabs = `
+    <div class="tabs">
+      <button class="tab ${route.trainTab==='plan'?'active':''}" data-ttab="plan">Planung</button>
+      <button class="tab ${route.trainTab==='archive'?'active':''}" data-ttab="archive">Archiv</button>
+    </div>`;
+  if(route.trainTab==='archive'){ renderTrainingArchive(tabs); }
+  else { renderTrainingPlanner(tabs); }
+  $$('[data-ttab]').forEach(b=> b.onclick = ()=>{ route.trainTab=b.dataset.ttab; render(); });
+}
+
+/* ---------- Trainingsplanung ---------- */
+function renderTrainingPlanner(tabs){
+  if(!S.trainingDraft){ S.trainingDraft = newTrainingDraft(); saveAll(); }
+  const d = S.trainingDraft;
+  const sumBlocks = d.blocks.reduce((s,b)=>s+(+b.duration||0),0);
+  const presentCount = Object.values(d.attendance).filter(Boolean).length;
+  const editing = !!d.id;
+
+  setTopbar('Training', editing ? 'Gespeicherte Einheit bearbeiten' : 'Neue Einheit planen', `
+    <button class="btn btn-ghost" id="trNew">${svgI(I.plus,15)} Neu</button>
+    <button class="btn btn-ghost" id="trPrint">${svgI(I.print,15)} Drucken</button>
+    <button class="btn btn-accent" id="trSave">${svgI(I.save,15)} ${editing?'Änderungen speichern':'Training speichern'}</button>
+  `);
+
+  $('#view').innerHTML = `
+    <div style="margin-bottom:18px">${tabs}</div>
+    <div class="split">
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div class="card">
+          <div class="card-head"><h3>Einheit</h3>${editing?'<div class="spacer"><span class="chip blue">Aus dem Archiv geladen</span></div>':''}</div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="field half"><label>Trainingstitel</label><input class="input" id="tTitle" placeholder="z. B. Umschalten nach Ballgewinn" value="${esc(d.title)}"></div>
+              <div class="field"><label>Schwerpunkt</label><select class="select" id="tFocus">${Object.keys(FOCUS_TOPICS).map(f=>`<option ${f===d.focus?'selected':''}>${f}</option>`).join('')}</select></div>
+              <div class="field"><label>Datum</label><input class="input" id="tDate" type="date" value="${esc(d.date)}"></div>
+              <div class="field"><label>Uhrzeit</label><input class="input" id="tTime" type="time" value="${esc(d.time)}"></div>
+              <div class="field"><label>Gesamtdauer (Min)</label><input class="input" id="tDur" type="number" min="15" step="5" value="${d.duration}"></div>
+              <div class="field half" style="justify-content:flex-end">
+                <div class="tiny" style="padding-bottom:9px">Blöcke gesamt: <b style="color:${sumBlocks>d.duration?'var(--red)':'var(--green-deep)'}">${sumBlocks} Min</b> von ${d.duration} Min</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>Trainingsblöcke</h3>
+            <div class="spacer"><button class="btn btn-sm btn-primary" id="tAddBlock">${svgI(I.plus,14)} Übung hinzufügen</button></div>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+            ${d.blocks.length? d.blocks.map((b,i)=>`
+              <div class="block-card">
+                <div class="block-head">
+                  <span class="b-idx">${i+1}</span>
+                  <input class="b-name" data-bf="${i}|name" value="${esc(b.name)}" placeholder="Blockname (z. B. Hauptteil 1)">
+                  <span class="block-dur">${svgI(I.clock,13)} <input type="number" min="1" data-bf="${i}|duration" value="${b.duration}"> Min</span>
+                  <span style="display:flex;gap:2px">
+                    <button class="icon-btn" data-bmove="${i}|-1" title="nach oben" ${i===0?'disabled style="opacity:.3"':''}>${svgI(I.up,15)}</button>
+                    <button class="icon-btn" data-bmove="${i}|1" title="nach unten" ${i===d.blocks.length-1?'disabled style="opacity:.3"':''}>${svgI(I.down,15)}</button>
+                    <button class="icon-btn" data-bdel="${i}" title="löschen">${svgI(I.trash,15)}</button>
+                  </span>
+                </div>
+                <div class="block-body">
+                  <div class="field full"><label>Titel der Übung</label><input class="input" data-bf="${i}|title" value="${esc(b.title)}" placeholder="z. B. Rondo 5 gegen 2"></div>
+                  <div class="field full"><label>Beschreibung</label><textarea class="textarea" data-bf="${i}|description" placeholder="Ablauf der Übung …">${esc(b.description)}</textarea></div>
+                  <div class="field"><label>Coachingpunkte</label><textarea class="textarea" data-bf="${i}|coaching" placeholder="Worauf achtest du?">${esc(b.coaching)}</textarea></div>
+                  <div class="field"><label>Organisation</label><textarea class="textarea" data-bf="${i}|organisation" placeholder="Feldgröße, Gruppen …">${esc(b.organisation)}</textarea></div>
+                  <div class="field"><label>Material</label><textarea class="textarea" data-bf="${i}|material" placeholder="Hütchen, Bälle, Tore …">${esc(b.material)}</textarea></div>
+                  <div class="field"><label>Notizen</label><textarea class="textarea" data-bf="${i}|notes" placeholder="Optional">${esc(b.notes)}</textarea></div>
+                </div>
+              </div>`).join('') : '<p class="tiny">Noch keine Blöcke — füge die erste Übung hinzu.</p>'}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px">
+        ${d.showHints ? `
+        <div class="hint-box">
+          <h4>${svgI(I.bulb,15)} Hinweise zum Schwerpunkt „<span id="hintFocus">${esc(d.focus)}</span>“</h4>
+          <ul id="hintList">${(FOCUS_TOPICS[d.focus]||FOCUS_TOPICS['Allgemein']).map(h=>`<li>${h}</li>`).join('')}</ul>
+          <p class="tiny" style="margin-top:9px;color:#3d6355">Du planst die Einheit selbst — diese Punkte sind nur Orientierung.</p>
+        </div>`:''}
+
+        <div class="card">
+          <div class="card-head">
+            <h3>Anwesenheit</h3>
+            <div class="spacer"><span class="chip green">${presentCount}/${S.players.length}</span></div>
+          </div>
+          <div class="card-body" style="padding:10px 12px">
+            <p class="tiny" style="padding:0 6px 8px">Klick = an-/abwesend · Doppelklick = Spielerprofil</p>
+            ${S.players.slice().sort((a,b)=>a.num-b.num).map(p=>`
+              <div class="player-row ${d.attendance[p.id]?'':'absent'}" data-att="${p.id}" data-open-player="${p.id}">
+                <span class="att-check">${svgI(I.check,12)}</span>
+                <span class="num-badge">${p.num}</span>
+                <div><div class="pr-name">${esc(p.name)}</div><div class="pr-sub">${posLabel(p.pos)}${p.status!=='fit'?' · <span style="color:var(--red)">'+esc(p.status)+'</span>':''}</div></div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  /* Bindings */
+  $('#trNew').onclick = ()=> confirmOrNew();
+  $('#trSave').onclick = saveTrainingDraft;
+  $('#trPrint').onclick = ()=> printTraining(collectDraft());
+  $('#tTitle').oninput = e=>{ d.title=e.target.value; saveAll(); };
+  $('#tDate').onchange = e=>{ d.date=e.target.value; saveAll(); };
+  $('#tTime').onchange = e=>{ d.time=e.target.value; saveAll(); };
+  $('#tDur').oninput = e=>{ d.duration=parseInt(e.target.value)||0; saveAll(); };
+  $('#tFocus').onchange = e=>{
+    d.focus=e.target.value; saveAll();
+    const hl=$('#hintList'), hf=$('#hintFocus');
+    if(hl){ hl.innerHTML=(FOCUS_TOPICS[d.focus]||[]).map(h=>`<li>${h}</li>`).join(''); hf.textContent=d.focus; }
+  };
+  $('#tAddBlock').onclick = ()=>{
+    const suggestion = BLOCK_NAME_SUGGESTIONS[Math.min(d.blocks.length, BLOCK_NAME_SUGGESTIONS.length-1)];
+    d.blocks.push(newBlock(suggestion)); saveAll(); renderTraining();
+  };
+  $$('[data-bf]').forEach(el=> el.addEventListener('input', ()=>{
+    const [i,f] = el.dataset.bf.split('|');
+    d.blocks[+i][f] = f==='duration' ? (parseInt(el.value)||0) : el.value;
+    saveAll();
+  }));
+  $$('[data-bmove]').forEach(b=> b.onclick = ()=>{
+    const [i,dir] = b.dataset.bmove.split('|').map(Number);
+    const j=i+dir; if(j<0||j>=d.blocks.length) return;
+    [d.blocks[i],d.blocks[j]]=[d.blocks[j],d.blocks[i]];
+    saveAll(); renderTraining();
+  });
+  $$('[data-bdel]').forEach(b=> b.onclick = ()=>{
+    const i=+b.dataset.bdel;
+    confirmDlg('Übung löschen', `„${d.blocks[i].name}${d.blocks[i].title?' — '+d.blocks[i].title:''}“ wird entfernt.`, 'Löschen', ()=>{
+      d.blocks.splice(i,1); saveAll(); renderTraining();
+    });
+  });
+  $$('[data-att]').forEach(el=>{
+    let clickTimer=null;
+    el.addEventListener('click', ()=>{
+      clearTimeout(clickTimer);
+      clickTimer=setTimeout(()=>{
+        const pid=el.dataset.att;
+        d.attendance[pid]=!d.attendance[pid]; saveAll(); renderTraining();
+      },220);
+    });
+    el.addEventListener('dblclick', ()=>{ clearTimeout(clickTimer); openPlayer(el.dataset.att); });
+  });
+}
+
+function confirmOrNew(){
+  const d=S.trainingDraft;
+  const dirty = d && (d.title || d.blocks.some(b=>b.title||b.description));
+  if(dirty && !d.id){
+    confirmDlg('Neue Einheit beginnen','Der aktuelle, nicht gespeicherte Entwurf wird verworfen.','Neu beginnen',()=>startNewTrainingDraft(false));
+  } else startNewTrainingDraft(false);
+}
+
+function collectDraft(){ return S.trainingDraft; }
+
+function saveTrainingDraft(){
+  const d = S.trainingDraft;
+  if(!d.title.trim()){ toast('Bitte einen Trainingstitel eingeben','info'); $('#tTitle')&&$('#tTitle').focus(); return; }
+  const rec = { id:d.id||uid(), title:d.title.trim(), date:d.date, time:d.time, duration:d.duration, focus:d.focus,
+                blocks:JSON.parse(JSON.stringify(d.blocks)), attendance:{...d.attendance}, savedAt:new Date().toISOString() };
+  const ix = S.trainings.findIndex(t=>t.id===rec.id);
+  if(ix>=0) S.trainings[ix]=rec; else S.trainings.push(rec);
+  S.trainingDraft = null;
+  saveAll();
+  route.trainTab='archive'; render();
+  toast(ix>=0?'Training aktualisiert':'Training gespeichert und ins Archiv übernommen');
+}
+
+/* ---------- Trainingsarchiv ---------- */
+let trainSearch='', trainFrom='', trainTo='';
+function renderTrainingArchive(tabs){
+  setTopbar('Training', `${S.trainings.length} Einheiten im Archiv`, `
+    <button class="btn btn-accent" id="trNew2">${svgI(I.plus,15)} Neue Einheit</button>
+  `);
+  const list = S.trainings.slice()
+    .filter(t=>{
+      const q=lc(trainSearch);
+      if(q && !(lc(t.title).includes(q) || lc(t.focus||'').includes(q) || t.blocks.some(b=>lc(b.title).includes(q)||lc(b.name).includes(q)))) return false;
+      if(trainFrom && t.date<trainFrom) return false;
+      if(trainTo && t.date>trainTo) return false;
+      return true;
+    })
+    .sort((a,b)=>b.date.localeCompare(a.date));
+
+  $('#view').innerHTML = `
+    <div style="margin-bottom:18px">${tabs}</div>
+    <div class="card" style="margin-bottom:16px"><div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div class="search-wrap">${svgI(I.search,15)}<input class="input" id="taSearch" placeholder="Titel, Schwerpunkt oder Übung suchen …" value="${esc(trainSearch)}"></div>
+      <div class="field" style="width:150px"><label>Von</label><input class="input" id="taFrom" type="date" value="${esc(trainFrom)}"></div>
+      <div class="field" style="width:150px"><label>Bis</label><input class="input" id="taTo" type="date" value="${esc(trainTo)}"></div>
+      ${(trainSearch||trainFrom||trainTo)?`<button class="btn btn-ghost btn-sm" id="taReset">Zurücksetzen</button>`:''}
+    </div></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${list.length? list.map(t=>{ const ds=fmtDShort(t.date); const present=Object.values(t.attendance||{}).filter(Boolean).length; return `
+        <div class="arch-item">
+          <div class="arch-date"><b>${ds.d}</b><span>${ds.m}</span></div>
+          <div class="arch-main">
+            <div class="a-title">${esc(t.title)}</div>
+            <div class="a-sub">${esc(t.time||'')} Uhr · ${t.duration} Min · ${t.blocks.length} Blöcke · ${present} anwesend${t.focus?` · <span class="chip" style="font-size:10.5px;padding:1px 7px">${esc(t.focus)}</span>`:''}</div>
+          </div>
+          <div class="arch-actions">
+            <button class="btn btn-sm btn-ghost" data-topen="${t.id}">${svgI(I.eye,14)} Öffnen</button>
+            <button class="btn btn-sm btn-ghost" data-tprint="${t.id}">${svgI(I.print,14)}</button>
+            <button class="icon-btn" data-tdel="${t.id}">${svgI(I.trash,15)}</button>
+          </div>
+        </div>`; }).join('') : `<div class="card card-pad" style="text-align:center"><p class="muted">Keine Einheiten gefunden.</p></div>`}
+    </div>`;
+
+  $('#trNew2').onclick = ()=> startNewTrainingDraft(false);
+  $('#taSearch').oninput = e=>{ trainSearch=e.target.value; renderTraining(); };
+  $('#taFrom').onchange = e=>{ trainFrom=e.target.value; renderTraining(); };
+  $('#taTo').onchange = e=>{ trainTo=e.target.value; renderTraining(); };
+  if($('#taReset')) $('#taReset').onclick = ()=>{ trainSearch=trainFrom=trainTo=''; renderTraining(); };
+  $$('[data-topen]').forEach(b=> b.onclick = ()=> openTrainingForEdit(b.dataset.topen));
+  $$('[data-tprint]').forEach(b=> b.onclick = ()=>{ const t=S.trainings.find(x=>x.id===b.dataset.tprint); if(t) printTraining(t); });
+  $$('[data-tdel]').forEach(b=> b.onclick = ()=>{
+    const t=S.trainings.find(x=>x.id===b.dataset.tdel);
+    confirmDlg('Training löschen', `„${t.title}“ wird dauerhaft aus dem Archiv entfernt.`, 'Löschen', ()=>{
+      S.trainings=S.trainings.filter(x=>x.id!==t.id); saveAll(); renderTraining(); toast('Training gelöscht');
+    });
+  });
+}
+
+/* ---------- Druck: Trainingseinheit (DIN A4, s/w) ---------- */
+function printTraining(t){
+  if(!t){ return; }
+  const present = S.players.filter(p=> (t.attendance||{})[p.id]).sort((a,b)=>a.num-b.num);
+  const sumBlocks = t.blocks.reduce((s,b)=>s+(+b.duration||0),0);
+  printSheet(`
+  <div class="pr-doc">
+    <div class="pr-head">
+      <div>
+        <div class="pr-brand">${esc(S.clubName)} · ${esc(S.teamName)} · Trainingseinheit</div>
+        <h1>${esc(t.title||'Trainingseinheit')}</h1>
+      </div>
+      <div class="pr-meta">
+        <b>${fmtDLong(t.date)}</b><br>
+        ${esc(t.time||'')} Uhr · ${t.duration} Min geplant<br>
+        Schwerpunkt: ${esc(t.focus||'—')}
+      </div>
+    </div>
+
+    <div class="pr-sec">
+      <h2>Trainingsstruktur (${t.blocks.length} Blöcke · ${sumBlocks} Min)</h2>
+      ${t.blocks.map((b,i)=>`
+        <div class="pr-block">
+          <div class="pr-block-head"><span>${i+1}. ${esc(b.name)}${b.title?` — ${esc(b.title)}`:''}</span><span>${b.duration} Min</span></div>
+          <div class="pr-block-body">
+            ${b.description?`<div class="full"><b>Beschreibung:</b> ${esc(b.description)}</div>`:''}
+            ${b.coaching?`<div><b>Coachingpunkte:</b> ${esc(b.coaching)}</div>`:''}
+            ${b.organisation?`<div><b>Organisation:</b> ${esc(b.organisation)}</div>`:''}
+            ${b.material?`<div><b>Material:</b> ${esc(b.material)}</div>`:''}
+            ${b.notes?`<div><b>Notizen:</b> ${esc(b.notes)}</div>`:''}
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="pr-sec">
+      <h2>Anwesende Spieler (${present.length})</h2>
+      <div class="pr-names">
+        ${present.map(p=>`<span>#${p.num} ${esc(p.name)}</span>`).join('') || '<span>—</span>'}
+      </div>
+    </div>
+
+    <div class="pr-sec" style="page-break-before:always">
+      <h2>Skizzenfeld</h2>
+      <div class="pr-pitch">${pitchSketchSVG()}</div>
+      <div class="pr-note">Leeres Spielfeld zum Skizzieren von Übungsformen, Laufwegen und Organisation.</div>
+    </div>
+  </div>`);
+}
+</script>
+<script>
+'use strict';
+/* ============================================================
+   SPIEL — Aufstellung · Datenerfassung · Archiv · Druck
+   ============================================================ */
+const FORMATION_SLOTS = [
+  {pos:'TW',x:50,y:91},{pos:'LV',x:18,y:74},{pos:'IV',x:38,y:78},{pos:'IV',x:62,y:78},{pos:'RV',x:82,y:74},
+  {pos:'DM',x:50,y:62},{pos:'ZM',x:33,y:50},{pos:'ZM',x:67,y:50},{pos:'LA',x:16,y:32},{pos:'RA',x:84,y:32},{pos:'ST',x:50,y:20}
+];
+const POS_FALLBACK = {TW:['TW'],LV:['LV','IV','RV','DM'],IV:['IV','DM','RV','LV'],RV:['RV','IV','LV','DM'],DM:['DM','ZM','IV'],ZM:['ZM','DM','OM'],OM:['OM','ZM','ST'],LA:['LA','RA','OM','ST'],RA:['RA','LA','OM','ST'],ST:['ST','OM','LA','RA']};
+const POSWORD = {'torwart':'TW','keeper':'TW','innenverteidiger':'IV','linksverteidiger':'LV','rechtsverteidiger':'RV','außenverteidiger':'RV','sechser':'DM','defensives mittelfeld':'DM','zentrales mittelfeld':'ZM','achter':'ZM','zehner':'OM','offensives mittelfeld':'OM','linksaußen':'LA','rechtsaußen':'RA','flügel':'LA','mittelstürmer':'ST','stürmer':'ST','sturm':'ST'};
+
+function newMatchDraft(){
+  const fit = S.players.filter(p=>p.status!=='verletzt' && p.status!=='krank');
+  /* Positionsgetreue Startelf: je Slot passender Spieler, sonst nächstliegende Position */
+  const used = new Set();
+  const field = [];
+  FORMATION_SLOTS.forEach(sl=>{
+    let cand = null;
+    for(const fp of (POS_FALLBACK[sl.pos]||[sl.pos])){
+      const pool = fit.filter(p=>!used.has(p.id) && p.pos===fp).sort((a,b)=>overallOf(b)-overallOf(a));
+      if(pool.length){ cand = pool[0]; break; }
+    }
+    if(!cand) cand = fit.filter(p=>!used.has(p.id)).sort((a,b)=>overallOf(b)-overallOf(a))[0];
+    if(cand){ used.add(cand.id); field.push({ pid:cand.id, x:sl.x, y:sl.y }); }
+  });
+  const fieldIds = new Set(field.map(f=>f.pid));
+  const d = {
+    id:null, opponent:'', date:todayISO(), time:'11:00', competition:'Landesliga', venue:'Heim',
+    goalsFor:null, goalsAgainst:null, totalMinutes:80, teamNotes:'', conclusion:'',
+    lineup:{
+      field,
+      bench: S.players.filter(p=>!fieldIds.has(p.id) && p.status!=='verletzt' && p.status!=='krank').map(p=>p.id),
+      out: S.players.filter(p=>!fieldIds.has(p.id) && (p.status==='verletzt'||p.status==='krank')).map(p=>p.id)
+    },
+    playerData:{}
+  };
+  S.players.forEach(p=> ensurePD(d, p.id));
+  return d;
+}
+function ensurePD(d, pid){
+  if(!d.playerData[pid]){
+    const p = S.players.find(x=>x.id===pid);
+    d.playerData[pid] = { from:null, to:null, position:p?p.pos:'', rating:null, note:'', events:[] };
+  }
+  return d.playerData[pid];
+}
+function pdMinutes(pd){ return (pd.from!=null && pd.to!=null && pd.to>=pd.from) ? pd.to-pd.from : null; }
+function ensureMatchDraft(){ if(!S.matchDraft){ S.matchDraft = newMatchDraft(); saveAll(); } return S.matchDraft; }
+function openMatchForEdit(id){
+  const m = S.matches.find(x=>x.id===id); if(!m) return;
+  S.matchDraft = JSON.parse(JSON.stringify(m));
+  S.players.forEach(p=> ensurePD(S.matchDraft, p.id));
+  saveAll();
+  go('spiel',{spielTab:'lineup'});
+}
+
+function renderSpiel(){
+  ensureMatchDraft();
+  const tabs = `
+    <div class="tabs">
+      <button class="tab ${route.spielTab==='lineup'?'active':''}" data-stab="lineup">Aufstellung</button>
+      <button class="tab ${route.spielTab==='capture'?'active':''}" data-stab="capture">Datenerfassung</button>
+      <button class="tab ${route.spielTab==='archive'?'active':''}" data-stab="archive">Archiv</button>
+    </div>`;
+  if(route.spielTab==='archive') renderMatchArchive(tabs);
+  else if(route.spielTab==='capture') renderMatchCapture(tabs);
+  else renderLineup(tabs);
+  $$('[data-stab]').forEach(b=> b.onclick = ()=>{ route.spielTab=b.dataset.stab; render(); });
+}
+
+function spielTopbar(sub){
+  const d = S.matchDraft;
+  setTopbar('Spiel', sub, `
+    <button class="btn btn-ghost" id="mNew">${svgI(I.plus,15)} Neues Spiel</button>
+    <button class="btn btn-ghost" id="mPrint">${svgI(I.print,15)} Drucken</button>
+    <button class="btn btn-accent" id="mSave">${svgI(I.save,15)} ${d.id?'Änderungen speichern':'Spiel speichern'}</button>
+  `);
+  $('#mNew').onclick = ()=> confirmDlg('Neues Spiel beginnen', d.id?'Das geladene Spiel bleibt im Archiv erhalten.':'Der aktuelle Entwurf wird verworfen.', 'Neues Spiel', ()=>{ S.matchDraft=newMatchDraft(); saveAll(); render(); });
+  $('#mPrint').onclick = ()=> printMatch(S.matchDraft);
+  $('#mSave').onclick = saveMatchDraft;
+}
+
+function saveMatchDraft(){
+  const d = S.matchDraft;
+  if(!d.opponent.trim()){ toast('Bitte den Gegner eintragen','info'); const el=$('#mOpp'); if(el) el.focus(); return; }
+  const rec = JSON.parse(JSON.stringify(d));
+  rec.id = d.id || uid();
+  rec.savedAt = new Date().toISOString();
+  const ix = S.matches.findIndex(m=>m.id===rec.id);
+  if(ix>=0) S.matches[ix]=rec; else S.matches.push(rec);
+  S.matchDraft = JSON.parse(JSON.stringify(rec));
+  saveAll();
+  toast(ix>=0?'Spiel aktualisiert':'Spiel gespeichert und ins Archiv übernommen');
+  render();
+}
+
+/* ---------- Aufstellung ---------- */
+function renderLineup(tabs){
+  const d = S.matchDraft;
+  spielTopbar(d.opponent?`vs. ${d.opponent} · ${fmtD(d.date)}`:'Aufstellung & Spielinfos');
+  const byId = pid => S.players.find(p=>p.id===pid);
+  const chip = (pid)=>{ const p=byId(pid); if(!p) return ''; return `
+    <span class="bchip ${p.pos==='TW'?'gk':''}" data-drag-pid="${pid}" data-open-player="${pid}" title="${esc(p.name)}">
+      <span class="n">${p.num}</span>${esc(p.name.split(' ')[0])} ${esc((p.name.split(' ')[1]||'').slice(0,1))}.
+    </span>`; };
+
+  $('#view').innerHTML = `
+    <div style="margin-bottom:18px">${tabs}</div>
+    <div class="card" style="margin-bottom:16px"><div class="card-body">
+      <div class="form-grid" style="grid-template-columns:repeat(6,1fr)">
+        <div class="field" style="grid-column:span 2"><label>Gegner</label><input class="input" id="mOpp" placeholder="z. B. JFV Rheinhessen" value="${esc(d.opponent)}"></div>
+        <div class="field"><label>Datum</label><input class="input" id="mDate" type="date" value="${esc(d.date)}"></div>
+        <div class="field"><label>Anstoß</label><input class="input" id="mTime" type="time" value="${esc(d.time)}"></div>
+        <div class="field"><label>Wettbewerb</label><input class="input" id="mComp" value="${esc(d.competition||'')}" placeholder="Liga, Pokal …"></div>
+        <div class="field"><label>Heim / Auswärts</label><select class="select" id="mVenue"><option ${d.venue==='Heim'?'selected':''}>Heim</option><option ${d.venue==='Auswärts'?'selected':''}>Auswärts</option></select></div>
+      </div>
+    </div></div>
+
+    <div class="split" style="grid-template-columns:minmax(0,460px) 1fr">
+      <div>
+        <div class="pitch-wrap">
+          <div class="pitch" id="pitch" data-zone="field">
+            ${pitchLinesSVG(false)}
+            ${d.lineup.field.map(f=>{ const p=byId(f.pid); if(!p) return ''; return `
+              <div class="token ${p.pos==='TW'?'gk':''}" data-drag-pid="${f.pid}" data-open-player="${f.pid}" style="left:${f.x}%;top:${f.y}%">
+                <div class="t-dot">${p.num}</div><div class="t-name">${esc(p.first)}</div>
+              </div>`; }).join('')}
+          </div>
+        </div>
+        <p class="tiny" style="margin-top:9px">Spieler frei verschieben — zwischen Feld, Bank und „Nicht im Kader“. Doppelklick öffnet das Spielerprofil.</p>
+      </div>
+      <div class="bench-col">
+        <div class="bench-zone" data-zone="bench">
+          <h4>${svgI(I.user,13)} Bank <span class="cnt">${d.lineup.bench.length}</span></h4>
+          <div class="bench-list">${d.lineup.bench.map(chip).join('') || '<span class="tiny">Spieler hierher ziehen</span>'}</div>
+        </div>
+        <div class="bench-zone" data-zone="out">
+          <h4>${svgI(I.x,13)} Nicht im Kader <span class="cnt">${d.lineup.out.length}</span></h4>
+          <div class="bench-list">${d.lineup.out.map(chip).join('') || '<span class="tiny">Spieler hierher ziehen</span>'}</div>
+        </div>
+        <div class="card card-pad">
+          <h3 style="font-size:13.5px;margin-bottom:6px">Auf dem Feld · ${d.lineup.field.length}</h3>
+          <p class="tiny">Alle Feldspieler in einheitlicher Farbe, der Torwart in Gold. Über die Datenerfassung pflegst du Spielzeiten und Bewertungen.</p>
+        </div>
+      </div>
+    </div>`;
+
+  $('#mOpp').oninput = e=>{ d.opponent=e.target.value; saveAll(); };
+  $('#mDate').onchange = e=>{ d.date=e.target.value; saveAll(); };
+  $('#mTime').onchange = e=>{ d.time=e.target.value; saveAll(); };
+  $('#mComp').oninput = e=>{ d.competition=e.target.value; saveAll(); };
+  $('#mVenue').onchange = e=>{ d.venue=e.target.value; saveAll(); };
+
+  initLineupDrag(d);
+  bindPlayerOpen();
+}
+
+/* Einheitliches Pointer-Drag: Feld-Token, Bank- und Nicht-im-Kader-Chips */
+function initLineupDrag(d){
+  $$('[data-drag-pid]').forEach(el=>{
+    el.addEventListener('pointerdown', ev=>{
+      if(ev.button!==0 && ev.pointerType==='mouse') return;
+      const pid = el.dataset.dragPid;
+      const startX=ev.clientX, startY=ev.clientY;
+      let dragging=false, ghost=null;
+      const onMove = e=>{
+        if(!dragging && Math.hypot(e.clientX-startX, e.clientY-startY) > 7){
+          dragging=true;
+          el.classList.add('dragging');
+          ghost = el.cloneNode(true);
+          ghost.classList.add('drag-ghost');
+          ghost.style.position='fixed'; ghost.style.left='0'; ghost.style.top='0'; ghost.style.margin='0'; ghost.style.width=el.offsetWidth+'px';
+          document.body.appendChild(ghost);
+        }
+        if(dragging){
+          ghost.style.transform = `translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;
+          $$('[data-zone]').forEach(z=>z.classList.remove('drop-hot'));
+          const zone = zoneAt(e.clientX, e.clientY, ghost);
+          if(zone) zone.classList.add('drop-hot');
+        }
+      };
+      const onUp = e=>{
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        el.classList.remove('dragging');
+        $$('[data-zone]').forEach(z=>z.classList.remove('drop-hot'));
+        if(ghost) ghost.remove();
+        if(!dragging) return;
+        const zone = zoneAt(e.clientX, e.clientY, null);
+        if(!zone) return;
+        movePlayerTo(d, pid, zone.dataset.zone, zone, e.clientX, e.clientY);
+      };
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
+  });
+}
+function zoneAt(x, y, ghost){
+  if(ghost) ghost.style.display='none';
+  const el = document.elementFromPoint(x, y);
+  if(ghost) ghost.style.display='';
+  return el ? el.closest('[data-zone]') : null;
+}
+function movePlayerTo(d, pid, zoneName, zoneEl, cx, cy){
+  d.lineup.field = d.lineup.field.filter(f=>f.pid!==pid);
+  d.lineup.bench = d.lineup.bench.filter(x=>x!==pid);
+  d.lineup.out   = d.lineup.out.filter(x=>x!==pid);
+  if(zoneName==='field'){
+    const r = zoneEl.getBoundingClientRect();
+    const x = clamp(Math.round((cx-r.left)/r.width*100), 4, 96);
+    const y = clamp(Math.round((cy-r.top)/r.height*100), 4, 96);
+    d.lineup.field.push({ pid, x, y });
+  } else if(zoneName==='bench'){
+    d.lineup.bench.push(pid);
+  } else {
+    d.lineup.out.push(pid);
+  }
+  saveAll(); renderSpiel();
+}
+</script>
+<script>
+'use strict';
+/* ============================================================
+   SPIEL — Datenerfassung (Sprache · Text · Datei) + Parser
+   ============================================================ */
+const NOTE_MAP = {1:9.5, 2:8.5, 3:7, 4:5.5, 5:4, 6:2.5};
+
+function matchPlayerIn(text){
+  const t = ' '+lc(text)+' ';
+  const hits = [];
+  S.players.forEach(p=>{
+    const names = [lc(p.name), lc(p.first), ...(p.nick||[]).map(lc)];
+    if(names.some(n=> n && new RegExp('(^|[^a-zäöüß])'+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^a-zäöüß]|$)').test(t))) hits.push(p);
+  });
+  return hits;
+}
+
+function parseMatchText(text){
+  const team = {};
+  const rows = {};
+  const row = pid => rows[pid] || (rows[pid] = { pid, from:null, to:null, rating:null, position:null, events:[], notes:[] });
+  const total = S.matchDraft ? (S.matchDraft.totalMinutes||80) : 80;
+
+  splitSentences(text).forEach(sent=>{
+    const t = lc(sent);
+
+    /* --- Teaminfos --- */
+    let m = sent.match(/(\d{1,2})\s*:\s*(\d{1,2})(?!\s*uhr)/i);
+    if(m && (hasAny(t,['gewonnen','verloren','unentschieden','ergebnis','endstand','gespielt','geschlagen']) || (+m[1]<=15 && +m[2]<=15 && !t.includes('uhr')))){
+      let gf=+m[1], ga=+m[2];
+      if(t.includes('verloren') && gf>ga) [gf,ga]=[ga,gf];
+      team.goalsFor=gf; team.goalsAgainst=ga;
+    }
+    m = sent.match(/[Gg]egen\s+(?:den\s+|die\s+)?([A-ZÄÖÜ][\wÄÖÜäöüß.\- ]{2,32}?)(?=\s+(?:haben|hat|gewonnen|verloren|gespielt|unentschieden|mit|am|um|war|\d)|[,.;!?]|$)/);
+    if(m) team.opponent = m[1].trim();
+    if(t.includes('pokal')) team.competition='Pokal';
+    else if(t.includes('testspiel')||t.includes('freundschaftsspiel')) team.competition='Testspiel';
+    else if(t.includes('turnier')) team.competition='Turnier';
+    else if(t.includes('liga')) team.competition='Liga';
+    m = t.match(/2\s*[x×]\s*(\d{2})/);
+    if(m) team.totalMinutes = 2*+m[1];
+    m = t.match(/(\d{2,3})\s*minuten?\s*(?:gesamt|spielzeit)/) || t.match(/spielzeit\D{0,10}(\d{2,3})/);
+    if(m) team.totalMinutes = +m[1];
+    if(hasAny(t,['fazit','insgesamt','als team','die mannschaft','wir haben','erste halbzeit','zweite halbzeit']) && !matchPlayerIn(sent).length){
+      team.notes = (team.notes? team.notes+' ' : '') + sent;
+    }
+
+    /* --- Spielerinfos --- */
+    const players = matchPlayerIn(sent);
+    if(!players.length) return;
+    const single = players.length===1;
+    players.forEach(p=>{
+      const r = row(p.id);
+      if(single){
+        let mm = t.match(/von\s+(?:der\s+)?(\d{1,3})\.?\s*(?:minute\s*)?bis\s+(?:zur\s+)?(?:minute\s+)?(\d{1,3})/);
+        if(mm){ r.from=+mm[1]; r.to=+mm[2]; }
+        else if(hasAny(t,['durchgespielt','komplett gespielt','volle distanz','von anfang bis ende'])){ r.from=0; r.to=total; }
+        else {
+          mm = t.match(/eingewechselt\D{0,20}?(\d{1,3})/) || t.match(/(?:ab|in)\s+(?:der\s+)?(\d{1,3})\.?\s*minute\s+(?:eingewechselt|gekommen|rein)/) || (t.includes('eingewechselt') ? t.match(/(\d{1,3})\.?\s*minute/) : null);
+          if(mm && t.includes('eingewechselt')){ r.from=+mm[1]; if(r.to==null) r.to=total; }
+          mm = t.match(/ausgewechselt\D{0,20}?(\d{1,3})/) || (t.includes('ausgewechselt') ? t.match(/(\d{1,3})\.?\s*minute/) : null);
+          if(mm && t.includes('ausgewechselt')){ r.to=+mm[1]; if(r.from==null) r.from=0; }
+          mm = t.match(/(\d{1,3})\s*minuten?\s*gespielt/);
+          if(mm && r.from==null && r.to==null){ r.from=0; r.to=Math.min(+mm[1], total); }
+        }
+        let rm = t.match(/note\s+(\d{1,2}(?:[.,]5)?)/);
+        if(rm){
+          const n=parseFloat(rm[1].replace(',','.'));
+          if(n>=1 && n<=6 && !t.includes('von 10') && !t.includes('/10')){
+            /* Schulnote 1–6 → 10er-Skala */
+            const lo=NOTE_MAP[Math.floor(n)]??5, hi=NOTE_MAP[Math.ceil(n)]??5;
+            r.rating=Math.round((lo+hi)/2*10)/10;
+          } else if(n>6 && n<=10){
+            r.rating=n;
+          }
+        }
+        rm = t.match(/(\d{1,2}(?:[.,]\d)?)\s*(?:\/|von)\s*10/);
+        if(rm) r.rating = clamp(parseFloat(rm[1].replace(',','.')),1,10);
+        for(const [w,pos] of Object.entries(POSWORD)){
+          if(t.includes('als '+w) || t.includes('im '+w) || t.includes('auf '+w)){ r.position=pos; break; }
+        }
+      }
+      EVENT_KW.forEach(ek=>{ if(ek.re.test(t)){ for(let k=0;k<ek.n;k++) r.events.push(ek.ev); } });
+      if(r.rating==null){
+        const pos=hasAny(t,POSWORDS.map(lc)), neg=hasAny(t,NEGWORDS.map(lc));
+        if(pos&&!neg) r.rating=7.5; else if(neg&&!pos) r.rating=4.5;
+      }
+      r.notes.push(sent);
+    });
+  });
+  /* Ereignis-Duplikate innerhalb einer Erfassung glätten */
+  Object.values(rows).forEach(r=>{
+    const uniq=[]; const seen={};
+    r.events.forEach(e=>{ seen[e]=(seen[e]||0)+1; });
+    Object.entries(seen).forEach(([e,n])=>{ const max = e==='Tor'||e==='Assist' ? n : 1; for(let k=0;k<max;k++) uniq.push(e); });
+    r.events=uniq;
+  });
+  return { team, rows:Object.values(rows) };
+}
+
+/* ---------- Datenerfassung UI ---------- */
+let matchFindings = null;
+function renderMatchCapture(tabs){
+  const d = S.matchDraft;
+  spielTopbar(d.opponent?`Datenerfassung · vs. ${d.opponent}`:'Datenerfassung');
+  const rowsOrder = [...d.lineup.field.map(f=>f.pid), ...d.lineup.bench, ...d.lineup.out];
+  const inSquad = new Set([...d.lineup.field.map(f=>f.pid), ...d.lineup.bench]);
+
+  $('#view').innerHTML = `
+    <div style="margin-bottom:18px">${tabs}</div>
+    <div class="split" style="grid-template-columns:400px minmax(0,1fr)">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card">
+          <div class="card-head"><h3>Erfassen</h3></div>
+          <div class="card-body">
+            <div class="capture-modes">
+              <button class="cap-mode" id="mcVoice">${svgI(I.mic,20)}<b>Sprache</b><span>Diktieren</span></button>
+              <button class="cap-mode" id="mcTextFocus">${svgI(I.text,20)}<b>Text</b><span>Notizen tippen</span></button>
+              <button class="cap-mode" id="mcFile">${svgI(I.upload,20)}<b>Datei / Foto</b><span>Zettel hochladen</span></button>
+            </div>
+            <input type="file" id="mcFileInput" accept="image/*,.txt,.md,.csv,.pdf" style="display:none">
+            <div class="field" style="margin-top:12px">
+              <label>Spielnotizen</label>
+              <textarea class="textarea" id="mcText" rows="5" placeholder="z. B. Leon von 0 bis 70 gespielt, zwei Tore, Note 8. Jonas durchgespielt, sehr starke Übersicht. Gegen JFV Rheinhessen 3:1 gewonnen …"></textarea>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn btn-soft" id="mcParse" style="flex:1">${svgI(I.search,15)} Erkennen</button>
+              <button class="btn btn-accent" id="mcApply" style="flex:1.4">${svgI(I.check,15)} Informationen übernehmen</button>
+            </div>
+            <p class="tiny" style="margin-top:9px">Sprache, Text und Datei funktionieren unabhängig. Erkannte Informationen erscheinen rechts zur Kontrolle — alles bleibt vor dem Speichern editierbar.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Erkannt</h3>${matchFindings?`<div class="spacer"><button class="btn btn-xs btn-ghost" id="mcClear">Leeren</button></div>`:''}</div>
+          <div class="card-body" id="mcFindings" style="display:flex;flex-direction:column;gap:9px;padding:14px 16px">
+            ${matchFindings? '' : '<p class="tiny">Noch nichts erkannt. Sprich, tippe oder lade einen Zettel hoch und wähle „Erkennen“.</p>'}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+        <div class="card">
+          <div class="card-head"><h3>Teamdaten</h3></div>
+          <div class="card-body">
+            <div class="form-grid" style="grid-template-columns:repeat(4,1fr)">
+              <div class="field"><label>Gegner</label><input class="input" id="mOpp" value="${esc(d.opponent)}"></div>
+              <div class="field"><label>Datum</label><input class="input" id="mtDate" type="date" value="${esc(d.date)}"></div>
+              <div class="field"><label>Ergebnis (wir : Gegner)</label>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <input class="input" id="mGf" type="number" min="0" style="width:64px;text-align:center" value="${d.goalsFor??''}">
+                  <b>:</b>
+                  <input class="input" id="mGa" type="number" min="0" style="width:64px;text-align:center" value="${d.goalsAgainst??''}">
+                </div>
+              </div>
+              <div class="field"><label>Spielzeit gesamt (Min)</label><input class="input" id="mTotal" type="number" min="1" value="${d.totalMinutes}"></div>
+              <div class="field"><label>Wettbewerb</label><input class="input" id="mComp2" value="${esc(d.competition||'')}"></div>
+              <div class="field" style="grid-column:span 3"><label>Teamnotizen</label><input class="input" id="mTeamNotes" value="${esc(d.teamNotes||'')}" placeholder="Beobachtungen zum Team …"></div>
+              <div class="field full"><label>Fazit</label><textarea class="textarea" id="mConclusion" rows="2" placeholder="Kurzes Fazit zum Spiel …">${esc(d.conclusion||'')}</textarea></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Spieldaten pro Spieler</h3><div class="spacer"><span class="tiny">Doppelklick auf den Namen öffnet das Profil</span></div></div>
+          <div class="card-body table-scroll" style="padding:8px 12px">
+            <table class="table">
+              <thead><tr><th>#</th><th>Spieler</th><th>Von</th><th>Bis</th><th>Min</th><th>%</th><th>Pos</th><th>Note</th><th>Ereignisse</th><th>Notizen</th></tr></thead>
+              <tbody>
+                ${rowsOrder.map(pid=>{
+                  const p=S.players.find(x=>x.id===pid); if(!p) return '';
+                  const pd=ensurePD(d,pid); const mins=pdMinutes(pd);
+                  const pct = mins!=null && d.totalMinutes>0 ? Math.round(mins/d.totalMinutes*100) : null;
+                  const st = inSquad.has(pid) ? '' : 'opacity:.5';
+                  return `<tr style="${st}">
+                    <td><b>${p.num}</b></td>
+                    <td style="white-space:nowrap"><span data-open-player="${p.id}" data-att="1" style="cursor:pointer;font-weight:600" title="Doppelklick: Profil">${esc(p.name)}</span>${inSquad.has(pid)?'':' <span class="chip" style="font-size:9.5px;padding:1px 6px">n. i. K.</span>'}</td>
+                    <td><input class="input" style="width:56px" type="number" min="0" data-pd="${pid}|from" value="${pd.from??''}"></td>
+                    <td><input class="input" style="width:56px" type="number" min="0" data-pd="${pid}|to" value="${pd.to??''}"></td>
+                    <td style="font-weight:650;font-variant-numeric:tabular-nums">${mins??'–'}</td>
+                    <td style="font-variant-numeric:tabular-nums">${pct!=null?pct+'%':'–'}</td>
+                    <td><select class="select" style="width:66px;padding:5px 22px 5px 8px" data-pd="${pid}|position">${POS.map(x=>`<option ${x===pd.position?'selected':''}>${x}</option>`).join('')}</select></td>
+                    <td><input class="input" style="width:58px" type="number" min="1" max="10" step="0.5" data-pd="${pid}|rating" value="${pd.rating??''}"></td>
+                    <td><input class="input" style="min-width:120px" data-pd="${pid}|events" value="${esc((pd.events||[]).join(', '))}" placeholder="Tor, Gelb …"></td>
+                    <td><input class="input" style="min-width:150px" data-pd="${pid}|note" value="${esc(pd.note||'')}"></td>
+                  </tr>`; }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  /* Bindings */
+  $('#mcVoice').onclick = ()=> startVoice($('#mcVoice'), txt=>{ $('#mcText').value=($('#mcText').value+' '+txt).trim(); runMatchParse(); });
+  $('#mcTextFocus').onclick = ()=> $('#mcText').focus();
+  $('#mcFile').onclick = ()=> $('#mcFileInput').click();
+  $('#mcFileInput').onchange = e=>{ handleUpload(e.target.files[0], txt=>{ $('#mcText').value=txt; runMatchParse(); }); e.target.value=''; };
+  $('#mcParse').onclick = runMatchParse;
+  $('#mcApply').onclick = ()=>{ if(!matchFindings) runMatchParse(); applyMatchFindings(); };
+  if($('#mcClear')) $('#mcClear').onclick = ()=>{ matchFindings=null; render(); };
+
+  $('#mOpp').oninput = e=>{ d.opponent=e.target.value; saveAll(); };
+  $('#mtDate').onchange = e=>{ d.date=e.target.value; saveAll(); };
+  $('#mGf').oninput = e=>{ d.goalsFor=e.target.value===''?null:+e.target.value; saveAll(); };
+  $('#mGa').oninput = e=>{ d.goalsAgainst=e.target.value===''?null:+e.target.value; saveAll(); };
+  $('#mTotal').oninput = e=>{ d.totalMinutes=parseInt(e.target.value)||0; saveAll(); };
+  $('#mComp2').oninput = e=>{ d.competition=e.target.value; saveAll(); };
+  $('#mTeamNotes').oninput = e=>{ d.teamNotes=e.target.value; saveAll(); };
+  $('#mConclusion').oninput = e=>{ d.conclusion=e.target.value; saveAll(); };
+
+  $$('[data-pd]').forEach(el=> el.addEventListener('change', ()=>{
+    const [pid,f]=el.dataset.pd.split('|');
+    const pd=ensurePD(d,pid);
+    if(f==='events') pd.events = el.value.split(',').map(s=>s.trim()).filter(Boolean);
+    else if(f==='note') pd.note = el.value;
+    else if(f==='position') pd.position = el.value;
+    else pd[f] = el.value===''?null:parseFloat(el.value);
+    saveAll(); renderSpiel();
+  }));
+
+  bindPlayerOpen();
+  if(matchFindings) renderMatchFindings();
+}
+
+function runMatchParse(){
+  const text = $('#mcText').value.trim();
+  if(!text){ toast('Bitte zuerst Notizen eingeben, diktieren oder hochladen','info'); return; }
+  const res = parseMatchText(text);
+  matchFindings = {
+    team: Object.keys(res.team).length ? {...res.team, on:true} : null,
+    rows: res.rows.map(r=>({...r, on:true}))
+  };
+  if(!matchFindings.team && !matchFindings.rows.length){
+    toast('Keine verwertbaren Informationen erkannt','info'); matchFindings=null;
+  }
+  renderSpiel();
+}
+
+function renderMatchFindings(){
+  const host = $('#mcFindings'); if(!host || !matchFindings) return;
+  const f = matchFindings;
+  let html = '';
+  if(f.team){
+    const parts = [];
+    if(f.team.opponent) parts.push('Gegner: <b>'+esc(f.team.opponent)+'</b>');
+    if(f.team.goalsFor!=null) parts.push('Ergebnis: <b>'+f.team.goalsFor+' : '+f.team.goalsAgainst+'</b>');
+    if(f.team.competition) parts.push('Wettbewerb: <b>'+esc(f.team.competition)+'</b>');
+    if(f.team.totalMinutes) parts.push('Spielzeit: <b>'+f.team.totalMinutes+' Min</b>');
+    if(f.team.notes) parts.push('Teamnotiz: <i>„'+esc(f.team.notes)+'“</i>');
+    html += `<div class="finding ${f.team.on?'':'off'}">
+      <button class="f-toggle" data-mft="team">${svgI(I.check,12)}</button>
+      <div class="f-main"><b>Teaminfos</b><div class="f-sub">${parts.join(' · ')}</div></div>
+      <div class="f-tag"><span class="chip navy">Team</span></div>
+    </div>`;
+  }
+  html += f.rows.map((r,i)=>{
+    const p=S.players.find(x=>x.id===r.pid);
+    const bits=[];
+    if(r.from!=null||r.to!=null) bits.push(`Einsatz <b>${r.from??'?'}’ – ${r.to??'?'}’</b>`);
+    if(r.rating!=null) bits.push(`Note <b>${r.rating}</b>`);
+    if(r.position) bits.push(`Position <b>${r.position}</b>`);
+    if(r.events.length) bits.push(r.events.map(e=>`<span class="chip ${e==='Tor'?'green':e.includes('Karte')||e==='Gelb-Rot'?'amber':e==='Verletzung'?'red':'blue'}" style="font-size:10px;padding:1px 7px">${e}</span>`).join(' '));
+    return `<div class="finding ${r.on?'':'off'}">
+      <button class="f-toggle" data-mft="${i}">${svgI(I.check,12)}</button>
+      <div class="f-main"><b>${esc(p?p.name:'?')}</b>
+        <div class="f-sub">${bits.join(' · ')||'Notiz'}</div>
+        <div class="f-sub" style="font-style:italic">„${esc(r.notes.join(' '))}“</div>
+      </div>
+    </div>`;
+  }).join('');
+  host.innerHTML = html || '<p class="tiny">Nichts erkannt.</p>';
+  $$('[data-mft]', host).forEach(b=> b.onclick = ()=>{
+    if(b.dataset.mft==='team') f.team.on=!f.team.on;
+    else f.rows[+b.dataset.mft].on=!f.rows[+b.dataset.mft].on;
+    renderMatchFindings();
+    $$('[data-mft]',host); /* re-bound in renderMatchFindings */
+  });
+}
+
+function applyMatchFindings(){
+  if(!matchFindings){ return; }
+  const d = S.matchDraft;
+  let n=0;
+  const f = matchFindings;
+  if(f.team && f.team.on){
+    if(f.team.opponent && !d.opponent) d.opponent=f.team.opponent;
+    else if(f.team.opponent) d.opponent=f.team.opponent;
+    if(f.team.goalsFor!=null){ d.goalsFor=f.team.goalsFor; d.goalsAgainst=f.team.goalsAgainst; }
+    if(f.team.competition) d.competition=f.team.competition;
+    if(f.team.totalMinutes) d.totalMinutes=f.team.totalMinutes;
+    if(f.team.notes) d.teamNotes = (d.teamNotes? d.teamNotes+' ':'') + f.team.notes;
+    n++;
+  }
+  f.rows.filter(r=>r.on).forEach(r=>{
+    const pd = ensurePD(d, r.pid);
+    if(r.from!=null) pd.from=r.from;
+    if(r.to!=null) pd.to=r.to;
+    if(r.rating!=null) pd.rating=r.rating;
+    if(r.position) pd.position=r.position;
+    if(r.events.length) pd.events=[...(pd.events||[]), ...r.events];
+    if(r.notes.length) pd.note = ((pd.note||'')+' '+r.notes.join(' ')).trim();
+    const p=S.players.find(x=>x.id===r.pid);
+    if(p){
+      if(r.events.includes('Verletzung')){ p.status='angeschlagen'; logHist(p.id,'Aus Spielerfassung: Verletzung vermerkt'); }
+      logHist(p.id, `Spieldaten ${d.opponent?('vs. '+d.opponent):''} übernommen${r.rating!=null?': Note '+r.rating:''}${r.events.length?', '+r.events.join(', '):''}`);
+    }
+    n++;
+  });
+  matchFindings=null;
+  $('#mcText') && ($('#mcText').value='');
+  saveAll(); renderSpiel();
+  toast(n? `${n} ${n>1?'Einträge':'Eintrag'} übernommen — bitte prüfen und speichern` : 'Nichts ausgewählt', n?'check':'info');
+}
+
+/* ---------- Spielarchiv (identische Bedienlogik wie Trainingsarchiv) ---------- */
+let matchSearch='', matchFrom='', matchTo='';
+function renderMatchArchive(tabs){
+  setTopbar('Spiel', `${S.matches.length} Spiele im Archiv`, `
+    <button class="btn btn-accent" id="mNew2">${svgI(I.plus,15)} Neues Spiel</button>
+  `);
+  const list = S.matches.slice()
+    .filter(m=>{
+      const q=lc(matchSearch);
+      if(q && !(lc(m.opponent).includes(q) || lc(m.competition||'').includes(q))) return false;
+      if(matchFrom && m.date<matchFrom) return false;
+      if(matchTo && m.date>matchTo) return false;
+      return true;
+    })
+    .sort((a,b)=>b.date.localeCompare(a.date));
+
+  $('#view').innerHTML = `
+    <div style="margin-bottom:18px">${tabs}</div>
+    <div class="card" style="margin-bottom:16px"><div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div class="search-wrap">${svgI(I.search,15)}<input class="input" id="maSearch" placeholder="Gegner oder Wettbewerb suchen …" value="${esc(matchSearch)}"></div>
+      <div class="field" style="width:150px"><label>Von</label><input class="input" id="maFrom" type="date" value="${esc(matchFrom)}"></div>
+      <div class="field" style="width:150px"><label>Bis</label><input class="input" id="maTo" type="date" value="${esc(matchTo)}"></div>
+      ${(matchSearch||matchFrom||matchTo)?`<button class="btn btn-ghost btn-sm" id="maReset">Zurücksetzen</button>`:''}
+    </div></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${list.length? list.map(m=>{ const ds=fmtDShort(m.date); return `
+        <div class="arch-item">
+          <div class="arch-date"><b>${ds.d}</b><span>${ds.m}</span></div>
+          <span class="result-pill ${resultCls(m)}">${m.goalsFor??'–'} : ${m.goalsAgainst??'–'}</span>
+          <div class="arch-main">
+            <div class="a-title">vs. ${esc(m.opponent)}</div>
+            <div class="a-sub">${esc(m.competition||'')} · ${esc(m.venue||'')} · ${m.totalMinutes} Min · ${m.lineup.field.length} auf dem Feld</div>
+          </div>
+          <div class="arch-actions">
+            <button class="btn btn-sm btn-ghost" data-mopen="${m.id}">${svgI(I.eye,14)} Öffnen</button>
+            <button class="btn btn-sm btn-ghost" data-mcap="${m.id}" title="Sprache / Text / Datei nachträglich hinzufügen">${svgI(I.mic,14)} Erfassen</button>
+            <button class="btn btn-sm btn-ghost" data-mprint="${m.id}">${svgI(I.print,14)}</button>
+            <button class="icon-btn" data-mdel="${m.id}">${svgI(I.trash,15)}</button>
+          </div>
+        </div>`; }).join('') : `<div class="card card-pad" style="text-align:center"><p class="muted">Keine Spiele gefunden.</p></div>`}
+    </div>`;
+
+  $('#mNew2').onclick = ()=>{ S.matchDraft=newMatchDraft(); saveAll(); route.spielTab='lineup'; render(); };
+  $('#maSearch').oninput = e=>{ matchSearch=e.target.value; renderSpiel(); };
+  $('#maFrom').onchange = e=>{ matchFrom=e.target.value; renderSpiel(); };
+  $('#maTo').onchange = e=>{ matchTo=e.target.value; renderSpiel(); };
+  if($('#maReset')) $('#maReset').onclick = ()=>{ matchSearch=matchFrom=matchTo=''; renderSpiel(); };
+  $$('[data-mopen]').forEach(b=> b.onclick = ()=> openMatchForEdit(b.dataset.mopen));
+  $$('[data-mcap]').forEach(b=> b.onclick = ()=>{ openMatchForEdit(b.dataset.mcap); route.spielTab='capture'; render(); });
+  $$('[data-mprint]').forEach(b=> b.onclick = ()=>{ const m=S.matches.find(x=>x.id===b.dataset.mprint); if(m) printMatch(m); });
+  $$('[data-mdel]').forEach(b=> b.onclick = ()=>{
+    const m=S.matches.find(x=>x.id===b.dataset.mdel);
+    confirmDlg('Spiel löschen', `Das Spiel gegen ${m.opponent||'—'} wird dauerhaft entfernt.`, 'Löschen', ()=>{
+      S.matches=S.matches.filter(x=>x.id!==m.id); saveAll(); renderSpiel(); toast('Spiel gelöscht');
+    });
+  });
+}
+
+/* ---------- Druck: Spiel (DIN A4) ---------- */
+function printMatch(m){
+  const byId = pid => S.players.find(p=>p.id===pid);
+  printSheet(`
+  <div class="pr-doc">
+    <div class="pr-head">
+      <div>
+        <div class="pr-brand">${esc(S.clubName)} · ${esc(S.teamName)} · Spieltag</div>
+        <h1>${esc(S.clubName)} ${esc(S.teamName)} — ${esc(m.opponent||'Gegner')}</h1>
+      </div>
+      <div class="pr-meta">
+        <b>${fmtDLong(m.date)}</b><br>
+        Anstoß ${esc(m.time||'–')} Uhr · ${esc(m.venue||'')}<br>
+        ${esc(m.competition||'')}${m.goalsFor!=null?` · Endstand <b>${m.goalsFor} : ${m.goalsAgainst}</b>`:''}
+      </div>
+    </div>
+
+    <div class="pr-sec">
+      <h2>Aufstellung (${m.lineup.field.length})</h2>
+      <div class="pr-lineup">
+        ${pitchLinesSVG(true)}
+        ${m.lineup.field.map(f=>{ const p=byId(f.pid); if(!p) return ''; return `
+          <div class="pr-lu-tok ${p.pos==='TW'?'gk':''}" style="left:${f.x}%;top:${f.y}%">
+            <div class="d">${p.num}</div><div class="nm">${esc(p.first)} ${esc((p.name.split(' ')[1]||'').slice(0,1))}.</div>
+          </div>`; }).join('')}
+      </div>
+    </div>
+
+    <div class="pr-cols">
+      <div class="pr-sec">
+        <h2>Bank (${m.lineup.bench.length})</h2>
+        <div class="pr-names">${m.lineup.bench.map(pid=>{ const p=byId(pid); return p?`<span>#${p.num} ${esc(p.name)}</span>`:''; }).join('')||'<span>—</span>'}</div>
+      </div>
+      <div class="pr-sec">
+        <h2>Nicht im Kader (${m.lineup.out.length})</h2>
+        <div class="pr-names">${m.lineup.out.map(pid=>{ const p=byId(pid); return p?`<span>#${p.num} ${esc(p.name)}</span>`:''; }).join('')||'<span>—</span>'}</div>
+      </div>
+    </div>
+
+    ${m.teamNotes||m.conclusion?`
+    <div class="pr-sec">
+      <h2>Notizen</h2>
+      ${m.teamNotes?`<p style="font-size:11px;margin-bottom:4px"><b>Team:</b> ${esc(m.teamNotes)}</p>`:''}
+      ${m.conclusion?`<p style="font-size:11px"><b>Fazit:</b> ${esc(m.conclusion)}</p>`:''}
+    </div>`:''}
+  </div>`);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(function init(){
+  S = loadAll();
+  if(!S || S.version!==1){
+    S = freshState();
+    seedFirstMatch(S);
+    saveAll();
+  }
+  render();
+})();
+</script>
+</body>
+</html>
