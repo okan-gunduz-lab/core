@@ -1,0 +1,2595 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>CoTrainer — Dein digitaler Co-Trainer</title>
+<meta name="description" content="CoTrainer – Trainings, Spiele und Spieler in Minuten dokumentieren. Per Sprache, Text oder Datei." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2312A150'/%3E%3Cpath d='M21 9a8 8 0 1 0 0 14' stroke='white' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='21' cy='16' r='2.2' fill='white'/%3E%3C/svg%3E" />
+<style>
+/* ================================================================
+   CoTrainer MVP — Design System
+   Ein Akzent (Grün), viel Weißraum, klare Hierarchie.
+   ================================================================ */
+:root{
+  /* Farbe */
+  --green:        #12a150;
+  --green-deep:   #0d7f3f;
+  --green-bright: #1cc268;
+  --green-soft:   rgba(18,161,80,.09);
+  --green-softer: rgba(18,161,80,.055);
+  --green-ring:   rgba(18,161,80,.35);
+  --grad-green:   linear-gradient(135deg,#12a150 0%,#1cc268 100%);
+
+  --amber:      #d98a26;  --amber-soft: rgba(217,138,38,.12);
+  --red:        #d9563d;  --red-soft:   rgba(217,86,61,.10);
+
+  /* Fläche */
+  --bg:         #f7f7f4;
+  --bg-grad:    radial-gradient(1200px 600px at 90% -10%, #edf3ec 0%, transparent 60%), #f7f7f4;
+  --card:       #ffffff;
+  --inset:      #f2f2ed;
+  --border:     #e8e7e0;
+  --border-2:   #dedcd3;
+
+  /* Text */
+  --text:   #1a1a17;
+  --text-2: #6e6d64;
+  --text-3: #a4a29a;
+
+  /* Schatten */
+  --sh-xs: 0 1px 2px rgba(22,22,16,.05);
+  --sh-sm: 0 1px 2px rgba(22,22,16,.04), 0 6px 20px rgba(22,22,16,.05);
+  --sh-md: 0 2px 6px rgba(22,22,16,.05), 0 16px 40px rgba(22,22,16,.09);
+  --sh-lg: 0 24px 70px rgba(22,22,16,.18);
+  --sh-green: 0 6px 20px rgba(18,161,80,.28);
+
+  /* Form */
+  --r-sm: 9px;
+  --r:    13px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+
+  /* Typo */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Motion */
+  --t: .18s cubic-bezier(.4,0,.2,1);
+
+  --sidebar-w: 232px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  font-family:var(--font);
+  background:var(--bg-grad);
+  background-attachment:fixed;
+  color:var(--text);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button{ font-family:inherit; font-size:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input,textarea,select{ font-family:inherit; font-size:inherit; color:inherit; }
+::placeholder{ color:var(--text-3); }
+:focus-visible{ outline:2px solid var(--green-ring); outline-offset:2px; border-radius:6px; }
+svg.ic{ width:18px; height:18px; stroke:currentColor; stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+
+/* ---------- App-Gerüst ---------- */
+.app{ display:flex; min-height:100dvh; }
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  width:var(--sidebar-w);
+  position:fixed; inset:0 auto 0 0;
+  display:flex; flex-direction:column;
+  padding:22px 14px 18px;
+  border-right:1px solid var(--border);
+  background:rgba(250,250,247,.85);
+  backdrop-filter:blur(14px);
+  z-index:40;
+}
+.brand{ display:flex; align-items:center; gap:10px; padding:2px 10px 22px; }
+.brand-mark{ width:32px; height:32px; border-radius:9px; box-shadow:var(--sh-green); flex:none; }
+.brand-name{ font-size:16.5px; font-weight:700; letter-spacing:-.02em; }
+.brand-name em{ font-style:normal; color:var(--green); }
+
+.nav{ display:flex; flex-direction:column; gap:2px; }
+.nav-label{ font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-3); padding:14px 10px 6px; }
+.nav-item{
+  display:flex; align-items:center; gap:11px;
+  padding:9px 10px; border-radius:var(--r-sm);
+  font-weight:500; color:var(--text-2);
+  text-decoration:none; transition:background var(--t), color var(--t);
+}
+.nav-item:hover{ background:rgba(0,0,0,.04); color:var(--text); }
+.nav-item.active{ background:var(--green-soft); color:var(--green-deep); font-weight:600; }
+.nav-item.active svg{ stroke:var(--green); }
+
+.sidebar-foot{ margin-top:auto; }
+.user-chip{
+  display:flex; align-items:center; gap:10px;
+  padding:10px; border-radius:var(--r);
+  border:1px solid var(--border); background:var(--card);
+  box-shadow:var(--sh-xs);
+}
+.user-chip .avatar{ width:32px; height:32px; font-size:12px; }
+.user-chip b{ display:block; font-size:13px; font-weight:600; line-height:1.25; }
+.user-chip span{ display:block; font-size:11.5px; color:var(--text-3); line-height:1.25; }
+
+/* ---------- Main ---------- */
+.main{ flex:1; margin-left:var(--sidebar-w); display:flex; flex-direction:column; min-width:0; }
+
+/* ---------- Globale Eingabeleiste (Herzstück) ---------- */
+.topbar{
+  position:sticky; top:0; z-index:30;
+  padding:14px 32px 10px;
+  background:linear-gradient(rgba(247,247,244,.92) 70%, rgba(247,247,244,0));
+  backdrop-filter:blur(10px);
+}
+.input-bar{
+  max-width:980px; margin:0 auto;
+  display:flex; align-items:center; gap:10px;
+  padding:8px 8px 8px 16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:999px;
+  box-shadow:var(--sh-sm);
+  transition:box-shadow var(--t), border-color var(--t);
+}
+.input-bar.open{ border-radius:var(--r-lg) var(--r-lg) 0 0; border-bottom-color:transparent; }
+.input-bar:focus-within, .input-bar.open{ box-shadow:var(--sh-md); }
+.ctx-chip{
+  display:flex; align-items:center; gap:8px; min-width:0;
+  font-size:13px; color:var(--text-2); flex:1;
+}
+.ctx-chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px var(--green-soft); flex:none; }
+.ctx-chip b{ color:var(--text); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.input-modes{ display:flex; gap:5px; }
+.mode-btn{
+  display:flex; align-items:center; gap:7px;
+  padding:8px 14px; border-radius:999px;
+  font-size:13.5px; font-weight:600; color:var(--text-2);
+  border:1px solid transparent;
+  transition:all var(--t);
+}
+.mode-btn:hover{ background:var(--inset); color:var(--text); }
+.mode-btn.active{ background:var(--green-soft); color:var(--green-deep); border-color:rgba(18,161,80,.22); }
+.mode-btn.rec{ background:var(--red-soft); color:var(--red); border-color:rgba(217,86,61,.25); }
+
+.input-panel{
+  max-width:980px; margin:0 auto;
+  background:var(--card);
+  border:1px solid var(--border); border-top:0;
+  border-radius:0 0 var(--r-lg) var(--r-lg);
+  box-shadow:var(--sh-md);
+  padding:16px 18px 14px;
+  animation:panelIn .22s cubic-bezier(.3,.9,.4,1);
+}
+@keyframes panelIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:none;} }
+.input-panel textarea{
+  width:100%; min-height:88px; resize:vertical;
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:11px 13px; font-size:14.5px; line-height:1.55;
+  background:var(--inset); transition:border-color var(--t), background var(--t);
+}
+.input-panel textarea:focus{ outline:none; border-color:var(--green-ring); background:#fff; }
+.panel-foot{ display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap; }
+.panel-hint{ font-size:12.5px; color:var(--text-3); flex:1; min-width:180px; }
+.panel-hint b{ color:var(--text-2); }
+
+/* Sprachaufnahme */
+.voice-stage{ display:flex; flex-direction:column; align-items:center; gap:14px; padding:10px 0 4px; }
+.voice-orb{
+  width:74px; height:74px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--grad-green); color:#fff;
+  box-shadow:var(--sh-green);
+  transition:transform var(--t);
+}
+.voice-orb:hover{ transform:scale(1.05); }
+.voice-orb svg.ic{ width:26px; height:26px; }
+.voice-orb.rec{ background:linear-gradient(135deg,#d9563d,#e8735c); box-shadow:0 6px 22px rgba(217,86,61,.35); animation:pulse 1.6s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ box-shadow:0 6px 22px rgba(217,86,61,.35), 0 0 0 0 rgba(217,86,61,.28);} 50%{ box-shadow:0 6px 22px rgba(217,86,61,.35), 0 0 0 16px rgba(217,86,61,0);} }
+.voice-status{ font-size:13px; color:var(--text-2); text-align:center; }
+.voice-status b{ color:var(--text); }
+
+/* Datei-Upload */
+.dropzone{
+  border:1.5px dashed var(--border-2); border-radius:var(--r);
+  padding:26px 16px; text-align:center; color:var(--text-2);
+  background:var(--inset); cursor:pointer;
+  transition:all var(--t);
+}
+.dropzone:hover, .dropzone.drag{ border-color:var(--green); background:var(--green-softer); color:var(--green-deep); }
+.dropzone svg.ic{ width:22px; height:22px; margin-bottom:6px; }
+.file-chip{
+  display:inline-flex; align-items:center; gap:9px;
+  padding:9px 12px; border-radius:var(--r-sm);
+  background:var(--green-soft); color:var(--green-deep);
+  font-size:13.5px; font-weight:600; max-width:100%;
+}
+.file-chip span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.file-chip small{ font-weight:500; color:var(--text-2); flex:none; }
+
+/* ---------- View ---------- */
+.view{ flex:1; width:100%; max-width:1044px; margin:0 auto; padding:22px 32px 90px; }
+.view-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+.view-head h1{ font-size:26px; font-weight:700; letter-spacing:-.03em; line-height:1.2; }
+.view-head .sub{ color:var(--text-2); font-size:14px; margin-top:3px; }
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:9px 16px; border-radius:var(--r-sm);
+  font-size:14px; font-weight:600;
+  border:1px solid var(--border);
+  background:var(--card); color:var(--text);
+  box-shadow:var(--sh-xs);
+  transition:all var(--t);
+  white-space:nowrap;
+}
+.btn:hover{ border-color:var(--border-2); background:#fcfcfa; transform:translateY(-1px); }
+.btn:active{ transform:translateY(0); }
+.btn-primary{ background:var(--grad-green); color:#fff; border-color:transparent; box-shadow:var(--sh-green); }
+.btn-primary:hover{ background:linear-gradient(135deg,#0f9048 0%,#18b55f 100%); }
+.btn-ghost{ border-color:transparent; background:transparent; box-shadow:none; color:var(--text-2); }
+.btn-ghost:hover{ background:var(--inset); color:var(--text); transform:none; }
+.btn-danger{ color:var(--red); }
+.btn-danger:hover{ background:var(--red-soft); border-color:rgba(217,86,61,.25); }
+.btn-sm{ padding:6px 11px; font-size:13px; }
+.btn[disabled]{ opacity:.45; pointer-events:none; }
+
+/* ---------- Karten ---------- */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  box-shadow:var(--sh-sm);
+}
+.card-pad{ padding:20px; }
+.card-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px 0; }
+.card-head h2{ font-size:15px; font-weight:650; letter-spacing:-.01em; display:flex; align-items:center; gap:8px; }
+.card-head h2 svg.ic{ width:16px; height:16px; color:var(--green); }
+.card-head .more{ font-size:13px; font-weight:600; color:var(--green-deep); text-decoration:none; }
+.card-head .more:hover{ text-decoration:underline; }
+
+/* ---------- Dashboard ---------- */
+.greeting{ margin:6px 0 24px; }
+.greeting h1{ font-size:30px; font-weight:700; letter-spacing:-.035em; line-height:1.15; }
+.greeting p{ color:var(--text-2); margin-top:5px; font-size:15px; }
+.dash-grid{ display:grid; grid-template-columns:1.6fr 1fr; gap:18px; align-items:start; }
+.dash-col{ display:flex; flex-direction:column; gap:18px; min-width:0; }
+
+.quick-actions{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+.qa{
+  display:flex; align-items:center; gap:12px;
+  padding:15px 16px; border-radius:var(--r-lg);
+  background:var(--card); border:1px solid var(--border);
+  box-shadow:var(--sh-sm); font-weight:600; font-size:14px;
+  transition:all var(--t); text-align:left;
+}
+.qa:hover{ transform:translateY(-2px); box-shadow:var(--sh-md); border-color:var(--border-2); }
+.qa-ic{
+  width:38px; height:38px; border-radius:11px; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--green-soft); color:var(--green-deep);
+}
+.qa small{ display:block; font-size:12px; font-weight:500; color:var(--text-3); margin-top:1px; }
+
+/* Aufgaben */
+.task-row{ display:flex; align-items:center; gap:11px; padding:10px 20px; }
+.task-row + .task-row{ border-top:1px solid var(--inset); }
+.task-check{
+  width:20px; height:20px; border-radius:7px; flex:none;
+  border:1.5px solid var(--border-2); background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; transition:all var(--t);
+}
+.task-check svg.ic{ width:12px; height:12px; stroke-width:3; opacity:0; }
+.task-row.done .task-check{ background:var(--grad-green); border-color:transparent; }
+.task-row.done .task-check svg.ic{ opacity:1; }
+.task-row.done .task-text{ color:var(--text-3); text-decoration:line-through; }
+.task-text{ flex:1; font-size:14px; min-width:0; }
+.task-del{ opacity:0; color:var(--text-3); transition:opacity var(--t); padding:4px; }
+.task-row:hover .task-del{ opacity:1; }
+.task-del:hover{ color:var(--red); }
+.task-add{ display:flex; gap:8px; padding:12px 20px 16px; }
+.task-add input{
+  flex:1; border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:8px 12px; font-size:13.5px; background:var(--inset);
+}
+.task-add input:focus{ outline:none; border-color:var(--green-ring); background:#fff; }
+
+/* Hinweise (CoTrainer) */
+.insight{ display:flex; gap:12px; padding:13px 20px; }
+.insight + .insight{ border-top:1px solid var(--inset); }
+.insight-ic{
+  width:32px; height:32px; border-radius:10px; flex:none;
+  display:flex; align-items:center; justify-content:center;
+}
+.insight-ic svg.ic{ width:16px; height:16px; }
+.insight-ic.good{ background:var(--green-soft); color:var(--green-deep); }
+.insight-ic.warn{ background:var(--amber-soft); color:var(--amber); }
+.insight-ic.bad{ background:var(--red-soft); color:var(--red); }
+.insight-body{ flex:1; min-width:0; }
+.insight-body b{ display:block; font-size:13.5px; font-weight:600; line-height:1.35; }
+.insight-body p{ font-size:13px; color:var(--text-2); margin-top:2px; line-height:1.45; }
+.insight-x{ color:var(--text-3); padding:2px; opacity:0; transition:opacity var(--t); align-self:flex-start; }
+.insight:hover .insight-x{ opacity:1; }
+.insight-x:hover{ color:var(--text); }
+.ai-badge{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--green-deep); background:var(--green-soft);
+  padding:3px 9px; border-radius:999px;
+}
+
+/* Feed */
+.feed-item{ display:flex; align-items:center; gap:12px; padding:12px 20px; text-decoration:none; color:inherit; transition:background var(--t); }
+.feed-item:hover{ background:var(--green-softer); }
+.feed-item + .feed-item{ border-top:1px solid var(--inset); }
+.feed-ic{
+  width:34px; height:34px; border-radius:10px; flex:none;
+  background:var(--inset); color:var(--text-2);
+  display:flex; align-items:center; justify-content:center;
+}
+.feed-body{ flex:1; min-width:0; }
+.feed-body b{ display:block; font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.feed-body span{ font-size:12.5px; color:var(--text-3); }
+.feed-time{ font-size:12px; color:var(--text-3); flex:none; }
+
+/* ---------- Listen (Training / Spiel) ---------- */
+.session-card{
+  display:flex; align-items:center; gap:16px;
+  padding:16px 20px; text-decoration:none; color:inherit;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r-lg); box-shadow:var(--sh-sm);
+  transition:all var(--t);
+}
+.session-card:hover{ transform:translateY(-2px); box-shadow:var(--sh-md); border-color:var(--border-2); }
+.session-list{ display:flex; flex-direction:column; gap:12px; }
+.date-badge{
+  width:52px; flex:none; text-align:center;
+  padding:8px 4px; border-radius:12px;
+  background:var(--inset);
+}
+.date-badge b{ display:block; font-size:19px; font-weight:700; letter-spacing:-.02em; line-height:1.1; }
+.date-badge span{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); }
+.session-body{ flex:1; min-width:0; }
+.session-body h3{ font-size:15px; font-weight:650; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.session-meta{ display:flex; gap:14px; margin-top:3px; font-size:12.5px; color:var(--text-2); flex-wrap:wrap; }
+.session-meta span{ display:inline-flex; align-items:center; gap:5px; }
+.session-meta svg.ic{ width:13px; height:13px; color:var(--text-3); }
+.score-pill{
+  flex:none; padding:6px 13px; border-radius:999px;
+  font-weight:700; font-size:15px; letter-spacing:.02em;
+  background:var(--inset);
+}
+.score-pill.win{ background:var(--green-soft); color:var(--green-deep); }
+.score-pill.loss{ background:var(--red-soft); color:var(--red); }
+.score-pill.draw{ background:var(--amber-soft); color:var(--amber); }
+
+/* ---------- Kader ---------- */
+.squad-tools{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+.search-box{
+  flex:1; min-width:200px; display:flex; align-items:center; gap:9px;
+  padding:0 14px; background:var(--card);
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  box-shadow:var(--sh-xs);
+}
+.search-box svg.ic{ width:15px; height:15px; color:var(--text-3); }
+.search-box input{ flex:1; border:0; background:none; padding:10px 0; font-size:14px; }
+.search-box input:focus{ outline:none; }
+.filter-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+.chip{
+  padding:8px 13px; border-radius:999px; font-size:13px; font-weight:600;
+  color:var(--text-2); border:1px solid var(--border); background:var(--card);
+  transition:all var(--t);
+}
+.chip:hover{ border-color:var(--border-2); color:var(--text); }
+.chip.active{ background:var(--green-soft); color:var(--green-deep); border-color:rgba(18,161,80,.25); }
+
+.player-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:12px; }
+.player-card{
+  display:flex; align-items:center; gap:12px;
+  padding:14px 15px; text-align:left;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r-lg); box-shadow:var(--sh-sm);
+  transition:all var(--t);
+}
+.player-card:hover{ transform:translateY(-2px); box-shadow:var(--sh-md); border-color:var(--border-2); }
+.avatar{
+  width:40px; height:40px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--green-soft); color:var(--green-deep);
+  font-weight:700; font-size:13.5px; letter-spacing:.01em;
+  position:relative;
+}
+.avatar .st{ position:absolute; right:-1px; bottom:-1px; width:11px; height:11px; border-radius:50%; border:2px solid #fff; }
+.st.fit{ background:var(--green); } .st.angeschlagen{ background:var(--amber); } .st.verletzt{ background:var(--red); }
+.player-card-body{ flex:1; min-width:0; }
+.player-card-body b{ display:block; font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.player-card-body span{ font-size:12px; color:var(--text-3); }
+.pos-tag{
+  flex:none; font-size:11px; font-weight:700; letter-spacing:.04em;
+  padding:3px 8px; border-radius:7px;
+  background:var(--inset); color:var(--text-2);
+}
+.mini-score{ flex:none; font-size:13px; font-weight:700; color:var(--green-deep); display:flex; align-items:center; gap:3px; }
+.mini-score svg.ic{ width:12px; height:12px; fill:var(--green); stroke:var(--green); }
+
+/* ---------- Spielerprofil ---------- */
+.profile-head{ display:flex; align-items:center; gap:18px; padding:22px; flex-wrap:wrap; }
+.profile-head .avatar{ width:64px; height:64px; font-size:21px; }
+.profile-head h1{ font-size:23px; font-weight:700; letter-spacing:-.03em; }
+.profile-tags{ display:flex; gap:7px; margin-top:6px; flex-wrap:wrap; }
+.tag{ font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; background:var(--inset); color:var(--text-2); }
+.tag.green{ background:var(--green-soft); color:var(--green-deep); }
+.tag.amber{ background:var(--amber-soft); color:var(--amber); }
+.tag.red{ background:var(--red-soft); color:var(--red); }
+.stat-row{ display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--inset); }
+.stat{ padding:14px 10px; text-align:center; }
+.stat + .stat{ border-left:1px solid var(--inset); }
+.stat b{ display:block; font-size:20px; font-weight:700; letter-spacing:-.02em; }
+.stat span{ font-size:11.5px; color:var(--text-3); font-weight:500; }
+
+.cat-bars{ display:flex; flex-direction:column; gap:12px; padding:18px 20px 20px; }
+.cat-bar{ display:grid; grid-template-columns:82px 1fr 30px; align-items:center; gap:12px; font-size:13px; }
+.cat-bar label{ color:var(--text-2); font-weight:500; }
+.cat-bar .track{ height:7px; border-radius:99px; background:var(--inset); overflow:hidden; }
+.cat-bar .fill{ height:100%; border-radius:99px; background:var(--grad-green); transition:width .5s cubic-bezier(.3,.9,.4,1); }
+.cat-bar b{ text-align:right; font-weight:700; font-size:13px; }
+
+/* Historie / Timeline */
+.timeline{ padding:6px 0 10px; }
+.tl-item{ display:flex; gap:14px; padding:12px 20px; }
+.tl-item + .tl-item{ border-top:1px solid var(--inset); }
+.tl-item .feed-ic{ width:32px; height:32px; }
+.tl-body{ flex:1; min-width:0; }
+.tl-body .tl-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+.tl-body b{ font-size:13.5px; font-weight:600; }
+.tl-body time{ font-size:12px; color:var(--text-3); flex:none; }
+.tl-body p{ font-size:13px; color:var(--text-2); margin-top:3px; line-height:1.5; }
+.tl-scores{ display:flex; gap:5px; margin-top:7px; flex-wrap:wrap; }
+.score-chip{ font-size:11.5px; font-weight:600; padding:3px 8px; border-radius:7px; background:var(--inset); color:var(--text-2); }
+.score-chip b{ color:var(--text); font-size:11.5px; }
+
+/* ---------- Bewertungs-Steuerelement (1–5) ---------- */
+.rate-row{ display:grid; grid-template-columns:82px 1fr; align-items:center; gap:12px; }
+.rate-row label{ font-size:13px; color:var(--text-2); font-weight:500; }
+.rate-dots{ display:flex; gap:6px; }
+.rate-dot{
+  width:30px; height:30px; border-radius:9px;
+  border:1px solid var(--border); background:var(--inset);
+  font-size:12.5px; font-weight:700; color:var(--text-3);
+  transition:all .13s ease;
+}
+.rate-dot:hover{ border-color:var(--green-ring); color:var(--green-deep); }
+.rate-dot.on{ background:var(--grad-green); border-color:transparent; color:#fff; box-shadow:0 2px 8px rgba(18,161,80,.3); }
+
+/* Spieler-Bewertungszeile im Wizard */
+.eval-block{ border:1px solid var(--border); border-radius:var(--r); background:var(--card); overflow:hidden; }
+.eval-head{
+  width:100%; display:flex; align-items:center; gap:11px;
+  padding:12px 14px; text-align:left; transition:background var(--t);
+}
+.eval-head:hover{ background:var(--green-softer); }
+.eval-head .avatar{ width:34px; height:34px; font-size:12px; }
+.eval-head b{ flex:1; font-size:14px; font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.eval-sum{ font-size:12px; color:var(--text-3); font-weight:600; flex:none; display:flex; align-items:center; gap:8px; }
+.eval-sum .done-tick{ color:var(--green); display:none; }
+.eval-block.filled .eval-sum .done-tick{ display:inline-flex; }
+.eval-head .chev{ transition:transform var(--t); color:var(--text-3); }
+.eval-block.open .eval-head .chev{ transform:rotate(90deg); }
+.eval-body{ display:none; padding:4px 16px 15px; border-top:1px solid var(--inset); }
+.eval-block.open .eval-body{ display:block; }
+.eval-body .rate-row{ margin-top:11px; }
+.eval-note{ margin-top:13px; display:flex; gap:8px; align-items:flex-start; }
+.eval-note textarea{
+  flex:1; min-height:54px; resize:vertical;
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:9px 11px; font-size:13.5px; background:var(--inset);
+}
+.eval-note textarea:focus{ outline:none; border-color:var(--green-ring); background:#fff; }
+.mic-btn{
+  width:38px; height:38px; flex:none; border-radius:10px;
+  border:1px solid var(--border); background:var(--card);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-2); transition:all var(--t);
+}
+.mic-btn:hover{ color:var(--green-deep); border-color:var(--green-ring); background:var(--green-softer); }
+.mic-btn.rec{ background:var(--red-soft); color:var(--red); border-color:rgba(217,86,61,.3); animation:pulse 1.6s infinite; }
+.mic-btn svg.ic{ width:15px; height:15px; }
+
+/* Anwesenheit */
+.att-row{ display:flex; align-items:center; gap:11px; padding:10px 0; }
+.att-row + .att-row{ border-top:1px solid var(--inset); }
+.att-row .avatar{ width:34px; height:34px; font-size:12px; }
+.att-row b{ flex:1; font-size:14px; font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.seg{
+  display:flex; background:var(--inset); border-radius:10px; padding:3px; gap:2px; flex:none;
+}
+.seg button{
+  padding:6px 11px; border-radius:8px; font-size:12.5px; font-weight:600;
+  color:var(--text-3); transition:all .13s ease; white-space:nowrap;
+}
+.seg button:hover{ color:var(--text-2); }
+.seg button.on{ background:#fff; color:var(--text); box-shadow:var(--sh-xs); }
+.seg button.on.g{ color:var(--green-deep); } .seg button.on.a{ color:var(--amber); } .seg button.on.r{ color:var(--red); }
+
+/* ---------- Formulare ---------- */
+.form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-grid .full{ grid-column:1 / -1; }
+.field label{ display:block; font-size:12.5px; font-weight:600; color:var(--text-2); margin-bottom:6px; }
+.field input, .field select{
+  width:100%; padding:10px 12px;
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  background:var(--inset); font-size:14px;
+  transition:border-color var(--t), background var(--t);
+}
+.field input:focus, .field select:focus{ outline:none; border-color:var(--green-ring); background:#fff; }
+.field select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a4a29a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; padding-right:32px; }
+.suggest-chips{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.suggest-chips .chip{ padding:5px 11px; font-size:12.5px; }
+
+/* ---------- Modal ---------- */
+.modal-backdrop{
+  position:fixed; inset:0; z-index:80;
+  background:rgba(20,20,16,.4);
+  backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  animation:fadeIn .18s ease;
+}
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+.modal{
+  width:100%; max-width:620px; max-height:min(86dvh,780px);
+  background:var(--card); border-radius:var(--r-xl);
+  box-shadow:var(--sh-lg);
+  display:flex; flex-direction:column;
+  animation:modalIn .26s cubic-bezier(.3,.9,.4,1);
+  overflow:hidden;
+}
+@keyframes modalIn{ from{ opacity:0; transform:translateY(16px) scale(.98);} to{ opacity:1; transform:none;} }
+.modal-head{ display:flex; align-items:center; gap:12px; padding:20px 22px 0; flex:none; }
+.modal-head h2{ font-size:18px; font-weight:700; letter-spacing:-.02em; flex:1; }
+.modal-head .steps{ font-size:12.5px; font-weight:600; color:var(--text-3); }
+.modal-x{ color:var(--text-3); padding:6px; border-radius:8px; transition:all var(--t); }
+.modal-x:hover{ background:var(--inset); color:var(--text); }
+.modal-body{ padding:18px 22px; overflow-y:auto; flex:1; }
+.modal-foot{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:14px 22px; border-top:1px solid var(--inset); flex:none;
+  background:rgba(250,250,247,.7);
+}
+.step-dots{ display:flex; gap:5px; }
+.step-dots i{ width:7px; height:7px; border-radius:99px; background:var(--border-2); transition:all var(--t); }
+.step-dots i.on{ background:var(--green); width:20px; }
+.modal-section{ font-size:13px; font-weight:650; color:var(--text-2); text-transform:uppercase; letter-spacing:.06em; font-size:11.5px; margin:18px 0 10px; }
+.modal-section:first-child{ margin-top:2px; }
+
+/* ---------- Toast ---------- */
+#toastRoot{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:100; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none; }
+.toast{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 18px; border-radius:999px;
+  background:#22221e; color:#fff; font-size:13.5px; font-weight:600;
+  box-shadow:var(--sh-lg);
+  animation:toastIn .3s cubic-bezier(.3,.9,.4,1);
+}
+.toast svg.ic{ width:15px; height:15px; color:var(--green-bright); }
+@keyframes toastIn{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:none;} }
+.toast.out{ opacity:0; transform:translateY(8px); transition:all .3s ease; }
+
+/* ---------- Leerzustände ---------- */
+.empty{
+  text-align:center; padding:52px 24px;
+  border:1.5px dashed var(--border-2); border-radius:var(--r-lg);
+  color:var(--text-2);
+}
+.empty .qa-ic{ margin:0 auto 14px; width:46px; height:46px; border-radius:14px; }
+.empty b{ display:block; font-size:15px; color:var(--text); margin-bottom:4px; }
+.empty p{ font-size:13.5px; max-width:340px; margin:0 auto 16px; }
+
+/* ---------- Detailseiten ---------- */
+.back-link{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:13.5px; font-weight:600; color:var(--text-2);
+  text-decoration:none; margin-bottom:14px; transition:color var(--t);
+}
+.back-link:hover{ color:var(--text); }
+.detail-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+.kv-list{ padding:6px 20px 14px; }
+.kv{ display:flex; justify-content:space-between; gap:14px; padding:9px 0; font-size:13.5px; border-bottom:1px solid var(--inset); }
+.kv:last-child{ border-bottom:0; }
+.kv span{ color:var(--text-2); }
+.kv b{ font-weight:600; text-align:right; }
+
+/* ---------- Mobile Tabbar ---------- */
+.tabbar{ display:none; }
+
+/* ---------- Onboarding ---------- */
+.onb-hero{ text-align:center; padding:8px 6px 2px; }
+.onb-hero .brand-mark{ width:52px; height:52px; border-radius:14px; margin:0 auto 14px; }
+.onb-hero h2{ font-size:22px; font-weight:700; letter-spacing:-.03em; }
+.onb-hero p{ color:var(--text-2); font-size:14px; margin-top:6px; max-width:380px; margin-left:auto; margin-right:auto; }
+.check-line{ display:flex; align-items:center; gap:10px; margin-top:16px; font-size:14px; cursor:pointer; user-select:none; }
+.check-line input{ accent-color:var(--green); width:17px; height:17px; }
+
+/* ================= Responsive ================= */
+@media (max-width: 1000px){
+  .dash-grid, .detail-grid{ grid-template-columns:1fr; }
+  .quick-actions{ grid-template-columns:1fr 1fr 1fr; }
+}
+@media (max-width: 760px){
+  .sidebar{ display:none; }
+  .main{ margin-left:0; }
+  .topbar{ padding:10px 14px 8px; }
+  .view{ padding:16px 16px 108px; }
+  .mode-btn span{ display:none; }
+  .mode-btn{ padding:9px 12px; }
+  .ctx-chip{ font-size:12px; }
+  .ctx-chip > span:not(.dot){ display:none; } /* nur Ziel-Label zeigen */
+  .quick-actions{ grid-template-columns:1fr; }
+  .form-grid{ grid-template-columns:1fr; }
+  .stat-row{ grid-template-columns:repeat(2,1fr); }
+  .stat:nth-child(3){ border-left:0; }
+  .stat:nth-child(n+3){ border-top:1px solid var(--inset); }
+  .greeting h1{ font-size:24px; }
+  .view-head h1{ font-size:22px; }
+  .att-row .seg button{ padding:6px 8px; font-size:11.5px; }
+  .rate-row{ grid-template-columns:1fr; gap:5px; }
+  .rate-dot{ width:34px; height:34px; }
+  .modal{ max-height:94dvh; border-radius:var(--r-lg); }
+  .modal-backdrop{ padding:10px; align-items:flex-end; }
+
+  .tabbar{
+    display:flex; position:fixed; bottom:0; left:0; right:0; z-index:50;
+    background:rgba(252,252,250,.9); backdrop-filter:blur(16px);
+    border-top:1px solid var(--border);
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+  }
+  .tab{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:7px 4px; font-size:10.5px; font-weight:600; color:var(--text-3);
+    text-decoration:none; border-radius:10px; transition:color var(--t);
+  }
+  .tab svg.ic{ width:20px; height:20px; }
+  .tab.active{ color:var(--green-deep); }
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ===================== Sidebar ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <defs><linearGradient id="bm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#12a150"/><stop offset="1" stop-color="#1cc268"/>
+        </linearGradient></defs>
+        <rect width="32" height="32" rx="8.5" fill="url(#bm)"/>
+        <path d="M21 9a8 8 0 1 0 0 14" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="21" cy="16" r="2.2" fill="#fff"/>
+      </svg>
+      <div class="brand-name">Co<em>Trainer</em></div>
+    </div>
+    <nav class="nav" id="navDesktop"></nav>
+    <div class="sidebar-foot">
+      <div class="user-chip" id="userChip"></div>
+    </div>
+  </aside>
+
+  <!-- ===================== Main ===================== -->
+  <div class="main">
+    <header class="topbar">
+      <div class="input-bar" id="inputBar">
+        <div class="ctx-chip" id="ctxChip"></div>
+        <div class="input-modes" id="inputModes"></div>
+      </div>
+      <div class="input-panel" id="inputPanel" hidden></div>
+    </header>
+    <main class="view" id="view" aria-live="polite"></main>
+  </div>
+
+  <!-- ===================== Mobile Tabbar ===================== -->
+  <nav class="tabbar" id="navMobile"></nav>
+</div>
+
+<div id="modalRoot"></div>
+<div id="toastRoot" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ================================================================
+   CoTrainer MVP — Anwendungscode
+   Module: Icons · Utils · Store · Insights · Voice · InputBar ·
+           Router · Views (Dashboard, Training, Spiel, Kader) · Modals
+   ================================================================ */
+
+/* ============================ Icons ============================ */
+const ICONS = {
+  home:     '<path d="M3 9.5 12 3l9 6.5V20a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 20Z"/><path d="M9 21.5v-8h6v8"/>',
+  training: '<path d="M9 4h6"/><rect x="5" y="3" width="14" height="19" rx="2.4"/><path d="M9 10h6M9 14h6M9 18h3.5"/>',
+  match:    '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.7V17c0 .6-.5 1-1 1.2-1.2.5-2 2-2 3.8"/><path d="M14 14.7V17c0 .6.5 1 1 1.2 1.2.5 2 2 2 3.8"/><path d="M18 2H6v7a6 6 0 0 0 12 0Z"/>',
+  squad:    '<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M15.5 3.13a4 4 0 0 1 0 7.75"/>',
+  mic:      '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 11v1a7 7 0 0 1-14 0v-1"/><path d="M12 19v3"/>',
+  text:     '<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>',
+  file:     '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>',
+  fileText: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/>',
+  upload:   '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
+  search:   '<circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.8-4.8"/>',
+  plus:     '<path d="M12 5v14M5 12h14"/>',
+  x:        '<path d="M18 6 6 18M6 6l12 12"/>',
+  check:    '<path d="m20 6-11 11-5-5"/>',
+  chevR:    '<path d="m9 18 6-6-6-6"/>',
+  chevL:    '<path d="m15 18-6-6 6-6"/>',
+  calendar: '<rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M16 2.5v4M8 2.5v4M3 10.5h18"/>',
+  clock:    '<circle cx="12" cy="12" r="9.5"/><path d="M12 7v5l3.2 1.8"/>',
+  pin:      '<path d="M20 10.5c0 6.5-8 11.5-8 11.5s-8-5-8-11.5a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10.5" r="2.8"/>',
+  trash:    '<path d="M4 7h16"/><path d="M19 7v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V7"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M10 11.5v6M14 11.5v6"/>',
+  edit:     '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  sparkle:  '<path d="M12 3.5 13.8 9 19.5 10.8 13.8 12.6 12 18.2 10.2 12.6 4.5 10.8 10.2 9Z"/><path d="M19 3v3M17.5 4.5h3"/>',
+  alert:    '<circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/>',
+  trendUp:  '<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+  trendDown:'<path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/>',
+  heart:    '<path d="M19.5 5a5.2 5.2 0 0 0-7.5.2A5.2 5.2 0 0 0 4.5 5c-2 2-2 5.3 0 7.4L12 20l7.5-7.6c2-2.1 2-5.4 0-7.4Z"/>',
+  star:     '<path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8Z"/>',
+  stop:     '<rect x="6.5" y="6.5" width="11" height="11" rx="2"/>',
+  user:     '<circle cx="12" cy="8" r="4.2"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/>',
+  note:     '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  bulb:     '<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6.5 6.5 0 0 0-4 11.6c.7.6 1 1.4 1 2.4h6c0-1 .3-1.8 1-2.4A6.5 6.5 0 0 0 12 3Z"/>',
+};
+function ic(name, cls){ return `<svg class="ic${cls ? ' '+cls : ''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ''}</svg>`; }
+
+/* ============================ Utils ============================ */
+const $  = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+/** HTML-Escaping für alle Nutzereingaben (XSS-Schutz). */
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function todayISO(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function daysAgoISO(n){ const d = new Date(Date.now() - n*864e5); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fmtDate(iso, opts){
+  if(!iso) return '—';
+  try{ return new Date(iso + 'T12:00:00').toLocaleDateString('de-DE', opts || { weekday:'short', day:'numeric', month:'short', year:'numeric' }); }
+  catch(e){ return iso; }
+}
+function fmtDateShort(iso){ return fmtDate(iso, { day:'numeric', month:'short' }); }
+function relTime(ts){
+  const diff = Date.now() - ts;
+  const m = Math.round(diff / 6e4);
+  if(m < 1)  return 'gerade eben';
+  if(m < 60) return `vor ${m} Min.`;
+  const h = Math.round(m / 60);
+  if(h < 24) return `vor ${h} Std.`;
+  const d = Math.round(h / 24);
+  if(d === 1) return 'gestern';
+  if(d < 7)  return `vor ${d} Tagen`;
+  return fmtDateShort(new Date(ts).toISOString().slice(0,10));
+}
+function initials(name){
+  return String(name || '?').trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase();
+}
+function avg(arr){
+  const v = arr.filter(n => typeof n === 'number' && n > 0);
+  return v.length ? v.reduce((a,b) => a+b, 0) / v.length : 0;
+}
+function fmt1(n){ return n ? (Math.round(n*10)/10).toLocaleString('de-DE',{minimumFractionDigits:1, maximumFractionDigits:1}) : '–'; }
+function fmtBytes(b){
+  if(b < 1024) return b + ' B';
+  if(b < 1048576) return (b/1024).toFixed(0) + ' KB';
+  return (b/1048576).toFixed(1) + ' MB';
+}
+function uid(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+/** Bewertungskategorien — gelten überall identisch. */
+const CATS = [
+  { key:'technik',     label:'Technik' },
+  { key:'taktik',      label:'Taktik' },
+  { key:'athletik',    label:'Athletik' },
+  { key:'mentalitaet', label:'Mentalität' },
+  { key:'leistung',    label:'Leistung' },
+];
+const POSITIONS = ['TW','RV','IV','LV','ZDM','ZM','OM','RF','LF','ST'];
+const POS_ORDER = Object.fromEntries(POSITIONS.map((p,i) => [p,i]));
+const STATUS_LABEL = { fit:'Fit', angeschlagen:'Angeschlagen', verletzt:'Verletzt' };
+
+/* ============================ Store ============================ */
+const Store = {
+  KEY: 'cotrainer.v1',
+  data: null,
+
+  load(){
+    try{
+      const raw = localStorage.getItem(this.KEY);
+      if(raw) this.data = JSON.parse(raw);
+    }catch(e){ console.warn('Store: konnte nicht laden', e); }
+    if(!this.data) this.data = this.blank();
+    return this.data;
+  },
+
+  save(){
+    try{ localStorage.setItem(this.KEY, JSON.stringify(this.data)); }
+    catch(e){ Toast.show('Speichern fehlgeschlagen (Speicher voll?)'); console.error(e); }
+  },
+
+  blank(){
+    return {
+      players: [], trainings: [], matches: [],
+      ratings: [], notes: [], tasks: [], insights: [],
+      settings: { onboarded:false, coachName:'', teamName:'', dismissedInsights:[] },
+    };
+  },
+
+  /* ---- Abfrage-Helfer ---- */
+  player(id){ return this.data.players.find(p => p.id === id); },
+  training(id){ return this.data.trainings.find(t => t.id === id); },
+  match(id){ return this.data.matches.find(m => m.id === id); },
+
+  /** Alle Bewertungen eines Spielers, neueste zuerst. */
+  ratingsFor(playerId){
+    return this.data.ratings.filter(r => r.playerId === playerId)
+      .sort((a,b) => b.createdAt - a.createdAt);
+  },
+  /** Gesamtdurchschnitt (alle Kategorien, alle Bewertungen). */
+  overallAvg(playerId){
+    const all = this.ratingsFor(playerId).flatMap(r => CATS.map(c => r.scores[c.key]).filter(v => v > 0));
+    return avg(all);
+  },
+  /** Durchschnitt je Kategorie. */
+  catAverages(playerId){
+    const rs = this.ratingsFor(playerId);
+    const out = {};
+    CATS.forEach(c => { out[c.key] = avg(rs.map(r => r.scores[c.key])); });
+    return out;
+  },
+  /** Einsatzminuten eines Spielers über alle Spiele. */
+  totalMinutes(playerId){
+    return this.data.matches.reduce((sum, m) => sum + ((m.participation[playerId] || {}).minutes || 0), 0);
+  },
+  trainingsAttended(playerId){
+    return this.data.trainings.filter(t => t.attendance[playerId] === 'anwesend').length;
+  },
+  matchesPlayed(playerId){
+    return this.data.matches.filter(m => ((m.participation[playerId] || {}).minutes || 0) > 0).length;
+  },
+
+  /* ---- Beispieldaten ---- */
+  seed(){
+    const P = (name, number, position, birthYear, status) => ({ id: uid('pl'), name, number, position, birthYear, status: status || 'fit' });
+    const players = [
+      P('Timo Berger', 1, 'TW', 1998), P('Jonas Weber', 21, 'TW', 2003),
+      P('Lukas Schmidt', 2, 'RV', 2001), P('David Kaya', 4, 'IV', 1999),
+      P('Mert Yilmaz', 5, 'IV', 2000), P('Tom Richter', 15, 'IV', 2002),
+      P('Felix Braun', 3, 'LV', 2001, 'verletzt'), P('Noah Fischer', 6, 'ZDM', 1997),
+      P('Elias Wagner', 8, 'ZM', 2000), P('Leon Hoffmann', 14, 'ZM', 2004),
+      P('Paul Zimmermann', 10, 'OM', 1999), P('Ben Neumann', 18, 'OM', 2005),
+      P('Emre Demir', 7, 'RF', 2002), P('Jan Krüger', 11, 'LF', 2003, 'angeschlagen'),
+      P('Max Müller', 9, 'ST', 1998), P('Nico Schulz', 19, 'ST', 2004),
+    ];
+    const byName = Object.fromEntries(players.map(p => [p.name, p]));
+    const d = this.data;
+    d.players = players;
+
+    /* Training vor 2 Tagen */
+    const t1 = {
+      id: uid('tr'), date: daysAgoISO(2), focus: 'Pressing & Umschaltspiel',
+      duration: 90, location: 'Sportplatz Nord', opponent: '',
+      attendance: {}, createdAt: Date.now() - 2*864e5,
+    };
+    players.forEach(p => {
+      t1.attendance[p.id] = p.status === 'verletzt' ? 'verletzt' : 'anwesend';
+    });
+    t1.attendance[byName['Nico Schulz'].id] = 'fehlt';
+    d.trainings.push(t1);
+
+    /* Spiel vor 5 Tagen */
+    const m1 = {
+      id: uid('ma'), date: daysAgoISO(5), opponent: 'SV Grünfeld', home: true,
+      goalsFor: 2, goalsAgainst: 1, formation: '4-2-3-1',
+      participation: {}, createdAt: Date.now() - 5*864e5,
+    };
+    const starters = ['Timo Berger','Lukas Schmidt','David Kaya','Mert Yilmaz','Tom Richter','Noah Fischer','Elias Wagner','Paul Zimmermann','Emre Demir','Jan Krüger','Max Müller'];
+    starters.forEach(n => { m1.participation[byName[n].id] = { role:'start', minutes: 90 }; });
+    m1.participation[byName['Elias Wagner'].id].minutes = 74;
+    m1.participation[byName['Leon Hoffmann'].id] = { role:'joker', minutes: 16 };
+    m1.participation[byName['Nico Schulz'].id]  = { role:'joker', minutes: 12 };
+    m1.participation[byName['Max Müller'].id].minutes = 78;
+    d.matches.push(m1);
+
+    /* Bewertungen */
+    const R = (name, refType, refId, scores, note, ago) => ({
+      id: uid('rt'), playerId: byName[name].id, refType, refId,
+      scores, note: note || '', createdAt: Date.now() - ago*864e5,
+    });
+    d.ratings.push(
+      R('Max Müller','match', m1.id, {technik:4, taktik:4, athletik:3, mentalitaet:5, leistung:4}, 'Tor + Vorlage. Sehr präsent im Pressing.', 5),
+      R('Paul Zimmermann','match', m1.id, {technik:5, taktik:4, athletik:4, mentalitaet:4, leistung:5}, 'Bester Mann. Spielgestaltung überragend.', 5),
+      R('Timo Berger','match', m1.id, {technik:3, taktik:3, athletik:4, mentalitaet:4, leistung:4}, 'Zwei starke Paraden in Halbzeit zwei.', 5),
+      R('Jan Krüger','match', m1.id, {technik:3, taktik:2, athletik:2, mentalitaet:3, leistung:2}, 'Wirkte müde, kaum Tiefenläufe. Muskuläre Probleme?', 5),
+      R('Max Müller','training', t1.id, {technik:4, taktik:5, athletik:4, mentalitaet:5, leistung:5}, 'Top-Einstellung, reißt die Gruppe mit.', 2),
+      R('Leon Hoffmann','training', t1.id, {technik:4, taktik:3, athletik:4, mentalitaet:4, leistung:4}, 'Deutlicher Aufwärtstrend, traut sich mehr zu.', 2),
+      R('Ben Neumann','training', t1.id, {technik:3, taktik:2, athletik:3, mentalitaet:2, leistung:2}, 'Unkonzentriert, viele Ballverluste.', 2),
+      R('Paul Zimmermann','training', t1.id, {technik:5, taktik:5, athletik:3, mentalitaet:4, leistung:5}, '', 2),
+    );
+
+    /* Notizen */
+    d.notes.push({
+      id: uid('no'), kind:'note', method:'text',
+      text:'Für Donnerstag mehr Abschlussübungen einplanen – Chancenverwertung war gegen Grünfeld zu schwach.',
+      createdAt: Date.now() - 1*864e5,
+    });
+    d.notes.push({
+      id: uid('no'), kind:'player', playerId: byName['Felix Braun'].id, method:'voice',
+      text:'Reha läuft nach Plan, Lauftraining ab nächster Woche. Rückkehr ins Mannschaftstraining frühestens in 3 Wochen.',
+      createdAt: Date.now() - 2*864e5,
+    });
+
+    /* Aufgaben */
+    d.tasks.push(
+      { id: uid('ts'), text:'Trainingsplan für Donnerstag vorbereiten', done:false, createdAt: Date.now() },
+      { id: uid('ts'), text:'Gespräch mit Felix Braun (Reha-Stand)', done:false, createdAt: Date.now() },
+      { id: uid('ts'), text:'Aufstellung fürs Wochenende überlegen', done:false, createdAt: Date.now() },
+    );
+    this.save();
+  },
+};
+
+/* ============================ Insights ============================ */
+/* Regelbasierte Analyse — läuft nach jeder Speicherung.
+   Jeder Hinweis hat einen stabilen Schlüssel, damit verworfene
+   Hinweise nicht erneut erscheinen. */
+const Insights = {
+  run(){
+    const d = Store.data;
+    const found = [];
+    const add = (key, tone, icon, title, text, playerId) =>
+      found.push({ key, tone, icon, title, text, playerId: playerId || null, createdAt: Date.now() });
+
+    const recentTrainings = d.trainings.slice().sort((a,b) => b.date.localeCompare(a.date)).slice(0,5);
+    const recentMatches   = d.matches.slice().sort((a,b) => b.date.localeCompare(a.date)).slice(0,3);
+
+    d.players.forEach(p => {
+      const rs = Store.ratingsFor(p.id).slice(0,3);
+      const perf = rs.map(r => avg(CATS.map(c => r.scores[c.key])));
+
+      /* Positive Entwicklung */
+      if(perf.length >= 2 && avg(perf) >= 4.1)
+        add('up:'+p.id, 'good', 'trendUp', `${p.name} entwickelt sich stark`,
+            `Ø ${fmt1(avg(perf))} in den letzten ${perf.length} Bewertungen. Form bestätigen und Verantwortung geben.`, p.id);
+
+      /* Formtief */
+      if(perf.length >= 2 && avg(perf) <= 2.5)
+        add('down:'+p.id, 'bad', 'trendDown', `${p.name}: mehrere schwache Leistungen`,
+            `Ø ${fmt1(avg(perf))} zuletzt. Ein persönliches Gespräch wird empfohlen.`, p.id);
+
+      /* Fehlzeiten */
+      const missed = recentTrainings.filter(t => t.attendance[p.id] === 'fehlt').length;
+      if(missed >= 2)
+        add('abs:'+p.id, 'warn', 'alert', `${p.name}: viele Fehlzeiten`,
+            `${missed}× gefehlt in den letzten ${recentTrainings.length} Trainings. Ursache klären.`, p.id);
+
+      /* Verletzung */
+      if(p.status === 'verletzt')
+        add('inj:'+p.id, 'warn', 'heart', `${p.name} ist verletzt`,
+            'Reha im Blick behalten und Wiedereinstieg dosiert planen.', p.id);
+
+      /* Belastung */
+      const mins = recentMatches.reduce((s,m) => s + ((m.participation[p.id]||{}).minutes || 0), 0);
+      if(recentMatches.length >= 2 && mins >= recentMatches.length * 85)
+        add('load:'+p.id, 'warn', 'clock', `Belastung steigt: ${p.name}`,
+            `${mins} Minuten in den letzten ${recentMatches.length} Spielen. Rotation oder Pause erwägen.`, p.id);
+    });
+
+    /* Starke Trainingswoche */
+    if(recentTrainings[0]){
+      const t = recentTrainings[0];
+      const teamPerf = d.ratings.filter(r => r.refId === t.id).map(r => avg(CATS.map(c => r.scores[c.key])));
+      if(teamPerf.length >= 3 && avg(teamPerf) >= 3.8)
+        add('week:'+t.id, 'good', 'sparkle', 'Starke Trainingswoche',
+            `Team-Ø ${fmt1(avg(teamPerf))} im letzten Training („${t.focus}“). Intensität halten.`);
+    }
+
+    /* Dokumentations-Erinnerung */
+    const lastDoc = Math.max(0, ...d.trainings.map(t => t.createdAt), ...d.matches.map(m => m.createdAt));
+    if(lastDoc && Date.now() - lastDoc > 7*864e5)
+      add('doc-gap', 'warn', 'bulb', 'Lange nichts dokumentiert',
+          'Die letzte Dokumentation liegt über eine Woche zurück. Kurz per Sprache festhalten genügt.');
+
+    const dismissed = new Set(d.settings.dismissedInsights || []);
+    d.insights = found.filter(i => !dismissed.has(i.key));
+    Store.save();
+  },
+
+  dismiss(key){
+    const s = Store.data.settings;
+    s.dismissedInsights = (s.dismissedInsights || []).concat(key).slice(-200);
+    Store.data.insights = Store.data.insights.filter(i => i.key !== key);
+    Store.save();
+  },
+};
+
+/* ============================ Toast ============================ */
+const Toast = {
+  show(msg, iconName){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = ic(iconName || 'check') + esc(msg);
+    $('#toastRoot').appendChild(el);
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 350); }, 2600);
+  },
+};
+
+/* ============================ Modal ============================ */
+const Modal = {
+  open(html, opts){
+    this.close();
+    const bd = document.createElement('div');
+    bd.className = 'modal-backdrop';
+    bd.innerHTML = `<div class="modal" role="dialog" aria-modal="true">${html}</div>`;
+    bd.addEventListener('mousedown', e => { if(e.target === bd && !(opts && opts.locked)) this.close(); });
+    $('#modalRoot').appendChild(bd);
+    this._esc = e => { if(e.key === 'Escape' && !(opts && opts.locked)) this.close(); };
+    document.addEventListener('keydown', this._esc);
+    return bd.firstElementChild;
+  },
+  close(){
+    Voice.stop();
+    $('#modalRoot').innerHTML = '';
+    if(this._esc){ document.removeEventListener('keydown', this._esc); this._esc = null; }
+  },
+};
+
+/* ============================ Voice ============================ */
+/* Browser-native Spracherkennung (Web Speech API). Kein externer
+   Dienst, keine Library. Ein Erkenner, ein Ziel-Textfeld. */
+const Voice = {
+  rec: null, active: false, target: null, onState: null, baseText: '',
+
+  supported(){ return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
+
+  start(targetEl, onState){
+    if(this.active){ this.stop(); return; }
+    if(!this.supported()){ Toast.show('Spracherkennung wird von diesem Browser nicht unterstützt', 'alert'); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SR();
+    rec.lang = 'de-DE';
+    rec.continuous = true;
+    rec.interimResults = true;
+
+    this.rec = rec; this.active = true;
+    this.target = targetEl; this.onState = onState || null;
+    this.baseText = targetEl.value ? targetEl.value.replace(/\s+$/,'') + ' ' : '';
+
+    rec.onresult = e => {
+      let final = '', interim = '';
+      for(let i = 0; i < e.results.length; i++){
+        const r = e.results[i];
+        if(r.isFinal) final += r[0].transcript; else interim += r[0].transcript;
+      }
+      targetEl.value = this.baseText + final + interim;
+      targetEl.dispatchEvent(new Event('input', { bubbles:true }));
+    };
+    rec.onerror = e => {
+      if(e.error === 'not-allowed') Toast.show('Mikrofon-Zugriff wurde blockiert', 'alert');
+      this._end();
+    };
+    rec.onend = () => this._end();
+
+    try{ rec.start(); }catch(err){ this._end(); return; }
+    if(this.onState) this.onState(true);
+  },
+
+  stop(){ if(this.rec){ try{ this.rec.stop(); }catch(e){} } },
+
+  _end(){
+    this.active = false; this.rec = null;
+    if(this.onState) this.onState(false);
+    this.onState = null; this.target = null;
+  },
+};
+
+/* Kleiner Mikrofon-Button neben einem Textfeld.
+   data-voice-for="<id des textfelds>" genügt. */
+function micBtn(targetId, extraCls){
+  const sup = Voice.supported();
+  return `<button type="button" class="mic-btn ${extraCls||''}" data-voice-for="${targetId}"
+    title="${sup ? 'Sprachnotiz aufnehmen' : 'Spracherkennung nicht verfügbar'}" ${sup ? '' : 'disabled style="opacity:.4;cursor:not-allowed"'}>${ic('mic')}</button>`;
+}
+
+/* ============================ Router ============================ */
+const NAV = [
+  { id:'dashboard', label:'Dashboard', icon:'home' },
+  { id:'training',  label:'Training',  icon:'training' },
+  { id:'spiel',     label:'Spiel',     icon:'match' },
+  { id:'kader',     label:'Kader',     icon:'squad' },
+];
+const App = { view:'dashboard', param:null };
+
+const Router = {
+  parse(){
+    const h = location.hash.replace(/^#\/?/, '');
+    const [view, param] = h.split('/');
+    App.view  = NAV.some(n => n.id === view) ? view : 'dashboard';
+    App.param = param || null;
+  },
+  go(path){ location.hash = '#/' + path; },
+  render(){
+    this.parse();
+    Voice.stop();
+    InputBar.closePanel();
+    const v = App.view, p = App.param;
+    if(v === 'dashboard') Views.dashboard();
+    else if(v === 'training') p ? Views.trainingDetail(p) : Views.trainingList();
+    else if(v === 'spiel')    p ? Views.matchDetail(p)    : Views.matchList();
+    else if(v === 'kader')    p ? Views.playerProfile(p)  : Views.squad();
+    this.paintNav();
+    InputBar.refreshContext();
+    window.scrollTo({ top:0 });
+  },
+  paintNav(){
+    $$('#navDesktop .nav-item, #navMobile .tab').forEach(a => {
+      a.classList.toggle('active', a.dataset.nav === App.view);
+    });
+  },
+};
+
+function renderNav(){
+  $('#navDesktop').innerHTML = '<div class="nav-label">Menü</div>' + NAV.map(n =>
+    `<a class="nav-item" href="#/${n.id}" data-nav="${n.id}">${ic(n.icon)}${n.label}</a>`).join('');
+  $('#navMobile').innerHTML = NAV.map(n =>
+    `<a class="tab" href="#/${n.id}" data-nav="${n.id}">${ic(n.icon)}${n.label}</a>`).join('');
+}
+
+function renderUserChip(){
+  const s = Store.data.settings;
+  $('#userChip').innerHTML = `
+    <div class="avatar">${esc(initials(s.coachName || 'Coach'))}</div>
+    <div style="min-width:0"><b>${esc(s.coachName || 'Coach')}</b><span>${esc(s.teamName || 'Meine Mannschaft')}</span></div>`;
+}
+
+/* ============================ Gemeinsame Bausteine ============================ */
+function avatarHtml(p, showStatus){
+  const st = showStatus === false ? '' : `<i class="st ${esc(p.status)}"></i>`;
+  return `<div class="avatar">${esc(initials(p.name))}${st}</div>`;
+}
+
+/** 1–5-Bewertung als Dot-Reihe. name = Kategorie-Key, value = aktueller Wert. */
+function rateDots(scopeId, catKey, value){
+  let out = `<div class="rate-dots" data-rate-scope="${scopeId}" data-rate-cat="${catKey}">`;
+  for(let i = 1; i <= 5; i++)
+    out += `<button type="button" class="rate-dot${value >= i ? ' on' : ''}" data-rate-val="${i}">${i}</button>`;
+  return out + '</div>';
+}
+
+/** Komplettes Kategorien-Set für einen Bewertungs-Scope. */
+function rateBlock(scopeId, values){
+  values = values || {};
+  return CATS.map(c => `
+    <div class="rate-row">
+      <label>${c.label}</label>
+      ${rateDots(scopeId, c.key, values[c.key] || 0)}
+    </div>`).join('');
+}
+
+/** Werte eines Bewertungs-Scopes aus dem DOM lesen. */
+function readRateScope(scopeId, root){
+  const scores = {};
+  let any = false;
+  $$(`[data-rate-scope="${scopeId}"]`, root).forEach(row => {
+    const on = $$('.rate-dot.on', row).length;
+    scores[row.dataset.rateCat] = on;
+    if(on > 0) any = true;
+  });
+  return { scores, any };
+}
+
+function scoreChips(scores){
+  return '<div class="tl-scores">' + CATS.map(c => {
+    const v = scores[c.key];
+    return v ? `<span class="score-chip">${c.label} <b>${v}</b></span>` : '';
+  }).join('') + '</div>';
+}
+
+/* ============================ Globale Eingabeleiste ============================ */
+/* Das Herzstück: Sprache · Text · Datei — überall verfügbar,
+   Zuordnung folgt automatisch dem aktuellen Bereich. */
+const InputBar = {
+  mode: null,           // 'voice' | 'text' | 'file' | null
+  pendingFile: null,    // { name, size, type, dataUrl? }
+
+  init(){
+    $('#inputModes').innerHTML = `
+      <button class="mode-btn" data-mode="voice" title="Per Sprache dokumentieren">${ic('mic')}<span>Sprache</span></button>
+      <button class="mode-btn" data-mode="text"  title="Per Text dokumentieren">${ic('text')}<span>Text</span></button>
+      <button class="mode-btn" data-mode="file"  title="Datei hochladen">${ic('file')}<span>Datei</span></button>`;
+    $('#inputModes').addEventListener('click', e => {
+      const btn = e.target.closest('[data-mode]');
+      if(btn) this.toggle(btn.dataset.mode);
+    });
+  },
+
+  /** Ermittelt, wem die Eingabe zugeordnet wird. */
+  context(){
+    const d = Store.data;
+    switch(App.view){
+      case 'training': {
+        const t = App.param && Store.training(App.param);
+        return t
+          ? { kind:'training', refId:t.id, label:`Trainingsnotiz · ${fmtDateShort(t.date)}` }
+          : { kind:'training', refId:null, label:'Trainingsdokumentation' };
+      }
+      case 'spiel': {
+        const m = App.param && Store.match(App.param);
+        return m
+          ? { kind:'match', refId:m.id, label:`Spielanalyse · vs. ${m.opponent}` }
+          : { kind:'match', refId:null, label:'Spielanalyse' };
+      }
+      case 'kader': {
+        const p = App.param && Store.player(App.param);
+        return p
+          ? { kind:'player', playerId:p.id, label:`Feedback für ${p.name}` }
+          : { kind:'player', playerId:null, label:'Spielerfeedback', needsPlayer:true };
+      }
+      default:
+        return { kind:'note', label:'Trainernotiz' };
+    }
+  },
+
+  refreshContext(){
+    const ctx = this.context();
+    $('#ctxChip').innerHTML = `<span class="dot"></span><span>Wird gespeichert als</span><b>${esc(ctx.label)}</b>`;
+  },
+
+  toggle(mode){
+    if(this.mode === mode) return this.closePanel();
+    this.mode = mode;
+    this.pendingFile = null;
+    Voice.stop();
+    this.renderPanel();
+  },
+
+  closePanel(){
+    Voice.stop();
+    this.mode = null;
+    this.pendingFile = null;
+    $('#inputPanel').hidden = true;
+    $('#inputBar').classList.remove('open');
+    $$('#inputModes .mode-btn').forEach(b => b.classList.remove('active','rec'));
+  },
+
+  /** Spieler-Auswahl, falls Feedback ohne offenes Profil erfasst wird. */
+  playerSelect(ctx){
+    if(!(ctx.kind === 'player' && !ctx.playerId)) return '';
+    const opts = Store.data.players.slice()
+      .sort((a,b) => a.name.localeCompare(b.name,'de'))
+      .map(p => `<option value="${p.id}">${esc(p.name)} · ${esc(p.position)}</option>`).join('');
+    return `<div class="field" style="margin-bottom:12px">
+      <label>Spieler zuordnen</label>
+      <select id="gPlayerSel"><option value="">Bitte wählen …</option>${opts}</select>
+    </div>`;
+  },
+
+  renderPanel(){
+    const panel = $('#inputPanel');
+    const ctx = this.context();
+    $$('#inputModes .mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === this.mode));
+    $('#inputBar').classList.add('open');
+    panel.hidden = false;
+
+    if(this.mode === 'text'){
+      panel.innerHTML = `
+        ${this.playerSelect(ctx)}
+        <textarea id="gInputText" placeholder="Notiz eingeben … (⌘/Strg + Enter zum Speichern)"></textarea>
+        <div class="panel-foot">
+          <div class="panel-hint">Zuordnung: <b>${esc(ctx.label)}</b></div>
+          <button class="btn btn-ghost btn-sm" data-action="input-cancel">Abbrechen</button>
+          <button class="btn btn-primary btn-sm" data-action="input-save">${ic('check')} Speichern</button>
+        </div>`;
+      const ta = $('#gInputText');
+      ta.focus();
+      ta.addEventListener('keydown', e => {
+        if((e.metaKey || e.ctrlKey) && e.key === 'Enter') this.save();
+      });
+    }
+
+    if(this.mode === 'voice'){
+      const sup = Voice.supported();
+      panel.innerHTML = `
+        ${this.playerSelect(ctx)}
+        <div class="voice-stage">
+          <button class="voice-orb" id="voiceOrb" title="Aufnahme starten/stoppen">${ic('mic')}</button>
+          <div class="voice-status" id="voiceStatus">
+            ${sup ? 'Tippe auf das Mikrofon und sprich — <b>dein Text erscheint live</b>.'
+                  : 'Spracherkennung ist in diesem Browser nicht verfügbar.<br>Du kannst die Notiz unten eintippen.'}
+          </div>
+        </div>
+        <textarea id="gInputText" placeholder="Transkript erscheint hier — nachträglich bearbeitbar …"></textarea>
+        <div class="panel-foot">
+          <div class="panel-hint">Zuordnung: <b>${esc(ctx.label)}</b></div>
+          <button class="btn btn-ghost btn-sm" data-action="input-cancel">Abbrechen</button>
+          <button class="btn btn-primary btn-sm" data-action="input-save">${ic('check')} Speichern</button>
+        </div>`;
+      const orb = $('#voiceOrb');
+      orb.addEventListener('click', () => {
+        if(Voice.active){ Voice.stop(); return; }
+        Voice.start($('#gInputText'), on => {
+          orb.classList.toggle('rec', on);
+          orb.innerHTML = ic(on ? 'stop' : 'mic');
+          $('#voiceStatus').innerHTML = on
+            ? '<b>Aufnahme läuft …</b> Zum Beenden erneut tippen.'
+            : 'Aufnahme beendet. Text prüfen und speichern.';
+          const modeBtn = $('#inputModes [data-mode="voice"]');
+          if(modeBtn) modeBtn.classList.toggle('rec', on);
+        });
+      });
+      if(sup) orb.click(); // Direkt loslegen — eine Geste weniger.
+    }
+
+    if(this.mode === 'file'){
+      panel.innerHTML = `
+        ${this.playerSelect(ctx)}
+        <div class="dropzone" id="dropzone">
+          ${ic('upload')}<br>
+          <b>Datei hierher ziehen</b> oder klicken zum Auswählen<br>
+          <small style="color:var(--text-3)">z. B. Trainingsplan, Video-Link-Liste, Scouting-PDF, Foto</small>
+          <input type="file" id="gFileInput" hidden>
+        </div>
+        <div id="filePreview" style="margin-top:10px"></div>
+        <textarea id="gInputText" placeholder="Optionaler Kommentar zur Datei …" style="margin-top:10px;min-height:56px"></textarea>
+        <div class="panel-foot">
+          <div class="panel-hint">Zuordnung: <b>${esc(ctx.label)}</b></div>
+          <button class="btn btn-ghost btn-sm" data-action="input-cancel">Abbrechen</button>
+          <button class="btn btn-primary btn-sm" data-action="input-save" id="fileSaveBtn" disabled>${ic('check')} Speichern</button>
+        </div>`;
+      const dz = $('#dropzone'), fi = $('#gFileInput');
+      dz.addEventListener('click', () => fi.click());
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+      dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+      dz.addEventListener('drop', e => {
+        e.preventDefault(); dz.classList.remove('drag');
+        if(e.dataTransfer.files[0]) this.takeFile(e.dataTransfer.files[0]);
+      });
+      fi.addEventListener('change', () => { if(fi.files[0]) this.takeFile(fi.files[0]); });
+    }
+  },
+
+  takeFile(file){
+    const meta = { name:file.name, size:file.size, type:file.type || 'unbekannt' };
+    const finish = () => {
+      this.pendingFile = meta;
+      $('#filePreview').innerHTML = `<span class="file-chip">${ic('fileText')}<span>${esc(meta.name)}</span><small>${fmtBytes(meta.size)}</small></span>`;
+      const b = $('#fileSaveBtn'); if(b) b.disabled = false;
+    };
+    /* Kleine Bilder als Vorschau mitspeichern (localStorage-schonend). */
+    if(file.type.startsWith('image/') && file.size <= 200 * 1024){
+      const rd = new FileReader();
+      rd.onload = () => { meta.dataUrl = rd.result; finish(); };
+      rd.onerror = finish;
+      rd.readAsDataURL(file);
+    } else finish();
+  },
+
+  save(){
+    const ctx = this.context();
+    Voice.stop();
+    const text = ($('#gInputText') ? $('#gInputText').value : '').trim();
+
+    if(this.mode === 'file' && !this.pendingFile){ Toast.show('Bitte zuerst eine Datei wählen', 'alert'); return; }
+    if(this.mode !== 'file' && !text){ Toast.show('Bitte zuerst etwas eingeben', 'alert'); return; }
+
+    let playerId = ctx.playerId || null;
+    if(ctx.kind === 'player' && !playerId){
+      const sel = $('#gPlayerSel');
+      playerId = sel && sel.value;
+      if(!playerId){ Toast.show('Bitte einen Spieler zuordnen', 'alert'); return; }
+    }
+
+    Store.data.notes.push({
+      id: uid('no'),
+      kind: ctx.kind,
+      refId: ctx.refId || null,
+      playerId,
+      method: this.mode,
+      text,
+      file: this.pendingFile || null,
+      createdAt: Date.now(),
+    });
+    Store.save();
+    Insights.run();
+    this.closePanel();
+    Toast.show('Gespeichert & zugeordnet');
+    Router.render();
+  },
+};
+
+/* ============================ Views ============================ */
+const Views = {
+
+  /* ---------------- Dashboard ---------------- */
+  dashboard(){
+    const d = Store.data;
+    const s = d.settings;
+    const h = new Date().getHours();
+    const hello = h < 11 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend';
+    const dateStr = new Date().toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
+
+    const tasks = d.tasks.slice().sort((a,b) => (a.done - b.done) || (b.createdAt - a.createdAt));
+    const feed = [
+      ...d.trainings.map(t => ({ ts:t.createdAt, icon:'training', title:`Training · ${t.focus}`, sub:fmtDate(t.date), href:`#/training/${t.id}` })),
+      ...d.matches.map(m => ({ ts:m.createdAt, icon:'match', title:`Spiel vs. ${m.opponent} (${m.goalsFor}:${m.goalsAgainst})`, sub:fmtDate(m.date), href:`#/spiel/${m.id}` })),
+      ...d.notes.map(n => {
+        const p = n.playerId && Store.player(n.playerId);
+        return { ts:n.createdAt, icon: n.method === 'voice' ? 'mic' : n.file ? 'file' : 'note',
+          title: p ? `Feedback · ${p.name}` : n.kind === 'match' ? 'Spielanalyse' : n.kind === 'training' ? 'Trainingsnotiz' : 'Trainernotiz',
+          sub: n.file ? n.file.name : (n.text || '').slice(0, 60), href: p ? `#/kader/${p.id}` : null };
+      }),
+    ].sort((a,b) => b.ts - a.ts).slice(0, 6);
+
+    $('#view').innerHTML = `
+      <div class="greeting">
+        <h1>${hello}, ${esc(s.coachName || 'Coach')} 👋</h1>
+        <p>${dateStr} · ${esc(s.teamName || 'Meine Mannschaft')}</p>
+      </div>
+
+      <div class="quick-actions">
+        <button class="qa" data-action="new-training">
+          <span class="qa-ic">${ic('training')}</span>
+          <span>Neues Training<small>Einheit dokumentieren</small></span>
+        </button>
+        <button class="qa" data-action="new-match">
+          <span class="qa-ic">${ic('match')}</span>
+          <span>Neues Spiel<small>Partie analysieren</small></span>
+        </button>
+        <button class="qa" data-action="new-note">
+          <span class="qa-ic">${ic('note')}</span>
+          <span>Neue Notiz<small>Sprache, Text oder Datei</small></span>
+        </button>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-col">
+          <section class="card">
+            <div class="card-head"><h2>${ic('sparkle')} CoTrainer Hinweise</h2><span class="ai-badge">${ic('sparkle')} Automatisch analysiert</span></div>
+            <div style="padding-top:8px">
+              ${d.insights.length ? d.insights.map(i => `
+                <div class="insight">
+                  <span class="insight-ic ${i.tone}">${ic(i.icon)}</span>
+                  <div class="insight-body">
+                    <b>${esc(i.title)}</b>
+                    <p>${esc(i.text)}${i.playerId ? ` <a href="#/kader/${i.playerId}" style="color:var(--green-deep);font-weight:600;text-decoration:none">Zum Profil →</a>` : ''}</p>
+                  </div>
+                  <button class="insight-x" data-action="dismiss-insight" data-key="${esc(i.key)}" title="Hinweis ausblenden">${ic('x')}</button>
+                </div>`).join('')
+              : `<div style="padding:8px 20px 20px;color:var(--text-2);font-size:13.5px">Aktuell keine Auffälligkeiten. Nach der nächsten Dokumentation analysiert dein CoTrainer automatisch alle Daten.</div>`}
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h2>${ic('clock')} Neueste Dokumentationen</h2></div>
+            <div style="padding-top:8px">
+              ${feed.length ? feed.map(f => f.href
+                ? `<a class="feed-item" href="${f.href}">
+                     <span class="feed-ic">${ic(f.icon)}</span>
+                     <span class="feed-body"><b>${esc(f.title)}</b><span>${esc(f.sub)}</span></span>
+                     <span class="feed-time">${relTime(f.ts)}</span>${ic('chevR')}
+                   </a>`
+                : `<div class="feed-item">
+                     <span class="feed-ic">${ic(f.icon)}</span>
+                     <span class="feed-body"><b>${esc(f.title)}</b><span>${esc(f.sub)}</span></span>
+                     <span class="feed-time">${relTime(f.ts)}</span>
+                   </div>`).join('')
+              : `<div style="padding:8px 20px 20px;color:var(--text-2);font-size:13.5px">Noch nichts dokumentiert. Starte oben über die Eingabeleiste oder mit einer Schnellaktion.</div>`}
+            </div>
+          </section>
+        </div>
+
+        <div class="dash-col">
+          <section class="card">
+            <div class="card-head"><h2>${ic('check')} Heutige Aufgaben</h2></div>
+            <div style="padding-top:8px">
+              ${tasks.length ? tasks.map(t => `
+                <div class="task-row ${t.done ? 'done' : ''}">
+                  <button class="task-check" data-action="toggle-task" data-id="${t.id}" aria-label="Aufgabe umschalten">${ic('check')}</button>
+                  <span class="task-text">${esc(t.text)}</span>
+                  <button class="task-del" data-action="del-task" data-id="${t.id}" title="Aufgabe löschen">${ic('x')}</button>
+                </div>`).join('')
+              : `<div style="padding:4px 20px 8px;color:var(--text-2);font-size:13.5px">Alles erledigt. 🎉</div>`}
+            </div>
+            <form class="task-add" data-action-submit="add-task">
+              <input type="text" id="newTaskInput" placeholder="Neue Aufgabe …" maxlength="140">
+              <button class="btn btn-sm" type="submit">${ic('plus')}</button>
+            </form>
+          </section>
+        </div>
+      </div>`;
+  },
+
+  /* ---------------- Training: Liste ---------------- */
+  trainingList(){
+    const list = Store.data.trainings.slice().sort((a,b) => b.date.localeCompare(a.date));
+    $('#view').innerHTML = `
+      <div class="view-head">
+        <div><h1>Training</h1><div class="sub">${list.length} dokumentierte Einheit${list.length === 1 ? '' : 'en'}</div></div>
+        <button class="btn btn-primary" data-action="new-training">${ic('plus')} Neues Training</button>
+      </div>
+      ${list.length ? `<div class="session-list">${list.map(t => {
+        const present = Object.values(t.attendance).filter(v => v === 'anwesend').length;
+        const rated = Store.data.ratings.filter(r => r.refId === t.id).length;
+        const dd = new Date(t.date + 'T12:00:00');
+        return `
+        <a class="session-card" href="#/training/${t.id}">
+          <span class="date-badge"><b>${dd.getDate()}</b><span>${dd.toLocaleDateString('de-DE',{month:'short'}).replace('.','')}</span></span>
+          <span class="session-body">
+            <h3>${esc(t.focus || 'Trainingseinheit')}</h3>
+            <span class="session-meta">
+              <span>${ic('clock')}${t.duration} Min.</span>
+              ${t.location ? `<span>${ic('pin')}${esc(t.location)}</span>` : ''}
+              <span>${ic('squad')}${present} anwesend</span>
+              ${rated ? `<span>${ic('star')}${rated} bewertet</span>` : ''}
+            </span>
+          </span>
+          ${ic('chevR')}
+        </a>`;
+      }).join('')}</div>`
+      : `<div class="empty">
+           <span class="qa-ic">${ic('training')}</span>
+           <b>Noch kein Training dokumentiert</b>
+           <p>Erfasse deine erste Einheit — mit Anwesenheit und Spielerbewertung in unter fünf Minuten.</p>
+           <button class="btn btn-primary" data-action="new-training">${ic('plus')} Erstes Training anlegen</button>
+         </div>`}`;
+  },
+
+  /* ---------------- Training: Detail ---------------- */
+  trainingDetail(id){
+    const t = Store.training(id);
+    if(!t){ Router.go('training'); return; }
+    const players = Store.data.players;
+    const ratings = Store.data.ratings.filter(r => r.refId === t.id);
+    const notes = Store.data.notes.filter(n => n.refId === t.id).sort((a,b) => b.createdAt - a.createdAt);
+    const attGroups = { anwesend:[], verletzt:[], fehlt:[] };
+    players.forEach(p => { (attGroups[t.attendance[p.id]] || attGroups.fehlt).push(p); });
+    const teamAvg = avg(ratings.map(r => avg(CATS.map(c => r.scores[c.key]))));
+
+    $('#view').innerHTML = `
+      <a class="back-link" href="#/training">${ic('chevL')} Alle Trainings</a>
+      <div class="view-head">
+        <div>
+          <h1>${esc(t.focus || 'Trainingseinheit')}</h1>
+          <div class="sub">${fmtDate(t.date)}${t.opponent ? ` · Testspiel vs. ${esc(t.opponent)}` : ''}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" data-action="edit-training" data-id="${t.id}">${ic('edit')} Bearbeiten</button>
+          <button class="btn btn-danger" data-action="del-training" data-id="${t.id}">${ic('trash')}</button>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="dash-col">
+          <section class="card">
+            <div class="card-head"><h2>${ic('training')} Eckdaten</h2></div>
+            <div class="kv-list">
+              <div class="kv"><span>Datum</span><b>${fmtDate(t.date)}</b></div>
+              <div class="kv"><span>Schwerpunkt</span><b>${esc(t.focus || '—')}</b></div>
+              <div class="kv"><span>Dauer</span><b>${t.duration} Minuten</b></div>
+              <div class="kv"><span>Ort</span><b>${esc(t.location || '—')}</b></div>
+              ${t.opponent ? `<div class="kv"><span>Gegner</span><b>${esc(t.opponent)}</b></div>` : ''}
+              <div class="kv"><span>Anwesend</span><b>${attGroups.anwesend.length} / ${players.length}</b></div>
+              ${teamAvg ? `<div class="kv"><span>Team-Ø</span><b style="color:var(--green-deep)">${fmt1(teamAvg)}</b></div>` : ''}
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h2>${ic('squad')} Anwesenheit</h2></div>
+            <div class="kv-list">
+              ${['anwesend','verletzt','fehlt'].map(k => attGroups[k].length ? `
+                <div class="kv"><span>${k === 'anwesend' ? '✅ Anwesend' : k === 'verletzt' ? '🩹 Verletzt' : '— Gefehlt'}</span>
+                <b style="font-weight:500;max-width:65%">${attGroups[k].map(p => esc(p.name.split(' ')[0][0] + '. ' + p.name.split(' ').slice(1).join(' '))).join(', ')}</b></div>` : '').join('')}
+            </div>
+          </section>
+        </div>
+
+        <div class="dash-col">
+          <section class="card">
+            <div class="card-head"><h2>${ic('star')} Bewertungen</h2></div>
+            <div class="timeline">
+              ${ratings.length ? ratings.map(r => {
+                const p = Store.player(r.playerId);
+                if(!p) return '';
+                return `<div class="tl-item">
+                  ${avatarHtml(p)}
+                  <div class="tl-body">
+                    <div class="tl-top"><b><a href="#/kader/${p.id}" style="color:inherit;text-decoration:none">${esc(p.name)}</a></b>
+                    <time>Ø ${fmt1(avg(CATS.map(c => r.scores[c.key])))}</time></div>
+                    ${scoreChips(r.scores)}
+                    ${r.note ? `<p>${esc(r.note)}</p>` : ''}
+                  </div>
+                </div>`;
+              }).join('') : `<div style="padding:8px 20px 16px;color:var(--text-2);font-size:13.5px">Keine Bewertungen erfasst. Über „Bearbeiten“ nachtragen.</div>`}
+            </div>
+          </section>
+          ${notesCard(notes, 'Notizen zu dieser Einheit')}
+        </div>
+      </div>`;
+  },
+
+  /* ---------------- Spiel: Liste ---------------- */
+  matchList(){
+    const list = Store.data.matches.slice().sort((a,b) => b.date.localeCompare(a.date));
+    $('#view').innerHTML = `
+      <div class="view-head">
+        <div><h1>Spiel</h1><div class="sub">${list.length} dokumentierte${list.length === 1 ? 's Spiel' : ' Spiele'}</div></div>
+        <button class="btn btn-primary" data-action="new-match">${ic('plus')} Neues Spiel</button>
+      </div>
+      ${list.length ? `<div class="session-list">${list.map(m => {
+        const res = m.goalsFor > m.goalsAgainst ? 'win' : m.goalsFor < m.goalsAgainst ? 'loss' : 'draw';
+        const dd = new Date(m.date + 'T12:00:00');
+        const used = Object.values(m.participation).filter(x => (x.minutes || 0) > 0).length;
+        return `
+        <a class="session-card" href="#/spiel/${m.id}">
+          <span class="date-badge"><b>${dd.getDate()}</b><span>${dd.toLocaleDateString('de-DE',{month:'short'}).replace('.','')}</span></span>
+          <span class="session-body">
+            <h3>${m.home ? 'vs.' : '@'} ${esc(m.opponent)}</h3>
+            <span class="session-meta">
+              <span>${ic('pin')}${m.home ? 'Heim' : 'Auswärts'}</span>
+              ${m.formation ? `<span>${ic('squad')}${esc(m.formation)}</span>` : ''}
+              <span>${ic('user')}${used} eingesetzt</span>
+            </span>
+          </span>
+          <span class="score-pill ${res}">${m.goalsFor} : ${m.goalsAgainst}</span>
+        </a>`;
+      }).join('')}</div>`
+      : `<div class="empty">
+           <span class="qa-ic">${ic('match')}</span>
+           <b>Noch kein Spiel dokumentiert</b>
+           <p>Halte Ergebnis, Einsatzzeiten und Leistungen direkt nach Abpfiff fest — solange alles frisch ist.</p>
+           <button class="btn btn-primary" data-action="new-match">${ic('plus')} Erstes Spiel anlegen</button>
+         </div>`}`;
+  },
+
+  /* ---------------- Spiel: Detail ---------------- */
+  matchDetail(id){
+    const m = Store.match(id);
+    if(!m){ Router.go('spiel'); return; }
+    const ratings = Store.data.ratings.filter(r => r.refId === m.id);
+    const notes = Store.data.notes.filter(n => n.refId === m.id).sort((a,b) => b.createdAt - a.createdAt);
+    const res = m.goalsFor > m.goalsAgainst ? 'win' : m.goalsFor < m.goalsAgainst ? 'loss' : 'draw';
+    const resLabel = res === 'win' ? 'Sieg' : res === 'loss' ? 'Niederlage' : 'Unentschieden';
+
+    const rows = Store.data.players
+      .map(p => ({ p, part: m.participation[p.id] }))
+      .filter(x => x.part && (x.part.minutes || 0) > 0)
+      .sort((a,b) => (b.part.minutes - a.part.minutes) || (POS_ORDER[a.p.position] - POS_ORDER[b.p.position]));
+
+    $('#view').innerHTML = `
+      <a class="back-link" href="#/spiel">${ic('chevL')} Alle Spiele</a>
+      <div class="view-head">
+        <div>
+          <h1>${m.home ? 'vs.' : '@'} ${esc(m.opponent)} <span class="score-pill ${res}" style="vertical-align:4px;margin-left:6px">${m.goalsFor} : ${m.goalsAgainst}</span></h1>
+          <div class="sub">${fmtDate(m.date)} · ${m.home ? 'Heimspiel' : 'Auswärtsspiel'} · ${resLabel}${m.formation ? ' · ' + esc(m.formation) : ''}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" data-action="edit-match" data-id="${m.id}">${ic('edit')} Bearbeiten</button>
+          <button class="btn btn-danger" data-action="del-match" data-id="${m.id}">${ic('trash')}</button>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <section class="card">
+          <div class="card-head"><h2>${ic('clock')} Einsatzzeiten</h2></div>
+          <div class="timeline">
+            ${rows.length ? rows.map(({p, part}) => `
+              <div class="tl-item" style="align-items:center">
+                ${avatarHtml(p)}
+                <div class="tl-body">
+                  <div class="tl-top">
+                    <b><a href="#/kader/${p.id}" style="color:inherit;text-decoration:none">${esc(p.name)}</a></b>
+                    <time>${part.minutes} Min.</time>
+                  </div>
+                  <p style="margin-top:1px">${part.role === 'start' ? 'Startelf' : 'Eingewechselt'}${part.minutes < 90 && part.role === 'start' ? ' · ausgewechselt' : ''}</p>
+                </div>
+              </div>`).join('') : `<div style="padding:8px 20px 16px;color:var(--text-2);font-size:13.5px">Keine Einsätze erfasst.</div>`}
+          </div>
+        </section>
+
+        <div class="dash-col">
+          <section class="card">
+            <div class="card-head"><h2>${ic('star')} Leistungen</h2></div>
+            <div class="timeline">
+              ${ratings.length ? ratings.map(r => {
+                const p = Store.player(r.playerId);
+                if(!p) return '';
+                return `<div class="tl-item">
+                  ${avatarHtml(p)}
+                  <div class="tl-body">
+                    <div class="tl-top"><b><a href="#/kader/${p.id}" style="color:inherit;text-decoration:none">${esc(p.name)}</a></b>
+                    <time>Ø ${fmt1(avg(CATS.map(c => r.scores[c.key])))}</time></div>
+                    ${scoreChips(r.scores)}
+                    ${r.note ? `<p>${esc(r.note)}</p>` : ''}
+                  </div>
+                </div>`;
+              }).join('') : `<div style="padding:8px 20px 16px;color:var(--text-2);font-size:13.5px">Keine Bewertungen erfasst. Über „Bearbeiten“ nachtragen.</div>`}
+            </div>
+          </section>
+          ${notesCard(notes, 'Analyse-Notizen')}
+        </div>
+      </div>`;
+  },
+};
+
+/** Wiederverwendbare Notizen-Karte (Detailseiten + Profil). */
+function notesCard(notes, title){
+  return `<section class="card">
+    <div class="card-head"><h2>${ic('note')} ${esc(title)}</h2></div>
+    <div class="timeline">
+      ${notes.length ? notes.map(n => `
+        <div class="tl-item">
+          <span class="feed-ic">${ic(n.method === 'voice' ? 'mic' : n.file ? 'file' : 'note')}</span>
+          <div class="tl-body">
+            <div class="tl-top">
+              <b>${n.method === 'voice' ? 'Sprachnotiz' : n.file ? 'Datei' : 'Notiz'}</b>
+              <time>${relTime(n.createdAt)}</time>
+            </div>
+            ${n.file ? `<p><span class="file-chip" style="margin-top:4px">${ic('fileText')}<span>${esc(n.file.name)}</span><small>${fmtBytes(n.file.size)}</small></span></p>` : ''}
+            ${n.file && n.file.dataUrl ? `<p style="margin-top:8px"><img src="${n.file.dataUrl}" alt="" style="max-width:220px;border-radius:10px;border:1px solid var(--border)"></p>` : ''}
+            ${n.text ? `<p>${esc(n.text)}</p>` : ''}
+          </div>
+          <button class="insight-x" style="opacity:.5" data-action="del-note" data-id="${n.id}" title="Notiz löschen">${ic('x')}</button>
+        </div>`).join('')
+      : `<div style="padding:8px 20px 16px;color:var(--text-2);font-size:13.5px">Noch keine Notizen — nutze die Eingabeleiste oben (Sprache, Text oder Datei).</div>`}
+    </div>
+  </section>`;
+}
+
+/* ---------------- Kader: Liste ---------------- */
+const Squad = { query:'', filter:'alle' };
+
+Views.squad = function(){
+  const d = Store.data;
+  const q = Squad.query.toLowerCase();
+  const groups = { alle:() => true, TW:p => p.position === 'TW',
+    Abwehr:p => ['RV','IV','LV'].includes(p.position),
+    Mittelfeld:p => ['ZDM','ZM','OM'].includes(p.position),
+    Angriff:p => ['RF','LF','ST'].includes(p.position),
+    Verletzt:p => p.status !== 'fit' };
+  const list = d.players
+    .filter(p => (groups[Squad.filter] || groups.alle)(p))
+    .filter(p => !q || p.name.toLowerCase().includes(q) || String(p.number).includes(q))
+    .sort((a,b) => (POS_ORDER[a.position] - POS_ORDER[b.position]) || a.name.localeCompare(b.name,'de'));
+
+  $('#view').innerHTML = `
+    <div class="view-head">
+      <div><h1>Kader</h1><div class="sub">${d.players.length} Spieler im Team</div></div>
+      <button class="btn btn-primary" data-action="new-player">${ic('plus')} Spieler hinzufügen</button>
+    </div>
+    <div class="squad-tools">
+      <div class="search-box">${ic('search')}<input type="search" id="squadSearch" placeholder="Spieler suchen …" value="${esc(Squad.query)}"></div>
+      <div class="filter-chips">
+        ${Object.keys(groups).map(g => `<button class="chip${Squad.filter === g ? ' active' : ''}" data-action="squad-filter" data-filter="${g}">${g === 'alle' ? 'Alle' : g}</button>`).join('')}
+      </div>
+    </div>
+    ${list.length ? `<div class="player-grid">
+      ${list.map(p => {
+        const o = Store.overallAvg(p.id);
+        return `<button class="player-card" data-action="open-player" data-id="${p.id}">
+          ${avatarHtml(p)}
+          <span class="player-card-body"><b>${esc(p.name)}</b><span>#${p.number}${p.birthYear ? ' · Jg. ' + p.birthYear : ''}</span></span>
+          ${o ? `<span class="mini-score">${ic('star')}${fmt1(o)}</span>` : ''}
+          <span class="pos-tag">${esc(p.position)}</span>
+        </button>`;
+      }).join('')}</div>`
+    : `<div class="empty">
+         <span class="qa-ic">${ic('squad')}</span>
+         <b>${d.players.length ? 'Keine Treffer' : 'Noch keine Spieler angelegt'}</b>
+         <p>${d.players.length ? 'Suche oder Filter anpassen.' : 'Lege deinen Kader an — danach läuft jede Dokumentation automatisch über diese Liste.'}</p>
+         ${d.players.length ? '' : `<button class="btn btn-primary" data-action="new-player">${ic('plus')} Ersten Spieler anlegen</button>`}
+       </div>`}`;
+
+  const si = $('#squadSearch');
+  si.addEventListener('input', () => {
+    Squad.query = si.value;
+    Views.squad();
+    const el = $('#squadSearch');
+    el.focus(); el.setSelectionRange(el.value.length, el.value.length);
+  });
+};
+
+/* ---------------- Kader: Spielerprofil ---------------- */
+Views.playerProfile = function(id){
+  const p = Store.player(id);
+  if(!p){ Router.go('kader'); return; }
+  const d = Store.data;
+  const cats = Store.catAverages(p.id);
+  const overall = Store.overallAvg(p.id);
+  const ratingByRef = Object.fromEntries(Store.ratingsFor(p.id).map(r => [r.refId || r.id, r]));
+
+  /* Historie: Trainings, Spiele und direkte Feedbacks zusammenführen */
+  const events = [];
+  d.trainings.forEach(t => {
+    const att = t.attendance[p.id];
+    if(!att) return;
+    const r = ratingByRef[t.id];
+    events.push({ ts:t.createdAt, icon:'training', href:`#/training/${t.id}`,
+      title:`Training · ${t.focus}`, time:fmtDateShort(t.date),
+      sub: att === 'anwesend' ? '' : att === 'verletzt' ? 'Verletzt gefehlt' : 'Gefehlt',
+      rating:r });
+  });
+  d.matches.forEach(m => {
+    const part = m.participation[p.id];
+    if(!part || !(part.minutes > 0)) return;
+    const r = ratingByRef[m.id];
+    events.push({ ts:m.createdAt, icon:'match', href:`#/spiel/${m.id}`,
+      title:`Spiel ${m.home ? 'vs.' : '@'} ${m.opponent} (${m.goalsFor}:${m.goalsAgainst})`, time:fmtDateShort(m.date),
+      sub:`${part.role === 'start' ? 'Startelf' : 'Eingewechselt'} · ${part.minutes} Min.`,
+      rating:r });
+  });
+  Store.ratingsFor(p.id).filter(r => r.refType === 'feedback').forEach(r => {
+    events.push({ ts:r.createdAt, icon:'star', title:'Feedback', time:relTime(r.createdAt), sub:'', rating:r });
+  });
+  d.notes.filter(n => n.playerId === p.id).forEach(n => {
+    events.push({ ts:n.createdAt, icon: n.method === 'voice' ? 'mic' : n.file ? 'file' : 'note',
+      title: n.method === 'voice' ? 'Sprachnotiz' : n.file ? 'Datei: ' + n.file.name : 'Notiz',
+      time: relTime(n.createdAt), sub:n.text || '', noteId:n.id });
+  });
+  events.sort((a,b) => b.ts - a.ts);
+
+  $('#view').innerHTML = `
+    <a class="back-link" href="#/kader">${ic('chevL')} Zum Kader</a>
+    <section class="card" style="margin-bottom:18px">
+      <div class="profile-head">
+        ${avatarHtml(p)}
+        <div style="flex:1;min-width:200px">
+          <h1>${esc(p.name)}</h1>
+          <div class="profile-tags">
+            <span class="tag green">${esc(p.position)}</span>
+            <span class="tag">Rückennr. ${p.number}</span>
+            ${p.birthYear ? `<span class="tag">Jahrgang ${p.birthYear}</span>` : ''}
+            <span class="tag ${p.status === 'fit' ? 'green' : p.status === 'angeschlagen' ? 'amber' : 'red'}">${STATUS_LABEL[p.status] || 'Fit'}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" data-action="edit-player" data-id="${p.id}">${ic('edit')} Bearbeiten</button>
+          <button class="btn btn-primary" data-action="new-feedback" data-id="${p.id}">${ic('plus')} Neues Feedback</button>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>${Store.trainingsAttended(p.id)}</b><span>Trainings</span></div>
+        <div class="stat"><b>${Store.matchesPlayed(p.id)}</b><span>Spiele</span></div>
+        <div class="stat"><b>${Store.totalMinutes(p.id)}</b><span>Minuten</span></div>
+        <div class="stat"><b style="color:var(--green-deep)">${fmt1(overall)}</b><span>Ø Bewertung</span></div>
+      </div>
+    </section>
+
+    <div class="detail-grid">
+      <section class="card">
+        <div class="card-head"><h2>${ic('trendUp')} Profil nach Kategorien</h2></div>
+        <div class="cat-bars">
+          ${CATS.map(c => `
+            <div class="cat-bar">
+              <label>${c.label}</label>
+              <div class="track"><div class="fill" style="width:${(cats[c.key] / 5) * 100}%"></div></div>
+              <b>${fmt1(cats[c.key])}</b>
+            </div>`).join('')}
+        </div>
+        ${overall ? '' : `<div style="padding:0 20px 18px;color:var(--text-2);font-size:13px">Noch keine Bewertungen — nach dem ersten Training oder Feedback entsteht hier das Leistungsprofil.</div>`}
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>${ic('clock')} Historie</h2></div>
+        <div class="timeline">
+          ${events.length ? events.slice(0, 30).map(ev => `
+            <div class="tl-item">
+              <span class="feed-ic">${ic(ev.icon)}</span>
+              <div class="tl-body">
+                <div class="tl-top">
+                  <b>${ev.href ? `<a href="${ev.href}" style="color:inherit;text-decoration:none">${esc(ev.title)}</a>` : esc(ev.title)}</b>
+                  <time>${esc(ev.time)}</time>
+                </div>
+                ${ev.sub ? `<p>${esc(ev.sub)}</p>` : ''}
+                ${ev.rating ? scoreChips(ev.rating.scores) : ''}
+                ${ev.rating && ev.rating.note ? `<p>${esc(ev.rating.note)}</p>` : ''}
+              </div>
+              ${ev.noteId ? `<button class="insight-x" style="opacity:.5" data-action="del-note" data-id="${ev.noteId}" title="Löschen">${ic('x')}</button>` : ''}
+            </div>`).join('')
+          : `<div style="padding:8px 20px 16px;color:var(--text-2);font-size:13.5px">Noch keine Einträge. Dokumentiere ein Training, ein Spiel oder gib direkt Feedback.</div>`}
+        </div>
+      </section>
+    </div>`;
+};
+
+/* ============================ Wizard: Training ============================ */
+/* 3 Schritte: Eckdaten → Anwesenheit → Bewertung. Kompakt, schnell, mobil. */
+const TrainingWizard = {
+  state: null,
+
+  open(editId){
+    const t = editId && Store.training(editId);
+    const evals = {};
+    if(t) Store.data.ratings.filter(r => r.refId === t.id).forEach(r => {
+      evals[r.playerId] = { scores: Object.assign({}, r.scores), note: r.note };
+    });
+    this.state = {
+      editId: t ? t.id : null, step: 1,
+      form: t ? { date:t.date, focus:t.focus, duration:t.duration, location:t.location, opponent:t.opponent || '' }
+              : { date:todayISO(), focus:'', duration:90, location:Store.data.settings.lastLocation || '', opponent:'' },
+      attendance: t ? Object.assign({}, t.attendance)
+                    : Object.fromEntries(Store.data.players.map(p => [p.id, p.status === 'verletzt' ? 'verletzt' : 'anwesend'])),
+      evals,
+    };
+    this.render();
+  },
+
+  render(){
+    const s = this.state;
+    const players = Store.data.players.slice().sort((a,b) => (POS_ORDER[a.position] - POS_ORDER[b.position]) || a.name.localeCompare(b.name,'de'));
+    let body = '';
+
+    if(s.step === 1){
+      body = `
+        <div class="form-grid">
+          <div class="field"><label>Datum</label><input type="date" id="twDate" value="${esc(s.form.date)}"></div>
+          <div class="field"><label>Dauer (Minuten)</label><input type="number" id="twDuration" min="15" max="240" step="5" value="${s.form.duration}"></div>
+          <div class="field full"><label>Trainingsschwerpunkt</label><input type="text" id="twFocus" placeholder="z. B. Pressing & Umschaltspiel" value="${esc(s.form.focus)}" maxlength="80">
+            <div class="suggest-chips">${['Passspiel','Abschluss','Pressing','Standards','Spielaufbau','Kondition','Defensivverhalten'].map(x => `<button type="button" class="chip" data-tw-suggest="${x}">${x}</button>`).join('')}</div>
+          </div>
+          <div class="field"><label>Ort</label><input type="text" id="twLocation" placeholder="z. B. Sportplatz Nord" value="${esc(s.form.location)}" maxlength="60"></div>
+          <div class="field"><label>Gegner (optional, Testspiel)</label><input type="text" id="twOpponent" placeholder="—" value="${esc(s.form.opponent)}" maxlength="60"></div>
+        </div>`;
+    }
+
+    if(s.step === 2){
+      body = `
+        <div class="panel-hint" style="margin-bottom:10px">Alle Spieler stehen automatisch auf <b>Anwesend</b> — nur Abweichungen antippen.</div>
+        ${players.map(p => `
+          <div class="att-row">
+            ${avatarHtml(p)}<b>${esc(p.name)}</b>
+            <div class="seg" data-att="${p.id}">
+              <button type="button" class="g ${s.attendance[p.id] === 'anwesend' ? 'on' : ''}" data-att-val="anwesend">Anwesend</button>
+              <button type="button" class="a ${s.attendance[p.id] === 'verletzt' ? 'on' : ''}" data-att-val="verletzt">Verletzt</button>
+              <button type="button" class="r ${s.attendance[p.id] === 'fehlt' ? 'on' : ''}" data-att-val="fehlt">Fehlt</button>
+            </div>
+          </div>`).join('')}`;
+    }
+
+    if(s.step === 3){
+      const present = players.filter(p => s.attendance[p.id] === 'anwesend');
+      body = `
+        <div class="panel-hint" style="margin-bottom:10px">Optional, aber wertvoll: Spieler antippen und bewerten. Nicht bewertete Spieler werden übersprungen.</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${present.map(p => this.evalBlockHtml(p)).join('') ||
+            '<div class="panel-hint">Keine anwesenden Spieler — Schritt kann übersprungen werden.</div>'}
+        </div>`;
+    }
+
+    const modal = Modal.open(`
+      <div class="modal-head">
+        <h2>${s.editId ? 'Training bearbeiten' : 'Neues Training'}</h2>
+        <span class="steps">Schritt ${s.step} / 3 · ${['Eckdaten','Anwesenheit','Bewertung'][s.step - 1]}</span>
+        <button class="modal-x" data-action="modal-close">${ic('x')}</button>
+      </div>
+      <div class="modal-body">${body}</div>
+      <div class="modal-foot">
+        <div class="step-dots">${[1,2,3].map(i => `<i class="${i <= s.step ? 'on' : ''}"></i>`).join('')}</div>
+        <div style="display:flex;gap:8px">
+          ${s.step > 1 ? `<button class="btn" data-action="tw-back">${ic('chevL')} Zurück</button>` : ''}
+          ${s.step < 3 ? `<button class="btn btn-primary" data-action="tw-next">Weiter ${ic('chevR')}</button>`
+                       : `<button class="btn btn-primary" data-action="tw-save">${ic('check')} Training speichern</button>`}
+        </div>
+      </div>`, { locked:true });
+
+    if(s.step === 1){
+      $$('[data-tw-suggest]', modal).forEach(b => b.addEventListener('click', () => {
+        $('#twFocus', modal).value = b.dataset.twSuggest;
+      }));
+    }
+  },
+
+  evalBlockHtml(p){
+    const ev = this.state.evals[p.id] || { scores:{}, note:'' };
+    const filled = CATS.some(c => ev.scores[c.key] > 0) || ev.note;
+    const noteId = 'twNote_' + p.id;
+    return `
+      <div class="eval-block${filled ? ' filled' : ''}" data-eval="${p.id}">
+        <button type="button" class="eval-head" data-action="eval-toggle">
+          ${avatarHtml(p, false)}<b>${esc(p.name)}</b>
+          <span class="eval-sum"><span class="done-tick">${ic('check')}</span>${esc(p.position)}</span>
+          <span class="chev">${ic('chevR')}</span>
+        </button>
+        <div class="eval-body">
+          ${rateBlock('ev_' + p.id, ev.scores)}
+          <div class="eval-note">
+            <textarea id="${noteId}" data-eval-note="${p.id}" placeholder="Freitext — oder Mikrofon nutzen …">${esc(ev.note)}</textarea>
+            ${micBtn(noteId)}
+          </div>
+        </div>
+      </div>`;
+  },
+
+  /** Formularwerte des aktuellen Schritts in den State übernehmen. */
+  collect(){
+    const s = this.state;
+    if(s.step === 1){
+      s.form.date     = $('#twDate').value || todayISO();
+      s.form.focus    = $('#twFocus').value.trim();
+      s.form.duration = Math.max(1, parseInt($('#twDuration').value, 10) || 90);
+      s.form.location = $('#twLocation').value.trim();
+      s.form.opponent = $('#twOpponent').value.trim();
+    }
+    if(s.step === 3){
+      $$('[data-eval]').forEach(block => {
+        const pid = block.dataset.eval;
+        const { scores, any } = readRateScope('ev_' + pid, block);
+        const note = ($(`[data-eval-note="${pid}"]`, block) || {}).value || '';
+        if(any || note.trim()) this.state.evals[pid] = { scores, note: note.trim() };
+        else delete this.state.evals[pid];
+      });
+    }
+  },
+
+  next(){
+    this.collect();
+    if(this.state.step === 1 && !this.state.form.focus){
+      Toast.show('Bitte einen Trainingsschwerpunkt angeben', 'alert');
+      $('#twFocus').focus();
+      return;
+    }
+    this.state.step++;
+    this.render();
+  },
+  back(){ this.collect(); this.state.step--; this.render(); },
+
+  save(){
+    this.collect();
+    const s = this.state;
+    const d = Store.data;
+    let t;
+    if(s.editId){
+      t = Store.training(s.editId);
+      Object.assign(t, s.form, { attendance: s.attendance });
+      d.ratings = d.ratings.filter(r => r.refId !== t.id);   // Bewertungen ersetzen
+    } else {
+      t = Object.assign({ id: uid('tr'), attendance: s.attendance, createdAt: Date.now() }, s.form);
+      d.trainings.push(t);
+    }
+    Object.entries(s.evals).forEach(([playerId, ev]) => {
+      if(s.attendance[playerId] !== 'anwesend') return;
+      d.ratings.push({ id: uid('rt'), playerId, refType:'training', refId:t.id,
+        scores: ev.scores, note: ev.note, createdAt: Date.now() });
+    });
+    if(s.form.location) d.settings.lastLocation = s.form.location;
+    Store.save();
+    Insights.run();
+    Modal.close();
+    Toast.show(s.editId ? 'Training aktualisiert' : 'Training dokumentiert');
+    Router.go('training/' + t.id);
+    if(App.view === 'training' && App.param === t.id) Router.render();
+  },
+};
+
+/* ============================ Wizard: Spiel ============================ */
+/* 3 Schritte: Eckdaten → Einsatzzeiten → Leistung & Feedback. */
+const MatchWizard = {
+  state: null,
+
+  open(editId){
+    const m = editId && Store.match(editId);
+    const evals = {};
+    if(m) Store.data.ratings.filter(r => r.refId === m.id).forEach(r => {
+      evals[r.playerId] = { scores: Object.assign({}, r.scores), note: r.note };
+    });
+    this.state = {
+      editId: m ? m.id : null, step: 1,
+      form: m ? { date:m.date, opponent:m.opponent, home:m.home, goalsFor:m.goalsFor, goalsAgainst:m.goalsAgainst, formation:m.formation || '' }
+              : { date:todayISO(), opponent:'', home:true, goalsFor:0, goalsAgainst:0, formation:'' },
+      participation: m ? JSON.parse(JSON.stringify(m.participation))
+                       : Object.fromEntries(Store.data.players.map(p => [p.id, { role:'bank', minutes:0 }])),
+      evals,
+    };
+    this.render();
+  },
+
+  render(){
+    const s = this.state;
+    const players = Store.data.players.slice().sort((a,b) => (POS_ORDER[a.position] - POS_ORDER[b.position]) || a.name.localeCompare(b.name,'de'));
+    let body = '';
+
+    if(s.step === 1){
+      body = `
+        <div class="form-grid">
+          <div class="field"><label>Datum</label><input type="date" id="mwDate" value="${esc(s.form.date)}"></div>
+          <div class="field"><label>Gegner</label><input type="text" id="mwOpponent" placeholder="z. B. SV Grünfeld" value="${esc(s.form.opponent)}" maxlength="60"></div>
+          <div class="field"><label>Spielort</label>
+            <div class="seg" id="mwHome" style="width:100%;justify-content:stretch">
+              <button type="button" class="g ${s.form.home ? 'on' : ''}" data-home="1" style="flex:1">Heim</button>
+              <button type="button" class="g ${!s.form.home ? 'on' : ''}" data-home="0" style="flex:1">Auswärts</button>
+            </div>
+          </div>
+          <div class="field"><label>Formation (optional)</label>
+            <select id="mwFormation">
+              <option value="">—</option>
+              ${['4-4-2','4-3-3','4-2-3-1','3-5-2','3-4-3','5-3-2','4-1-4-1'].map(f =>
+                `<option ${s.form.formation === f ? 'selected' : ''}>${f}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field full"><label>Ergebnis (Wir : Gegner)</label>
+            <div style="display:flex;align-items:center;gap:10px">
+              <input type="number" id="mwGf" min="0" max="99" value="${s.form.goalsFor}" style="text-align:center;font-weight:700;font-size:18px">
+              <b style="font-size:18px">:</b>
+              <input type="number" id="mwGa" min="0" max="99" value="${s.form.goalsAgainst}" style="text-align:center;font-weight:700;font-size:18px">
+            </div>
+          </div>
+        </div>`;
+    }
+
+    if(s.step === 2){
+      body = `
+        <div class="panel-hint" style="margin-bottom:10px"><b>Startelf</b> setzt automatisch 90 Minuten, <b>Joker</b> 20 — Minuten danach anpassbar.</div>
+        ${players.map(p => {
+          const part = s.participation[p.id] || { role:'bank', minutes:0 };
+          return `
+          <div class="att-row">
+            ${avatarHtml(p)}<b>${esc(p.name)}</b>
+            <input type="number" data-min="${p.id}" min="0" max="120" value="${part.minutes}"
+              ${part.role === 'bank' ? 'disabled' : ''}
+              style="width:58px;padding:7px 6px;text-align:center;border:1px solid var(--border);border-radius:9px;background:var(--inset);font-size:13px" title="Einsatzminuten">
+            <div class="seg" data-part="${p.id}">
+              <button type="button" class="g ${part.role === 'start' ? 'on' : ''}" data-role="start">Startelf</button>
+              <button type="button" class="g ${part.role === 'joker' ? 'on' : ''}" data-role="joker">Joker</button>
+              <button type="button" class="${part.role === 'bank' ? 'on' : ''}" data-role="bank">Bank</button>
+            </div>
+          </div>`;
+        }).join('')}`;
+    }
+
+    if(s.step === 3){
+      const used = players.filter(p => (s.participation[p.id] || {}).minutes > 0);
+      body = `
+        <div class="panel-hint" style="margin-bottom:10px">Leistung der eingesetzten Spieler bewerten — Feedback per Text oder Sprache.</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${used.map(p => this.evalBlockHtml(p)).join('') ||
+            '<div class="panel-hint">Keine eingesetzten Spieler — Schritt kann übersprungen werden.</div>'}
+        </div>`;
+    }
+
+    const modal = Modal.open(`
+      <div class="modal-head">
+        <h2>${s.editId ? 'Spiel bearbeiten' : 'Neues Spiel'}</h2>
+        <span class="steps">Schritt ${s.step} / 3 · ${['Eckdaten','Einsatzzeiten','Leistung'][s.step - 1]}</span>
+        <button class="modal-x" data-action="modal-close">${ic('x')}</button>
+      </div>
+      <div class="modal-body">${body}</div>
+      <div class="modal-foot">
+        <div class="step-dots">${[1,2,3].map(i => `<i class="${i <= s.step ? 'on' : ''}"></i>`).join('')}</div>
+        <div style="display:flex;gap:8px">
+          ${s.step > 1 ? `<button class="btn" data-action="mw-back">${ic('chevL')} Zurück</button>` : ''}
+          ${s.step < 3 ? `<button class="btn btn-primary" data-action="mw-next">Weiter ${ic('chevR')}</button>`
+                       : `<button class="btn btn-primary" data-action="mw-save">${ic('check')} Spiel speichern</button>`}
+        </div>
+      </div>`, { locked:true });
+
+    if(s.step === 1){
+      $('#mwHome', modal).addEventListener('click', e => {
+        const b = e.target.closest('[data-home]');
+        if(!b) return;
+        s.form.home = b.dataset.home === '1';
+        $$('#mwHome button', modal).forEach(x => x.classList.toggle('on', x === b));
+      });
+    }
+    if(s.step === 2){
+      /* Rollenwechsel → sinnvolle Minuten vorbelegen */
+      $$('[data-part]', modal).forEach(seg => seg.addEventListener('click', e => {
+        const b = e.target.closest('[data-role]');
+        if(!b) return;
+        const pid = seg.dataset.part;
+        const role = b.dataset.role;
+        const minutes = role === 'start' ? 90 : role === 'joker' ? 20 : 0;
+        s.participation[pid] = { role, minutes };
+        $$('button', seg).forEach(x => x.classList.toggle('on', x === b));
+        const mi = $(`[data-min="${pid}"]`, modal);
+        mi.value = minutes;
+        mi.disabled = role === 'bank';
+      }));
+    }
+  },
+
+  evalBlockHtml(p){
+    const ev = this.state.evals[p.id] || { scores:{}, note:'' };
+    const filled = CATS.some(c => ev.scores[c.key] > 0) || ev.note;
+    const noteId = 'mwNote_' + p.id;
+    const part = this.state.participation[p.id] || {};
+    return `
+      <div class="eval-block${filled ? ' filled' : ''}" data-eval="${p.id}">
+        <button type="button" class="eval-head" data-action="eval-toggle">
+          ${avatarHtml(p, false)}<b>${esc(p.name)}</b>
+          <span class="eval-sum"><span class="done-tick">${ic('check')}</span>${part.minutes || 0} Min.</span>
+          <span class="chev">${ic('chevR')}</span>
+        </button>
+        <div class="eval-body">
+          ${rateBlock('ev_' + p.id, ev.scores)}
+          <div class="eval-note">
+            <textarea id="${noteId}" data-eval-note="${p.id}" placeholder="Feedback — Text oder Sprache …">${esc(ev.note)}</textarea>
+            ${micBtn(noteId)}
+          </div>
+        </div>
+      </div>`;
+  },
+
+  collect(){
+    const s = this.state;
+    if(s.step === 1){
+      s.form.date         = $('#mwDate').value || todayISO();
+      s.form.opponent     = $('#mwOpponent').value.trim();
+      s.form.formation    = $('#mwFormation').value;
+      s.form.goalsFor     = Math.max(0, parseInt($('#mwGf').value, 10) || 0);
+      s.form.goalsAgainst = Math.max(0, parseInt($('#mwGa').value, 10) || 0);
+    }
+    if(s.step === 2){
+      $$('[data-min]').forEach(inp => {
+        const pid = inp.dataset.min;
+        const part = s.participation[pid] || { role:'bank', minutes:0 };
+        if(part.role !== 'bank') part.minutes = Math.max(0, Math.min(120, parseInt(inp.value, 10) || 0));
+        s.participation[pid] = part;
+      });
+    }
+    if(s.step === 3){
+      $$('[data-eval]').forEach(block => {
+        const pid = block.dataset.eval;
+        const { scores, any } = readRateScope('ev_' + pid, block);
+        const note = ($(`[data-eval-note="${pid}"]`, block) || {}).value || '';
+        if(any || note.trim()) s.evals[pid] = { scores, note: note.trim() };
+        else delete s.evals[pid];
+      });
+    }
+  },
+
+  next(){
+    this.collect();
+    if(this.state.step === 1 && !this.state.form.opponent){
+      Toast.show('Bitte den Gegner angeben', 'alert');
+      $('#mwOpponent').focus();
+      return;
+    }
+    this.state.step++;
+    this.render();
+  },
+  back(){ this.collect(); this.state.step--; this.render(); },
+
+  save(){
+    this.collect();
+    const s = this.state;
+    const d = Store.data;
+    let m;
+    if(s.editId){
+      m = Store.match(s.editId);
+      Object.assign(m, s.form, { participation: s.participation });
+      d.ratings = d.ratings.filter(r => r.refId !== m.id);
+    } else {
+      m = Object.assign({ id: uid('ma'), participation: s.participation, createdAt: Date.now() }, s.form);
+      d.matches.push(m);
+    }
+    Object.entries(s.evals).forEach(([playerId, ev]) => {
+      if(!((s.participation[playerId] || {}).minutes > 0)) return;
+      d.ratings.push({ id: uid('rt'), playerId, refType:'match', refId:m.id,
+        scores: ev.scores, note: ev.note, createdAt: Date.now() });
+    });
+    Store.save();
+    Insights.run();
+    Modal.close();
+    Toast.show(s.editId ? 'Spiel aktualisiert' : 'Spiel dokumentiert & archiviert');
+    Router.go('spiel/' + m.id);
+    if(App.view === 'spiel' && App.param === m.id) Router.render();
+  },
+};
+
+/* ============================ Modal: Direktes Spielerfeedback ============================ */
+const FeedbackModal = {
+  open(playerId){
+    const p = Store.player(playerId);
+    if(!p) return;
+    const noteId = 'fbNote';
+    const modal = Modal.open(`
+      <div class="modal-head">
+        <h2>Feedback · ${esc(p.name)}</h2>
+        <button class="modal-x" data-action="modal-close">${ic('x')}</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">Bewertung (optional)</div>
+        ${rateBlock('fb', {})}
+        <div class="modal-section">Feedback</div>
+        <div class="eval-note" style="margin-top:0">
+          <textarea id="${noteId}" placeholder="Beobachtungen, Entwicklung, Gesprächsnotiz — Text oder Sprache …" style="min-height:90px"></textarea>
+          ${micBtn(noteId)}
+        </div>
+        <div class="modal-section">Datei anhängen (optional)</div>
+        <div class="dropzone" id="fbDrop" style="padding:16px">
+          ${ic('upload')}<br><b>Datei wählen</b>
+          <input type="file" id="fbFile" hidden>
+        </div>
+        <div id="fbFilePreview" style="margin-top:8px"></div>
+      </div>
+      <div class="modal-foot">
+        <span class="panel-hint">Wird dem Profil von <b>${esc(p.name)}</b> zugeordnet.</span>
+        <button class="btn btn-primary" data-action="fb-save" data-id="${p.id}">${ic('check')} Speichern</button>
+      </div>`);
+
+    this.pendingFile = null;
+    const dz = $('#fbDrop', modal), fi = $('#fbFile', modal);
+    dz.addEventListener('click', () => fi.click());
+    fi.addEventListener('change', () => {
+      const f = fi.files[0];
+      if(!f) return;
+      this.pendingFile = { name:f.name, size:f.size, type:f.type || 'unbekannt' };
+      $('#fbFilePreview', modal).innerHTML =
+        `<span class="file-chip">${ic('fileText')}<span>${esc(f.name)}</span><small>${fmtBytes(f.size)}</small></span>`;
+    });
+  },
+
+  save(playerId){
+    const { scores, any } = readRateScope('fb');
+    const text = ($('#fbNote') ? $('#fbNote').value : '').trim();
+    if(!any && !text && !this.pendingFile){ Toast.show('Bitte bewerten oder Feedback eingeben', 'alert'); return; }
+    Voice.stop();
+    const d = Store.data;
+    if(any || text){
+      d.ratings.push({ id: uid('rt'), playerId, refType:'feedback', refId:null,
+        scores, note:text, createdAt: Date.now() });
+    }
+    if(this.pendingFile){
+      d.notes.push({ id: uid('no'), kind:'player', playerId, method:'file',
+        text: any || text ? '' : text, file:this.pendingFile, createdAt: Date.now() });
+    }
+    Store.save();
+    Insights.run();
+    Modal.close();
+    Toast.show('Feedback gespeichert');
+    Router.render();
+  },
+};
+
+/* ============================ Modal: Spieler anlegen / bearbeiten ============================ */
+const PlayerModal = {
+  open(editId){
+    const p = editId && Store.player(editId);
+    Modal.open(`
+      <div class="modal-head">
+        <h2>${p ? 'Spieler bearbeiten' : 'Spieler hinzufügen'}</h2>
+        <button class="modal-x" data-action="modal-close">${ic('x')}</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="field full"><label>Name</label><input type="text" id="plName" placeholder="Vor- und Nachname" value="${esc(p ? p.name : '')}" maxlength="60"></div>
+          <div class="field"><label>Rückennummer</label><input type="number" id="plNumber" min="1" max="99" value="${p ? p.number : ''}" placeholder="z. B. 10"></div>
+          <div class="field"><label>Position</label>
+            <select id="plPosition">${POSITIONS.map(x => `<option ${p && p.position === x ? 'selected' : ''}>${x}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label>Jahrgang (optional)</label><input type="number" id="plYear" min="1970" max="2020" value="${p && p.birthYear ? p.birthYear : ''}" placeholder="z. B. 2001"></div>
+          <div class="field"><label>Status</label>
+            <select id="plStatus">${Object.entries(STATUS_LABEL).map(([k,v]) => `<option value="${k}" ${p && p.status === k ? 'selected' : ''}>${v}</option>`).join('')}</select>
+          </div>
+        </div>
+        ${p ? `<div style="margin-top:18px"><button class="btn btn-danger btn-sm" data-action="del-player" data-id="${p.id}">${ic('trash')} Spieler löschen</button></div>` : ''}
+      </div>
+      <div class="modal-foot">
+        <span></span>
+        <button class="btn btn-primary" data-action="pl-save" ${p ? `data-id="${p.id}"` : ''}>${ic('check')} Speichern</button>
+      </div>`);
+    $('#plName').focus();
+  },
+
+  save(editId){
+    const name = $('#plName').value.trim();
+    if(!name){ Toast.show('Bitte einen Namen eingeben', 'alert'); $('#plName').focus(); return; }
+    const vals = {
+      name,
+      number: parseInt($('#plNumber').value, 10) || 0,
+      position: $('#plPosition').value,
+      birthYear: parseInt($('#plYear').value, 10) || null,
+      status: $('#plStatus').value,
+    };
+    if(editId){
+      Object.assign(Store.player(editId), vals);
+    } else {
+      Store.data.players.push(Object.assign({ id: uid('pl') }, vals));
+    }
+    Store.save();
+    Insights.run();
+    Modal.close();
+    Toast.show(editId ? 'Spieler aktualisiert' : 'Spieler hinzugefügt');
+    Router.render();
+  },
+};
+
+/* ============================ Globale Event-Delegation ============================ */
+const Actions = {
+  /* Navigation & Schnellaktionen */
+  'new-training': () => TrainingWizard.open(),
+  'new-match':    () => MatchWizard.open(),
+  'new-note':     () => { Router.go('dashboard'); InputBar.toggle('text'); },
+  'open-player':  el => Router.go('kader/' + el.dataset.id),
+
+  /* Dashboard */
+  'toggle-task': el => {
+    const t = Store.data.tasks.find(x => x.id === el.dataset.id);
+    if(t){ t.done = !t.done; Store.save(); Views.dashboard(); }
+  },
+  'del-task': el => {
+    Store.data.tasks = Store.data.tasks.filter(x => x.id !== el.dataset.id);
+    Store.save(); Views.dashboard();
+  },
+  'dismiss-insight': el => { Insights.dismiss(el.dataset.key); Views.dashboard(); },
+
+  /* Eingabeleiste */
+  'input-save':   () => InputBar.save(),
+  'input-cancel': () => InputBar.closePanel(),
+
+  /* Kader */
+  'squad-filter': el => { Squad.filter = el.dataset.filter; Views.squad(); },
+  'new-player':   () => PlayerModal.open(),
+  'edit-player':  el => PlayerModal.open(el.dataset.id),
+  'pl-save':      el => PlayerModal.save(el.dataset.id || null),
+  'del-player': el => {
+    const p = Store.player(el.dataset.id);
+    if(!p || !confirm(`${p.name} wirklich löschen? Bewertungen und Notizen des Spielers werden entfernt.`)) return;
+    const d = Store.data;
+    d.players = d.players.filter(x => x.id !== p.id);
+    d.ratings = d.ratings.filter(x => x.playerId !== p.id);
+    d.notes   = d.notes.filter(x => x.playerId !== p.id);
+    d.trainings.forEach(t => delete t.attendance[p.id]);
+    d.matches.forEach(m => delete m.participation[p.id]);
+    Store.save(); Insights.run(); Modal.close();
+    Toast.show('Spieler gelöscht'); Router.go('kader'); Router.render();
+  },
+  'new-feedback': el => FeedbackModal.open(el.dataset.id),
+  'fb-save':      el => FeedbackModal.save(el.dataset.id),
+
+  /* Training */
+  'edit-training': el => TrainingWizard.open(el.dataset.id),
+  'del-training': el => {
+    if(!confirm('Dieses Training samt Bewertungen löschen?')) return;
+    const id = el.dataset.id;
+    const d = Store.data;
+    d.trainings = d.trainings.filter(t => t.id !== id);
+    d.ratings   = d.ratings.filter(r => r.refId !== id);
+    d.notes     = d.notes.filter(n => n.refId !== id);
+    Store.save(); Insights.run();
+    Toast.show('Training gelöscht'); Router.go('training'); Router.render();
+  },
+  'tw-next': () => TrainingWizard.next(),
+  'tw-back': () => TrainingWizard.back(),
+  'tw-save': () => TrainingWizard.save(),
+
+  /* Spiel */
+  'edit-match': el => MatchWizard.open(el.dataset.id),
+  'del-match': el => {
+    if(!confirm('Dieses Spiel samt Bewertungen löschen?')) return;
+    const id = el.dataset.id;
+    const d = Store.data;
+    d.matches = d.matches.filter(m => m.id !== id);
+    d.ratings = d.ratings.filter(r => r.refId !== id);
+    d.notes   = d.notes.filter(n => n.refId !== id);
+    Store.save(); Insights.run();
+    Toast.show('Spiel gelöscht'); Router.go('spiel'); Router.render();
+  },
+  'mw-next': () => MatchWizard.next(),
+  'mw-back': () => MatchWizard.back(),
+  'mw-save': () => MatchWizard.save(),
+
+  /* Gemeinsam */
+  'eval-toggle': el => el.closest('.eval-block').classList.toggle('open'),
+  'del-note': el => {
+    Store.data.notes = Store.data.notes.filter(n => n.id !== el.dataset.id);
+    Store.save(); Router.render();
+  },
+  'modal-close': () => Modal.close(),
+};
+
+document.addEventListener('click', e => {
+  /* Bewertungspunkte (1–5) */
+  const dot = e.target.closest('.rate-dot');
+  if(dot){
+    const row = dot.parentElement;
+    const val = parseInt(dot.dataset.rateVal, 10);
+    const cur = $$('.rate-dot.on', row).length;
+    const next = cur === val ? 0 : val;              // erneutes Tippen löscht
+    $$('.rate-dot', row).forEach((b,i) => b.classList.toggle('on', i < next));
+    return;
+  }
+  /* Mikrofon neben Textfeldern */
+  const mic = e.target.closest('[data-voice-for]');
+  if(mic && !mic.disabled){
+    const ta = document.getElementById(mic.dataset.voiceFor);
+    if(!ta) return;
+    if(Voice.active){ Voice.stop(); return; }
+    Voice.start(ta, on => { mic.classList.toggle('rec', on); mic.innerHTML = ic(on ? 'stop' : 'mic'); });
+    return;
+  }
+  /* Benannte Aktionen */
+  const el = e.target.closest('[data-action]');
+  if(el && Actions[el.dataset.action]) Actions[el.dataset.action](el);
+});
+
+document.addEventListener('submit', e => {
+  const form = e.target.closest('[data-action-submit="add-task"]');
+  if(!form) return;
+  e.preventDefault();
+  const inp = $('#newTaskInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  Store.data.tasks.push({ id: uid('ts'), text, done:false, createdAt: Date.now() });
+  Store.save();
+  Views.dashboard();
+  $('#newTaskInput').focus();
+});
+
+/* ============================ Onboarding ============================ */
+function openOnboarding(){
+  const modal = Modal.open(`
+    <div class="modal-body" style="padding:30px 28px 8px">
+      <div class="onb-hero">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <defs><linearGradient id="bm2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#12a150"/><stop offset="1" stop-color="#1cc268"/>
+          </linearGradient></defs>
+          <rect width="32" height="32" rx="8.5" fill="url(#bm2)"/>
+          <path d="M21 9a8 8 0 1 0 0 14" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+          <circle cx="21" cy="16" r="2.2" fill="#fff"/>
+        </svg>
+        <h2>Willkommen bei CoTrainer</h2>
+        <p>Dokumentiere Trainings, Spiele und Spieler in Minuten — per Sprache, Text oder Datei. Dein CoTrainer analysiert alles automatisch.</p>
+      </div>
+      <div class="form-grid" style="margin-top:22px">
+        <div class="field"><label>Dein Name</label><input type="text" id="onbCoach" placeholder="z. B. Okan" maxlength="40"></div>
+        <div class="field"><label>Team</label><input type="text" id="onbTeam" placeholder="z. B. SV Musterstadt U19" maxlength="50"></div>
+      </div>
+      <label class="check-line">
+        <input type="checkbox" id="onbDemo" checked>
+        Mit Beispieldaten starten (empfohlen — sofort alles ausprobieren)
+      </label>
+    </div>
+    <div class="modal-foot" style="border-top:0;background:none;padding-bottom:24px;justify-content:center">
+      <button class="btn btn-primary" id="onbGo" style="padding:11px 28px">Los geht’s ${ic('chevR')}</button>
+    </div>`, { locked:true });
+
+  $('#onbCoach', modal).focus();
+  $('#onbGo', modal).addEventListener('click', () => {
+    const s = Store.data.settings;
+    s.coachName = $('#onbCoach').value.trim() || 'Coach';
+    s.teamName  = $('#onbTeam').value.trim() || 'Meine Mannschaft';
+    s.onboarded = true;
+    if($('#onbDemo').checked && !Store.data.players.length) Store.seed();
+    Store.save();
+    Insights.run();
+    Modal.close();
+    renderUserChip();
+    Router.render();
+    Toast.show(`Willkommen, ${s.coachName}!`);
+  });
+}
+
+/* ============================ Init ============================ */
+(function init(){
+  Store.load();
+  renderNav();
+  renderUserChip();
+  InputBar.init();
+  window.addEventListener('hashchange', () => Router.render());
+  Router.render();
+  if(!Store.data.settings.onboarded) openOnboarding();
+  else Insights.run();
+})();
+</script>
+</body>
+</html>
